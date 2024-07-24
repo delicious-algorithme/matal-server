@@ -1,0 +1,13 @@
+package com.example.matal;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MatalApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MatalApplication.class, args);
+    }
+
+}
