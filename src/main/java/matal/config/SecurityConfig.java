@@ -1,4 +1,4 @@
-package com.example.matal.config;
+package matal.config;
 
 
 import org.springframework.context.annotation.Bean;

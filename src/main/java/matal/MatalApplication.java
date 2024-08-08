@@ -1,4 +1,4 @@
-package com.example.matal;
+package matal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
