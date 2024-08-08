@@ -1,4 +1,4 @@
-package com.example.matal;
+package matal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,5 +9,4 @@ public class MatalApplication {
     public static void main(String[] args) {
         SpringApplication.run(MatalApplication.class, args);
     }
-
 }
