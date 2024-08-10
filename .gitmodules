@@ -1,0 +1,3 @@
+[submodule "matal-submodule"]
+	path = matal-submodule
+	url = git@github.com:delicious-algorithme/matal-submodule.git
