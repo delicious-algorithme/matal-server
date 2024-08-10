@@ -47,3 +47,15 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './matal-submodule'
+    include "application*.yml"
+    into './src/main/resources'
+}
+
+tasks.named("jar") {
+    enabled = false;
+}
