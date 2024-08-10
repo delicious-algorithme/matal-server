@@ -20,6 +20,9 @@ bin/
 ### mac OS ###
 .DS_Store
 
+### resources ###
+src/main/resources
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
