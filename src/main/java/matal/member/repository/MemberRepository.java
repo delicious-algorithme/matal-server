@@ -1,6 +1,6 @@
-package matal.repository;
+package matal.member.repository;
 
-import matal.entity.Member;
+import matal.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
