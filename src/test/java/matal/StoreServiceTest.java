@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 public class StoreServiceTest {
-
     @Autowired
     private StoreService storeService;
 
@@ -27,7 +26,6 @@ public class StoreServiceTest {
 
     @BeforeEach
     void setUp() {
-
         Store store1 = Store.builder()
                 .id(1L)
                 .keyword("Test")
@@ -74,7 +72,6 @@ public class StoreServiceTest {
 
     @Test
     void StoreNameSearchTest() {
-
         // given
         StoreRequestDto requestDto = new StoreRequestDto("Test Store1", null, null);
 
@@ -88,7 +85,6 @@ public class StoreServiceTest {
 
     @Test
     void StoreCategorySearchTest() {
-
         // given
         StoreRequestDto requestDto = new StoreRequestDto(null, "Food", null);
 
@@ -101,7 +97,6 @@ public class StoreServiceTest {
 
     @Test
     void StoreStationSearchTest() {
-
         // given
         StoreRequestDto requestDto = new StoreRequestDto(null, null, "Station 1");
 
