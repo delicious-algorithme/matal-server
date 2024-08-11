@@ -55,3 +55,7 @@ tasks.register('copySecret', Copy) {
     include "application*.yml"
     into './src/main/resources'
 }
+
+tasks.named("jar") {
+    enabled = false;
+}
