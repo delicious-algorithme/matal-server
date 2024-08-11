@@ -13,7 +13,6 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class StoreResponseDto {
-
     //가게 리스트 데이터 컬럼
     private Long id;
     private String name;
@@ -38,5 +37,17 @@ public class StoreResponseDto {
         this.phone = phone;
         this.business_hours = business_hours;
         this.rating = rating;
+    }
+
+    public StoreResponseDto(Store store) {
+        this.id = store.getId();
+        this.name = store.getName();
+        this.category = store.getCategory();
+        this.reviews_count = store.getReviews_count();
+        this.address = store.getAddress();
+        this.nearby_station = store.getNearby_station();
+        this.phone = store.getPhone();
+        this.business_hours = store.getBusiness_hours();
+        this.rating = store.getRating();
     }
 }
