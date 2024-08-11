@@ -1,4 +1,4 @@
-package matal.controller;
+package matal.member.controller;
 
 
 import org.springframework.stereotype.Controller;

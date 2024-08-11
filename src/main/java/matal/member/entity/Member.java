@@ -1,4 +1,4 @@
-package matal.entity;
+package matal.member.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
