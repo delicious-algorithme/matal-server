@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import matal.store.dto.StoreRequestDto;
 import matal.store.dto.StoreResponseDto;
-import matal.store.entity.Store;
-import matal.store.repository.StoreRepository;
 import matal.store.service.StoreService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,32 +25,58 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    //가게 리스트 조회
-    @GetMapping
-    @Operation(summary = "Get store List", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
+    //이름으로 가게 리스트 조회
+    @GetMapping("/search/name")
+    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                 content = {@Content(mediaType ="application/json",
                         array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreList(
-            @RequestParam(name = "name", required = false) String name,
-            @RequestParam(name = "category", required = false) String category,
-            @RequestParam(name = "nearby_station", required = false) String nearby_station
-    ) {
-        StoreRequestDto storeRequestDto = new StoreRequestDto(name, category, nearby_station);
+    public List<StoreResponseDto> getStoreListByNmae(@RequestParam(name = "name", required = false) String name) {
+        StoreRequestDto storeRequestDto = new StoreRequestDto(name, null, null);
         List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
         if (storeRequestDto.name() != null) {
             List<StoreResponseDto> nameSearchResults = storeService.StoreNameSearch(storeRequestDto);
             storeResponseDtoList.addAll(nameSearchResults);
         }
+        return storeResponseDtoList;
+    }
+
+    //카테고리로 가게 리스트 조회
+    @GetMapping("/search/category")
+    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(mediaType ="application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
+            @ApiResponse(responseCode = "404", description = "실패"),
+    })
+    public List<StoreResponseDto> getStoreListByCategory(@RequestParam(name = "category", required = false) String category) {
+        StoreRequestDto storeRequestDto = new StoreRequestDto(null, category, null);
+        List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
         if (storeRequestDto.category() != null) {
             List<StoreResponseDto> categorySearchResults = storeService.StoreCategorySearch(storeRequestDto);
             storeResponseDtoList.addAll(categorySearchResults);
         }
+        return storeResponseDtoList;
+    }
+
+    //지하철역으로 가게 리스트 조회
+    @GetMapping("/search/nearby_station")
+    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(mediaType ="application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
+            @ApiResponse(responseCode = "404", description = "실패"),
+    })
+    public List<StoreResponseDto> getStoreListByStation( @RequestParam(name = "nearby_station", required = false) String nearby_station) {
+        StoreRequestDto storeRequestDto = new StoreRequestDto(null, null, nearby_station);
+        List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
         if (storeRequestDto.nearby_station() != null) {
             List<StoreResponseDto> stationSearchResults = storeService.StoreStationSearch(storeRequestDto);
