@@ -26,7 +26,6 @@ import java.util.Optional;
 public class StoreController {
 
     private final StoreService storeService;
-    private final StoreRepository storeRepository;
 
     //가게 리스트 조회
     @GetMapping
@@ -45,34 +44,34 @@ public class StoreController {
         StoreRequestDto storeRequestDto = new StoreRequestDto(name, category, nearby_station);
         List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
-        if (storeRequestDto.getName() != null) {
+        if (storeRequestDto.name() != null) {
             List<StoreResponseDto> nameSearchResults = storeService.StoreNameSearch(storeRequestDto);
             storeResponseDtoList.addAll(nameSearchResults);
         }
 
-        if (storeRequestDto.getCategory() != null) {
+        if (storeRequestDto.category() != null) {
             List<StoreResponseDto> categorySearchResults = storeService.StoreCategorySearch(storeRequestDto);
             storeResponseDtoList.addAll(categorySearchResults);
         }
 
-        if (storeRequestDto.getNearby_station() != null) {
+        if (storeRequestDto.nearby_station() != null) {
             List<StoreResponseDto> stationSearchResults = storeService.StoreStationSearch(storeRequestDto);
             storeResponseDtoList.addAll(stationSearchResults);
         }
         return storeResponseDtoList;
     }
 
-    //가게 상세 정보 조회
-    @GetMapping("{storeid}")
-    @Operation(summary = "Get store detail infotmation", description = "가게 리스트 중 하나를 클릭하면 해당 가게의 상세 정보, 리뷰 등을 조회할 수 있다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공",
-            content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
-            @ApiResponse(responseCode = "404", description = "실패"),
-    })
-    public Optional<Store> getstoreDetail(
-            @PathVariable Long storeid
-    ) {
-        return storeRepository.findById(storeid);
-    }
+//    //가게 상세 정보 조회
+//    @GetMapping("{storeid}")
+//    @Operation(summary = "Get store detail infotmation", description = "가게 리스트 중 하나를 클릭하면 해당 가게의 상세 정보, 리뷰 등을 조회할 수 있다.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "성공",
+//            content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+//            @ApiResponse(responseCode = "404", description = "실패"),
+//    })
+//    public Optional<Store> getstoreDetail(
+//            @PathVariable Long storeid
+//    ) {
+//        return storeRepository.findById(storeid);
+//    }
 }

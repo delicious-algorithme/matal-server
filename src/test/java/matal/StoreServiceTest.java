@@ -80,7 +80,7 @@ public class StoreServiceTest {
 
         // then
         assertThat(storeResponseDtoList).hasSize(1);
-        assertThat(storeResponseDtoList.get(0).getName()).isEqualTo("Test Store1");
+        assertThat(storeResponseDtoList.get(0).name()).isEqualTo("Test Store1");
     }
 
     @Test
@@ -105,6 +105,6 @@ public class StoreServiceTest {
 
         // then
         assertThat(storeResponseDtoList).hasSize(1);
-        assertThat(storeResponseDtoList.get(0).getNearby_station()).isEqualTo("Station 1");
+        assertThat(storeResponseDtoList.get(0).nearby_station()).isEqualTo("Station 1");
     }
 }
