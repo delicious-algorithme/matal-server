@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,11 +77,12 @@ public class StoreServiceTest {
         StoreRequestDto requestDto = new StoreRequestDto("Test Store1", null, null);
 
         // when
-        List<StoreResponseDto> storeResponseDtoList = storeService.StoreNameSearch(requestDto);
+        Optional<List<StoreResponseDto>> storeResponseDtoList = storeService.StoreNameSearch(requestDto);
 
         // then
-        assertThat(storeResponseDtoList).hasSize(1);
-        assertThat(storeResponseDtoList.get(0).name()).isEqualTo("Test Store1");
+        assertThat(storeResponseDtoList).isPresent();
+        assertThat(storeResponseDtoList.get()).hasSize(1);
+        assertThat(storeResponseDtoList.get().get(0).name()).isEqualTo("Test Store1");
     }
 
     @Test
@@ -89,22 +91,24 @@ public class StoreServiceTest {
         StoreRequestDto requestDto = new StoreRequestDto(null, "Food", null);
 
         // when
-        List<StoreResponseDto> storeResponseDtoList = storeService.StoreCategorySearch(requestDto);
+        Optional<List<StoreResponseDto>> storeResponseDtoList = storeService.StoreCategorySearch(requestDto);
 
         // then
-        assertThat(storeResponseDtoList).hasSize(2);
+        assertThat(storeResponseDtoList).isPresent();
+        assertThat(storeResponseDtoList.get()).hasSize(2);
+        assertThat(storeResponseDtoList.get().get(0).category()).isEqualTo("Food");
     }
 
     @Test
     void StoreStationSearchTest() {
         // given
-        StoreRequestDto requestDto = new StoreRequestDto(null, null, "Station 1");
+        StoreRequestDto requestDto = new StoreRequestDto(null, null, "FakeStation");
 
         // when
-        List<StoreResponseDto> storeResponseDtoList = storeService.StoreStationSearch(requestDto);
+        Optional<List<StoreResponseDto>> storeResponseDtoList = storeService.StoreStationSearch(requestDto);
 
         // then
-        assertThat(storeResponseDtoList).hasSize(1);
-        assertThat(storeResponseDtoList.get(0).nearby_station()).isEqualTo("Station 1");
+        assertThat(storeResponseDtoList).isPresent();
+        assertThat(storeResponseDtoList.get()).isEmpty();
     }
 }

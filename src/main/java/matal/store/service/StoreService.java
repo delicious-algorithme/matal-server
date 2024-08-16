@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -19,29 +19,24 @@ public class StoreService {
     private final StoreRepository storeRepository;
 
     //가게 이름 검색 조회 리스트
-    public List<StoreResponseDto> StoreNameSearch(StoreRequestDto storeRequestDto) {
-        List<Store> storeList = storeRepository.findByNameContaining(storeRequestDto.name());
-
-        return storeList.stream()
-                .map(StoreResponseDto::from)
-                .collect(Collectors.toList());
+    public Optional<List<StoreResponseDto>> StoreNameSearch(StoreRequestDto storeRequestDto) {
+        return storeRepository.findByNameContaining(storeRequestDto.name())
+                .map(stores -> stores.stream()
+                        .map(StoreResponseDto::from)
+                        .toList());
     }
 
-    //가게 카테고리 검색 조회 리스트
-    public List<StoreResponseDto> StoreCategorySearch(StoreRequestDto storeRequestDto) {
-        List<Store> storeList = storeRepository.findByCategoryContaining(storeRequestDto.category());
-
-        return storeList.stream()
-                .map(StoreResponseDto::from)
-                .collect(Collectors.toList());
+    public Optional<List<StoreResponseDto>> StoreCategorySearch(StoreRequestDto storeRequestDto) {
+        return storeRepository.findByCategoryContaining(storeRequestDto.category())
+                .map(stores -> stores.stream()
+                        .map(StoreResponseDto::from)
+                        .toList());
     }
 
-    //가게 지하철 역 검색 조회 리스트
-    public List<StoreResponseDto> StoreStationSearch(StoreRequestDto storeRequestDto) {
-        List<Store> storeList = storeRepository.findByNearbyStationContaining(storeRequestDto.nearby_station());
-
-        return storeList.stream()
-                .map(StoreResponseDto::from)
-                .collect(Collectors.toList());
+    public Optional<List<StoreResponseDto>> StoreStationSearch(StoreRequestDto storeRequestDto) {
+        return storeRepository.findByNearbyStationContaining(storeRequestDto.nearby_station())
+                .map(stores -> stores.stream()
+                        .map(StoreResponseDto::from)
+                        .toList());
     }
 }

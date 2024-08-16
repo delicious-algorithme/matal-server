@@ -39,8 +39,8 @@ public class StoreController {
         List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
         if (storeRequestDto.name() != null) {
-            List<StoreResponseDto> nameSearchResults = storeService.StoreNameSearch(storeRequestDto);
-            storeResponseDtoList.addAll(nameSearchResults);
+            Optional<List<StoreResponseDto>> nameSearchResults = storeService.StoreNameSearch(storeRequestDto);
+            nameSearchResults.ifPresent(storeResponseDtoList::addAll);
         }
         return storeResponseDtoList;
     }
@@ -59,8 +59,8 @@ public class StoreController {
         List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
         if (storeRequestDto.category() != null) {
-            List<StoreResponseDto> categorySearchResults = storeService.StoreCategorySearch(storeRequestDto);
-            storeResponseDtoList.addAll(categorySearchResults);
+            Optional<List<StoreResponseDto>> categorySearchResults = storeService.StoreCategorySearch(storeRequestDto);
+            categorySearchResults.ifPresent(storeResponseDtoList::addAll);
         }
         return storeResponseDtoList;
     }
@@ -79,8 +79,8 @@ public class StoreController {
         List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
         if (storeRequestDto.nearby_station() != null) {
-            List<StoreResponseDto> stationSearchResults = storeService.StoreStationSearch(storeRequestDto);
-            storeResponseDtoList.addAll(stationSearchResults);
+            Optional<List<StoreResponseDto>> stationSearchResults = storeService.StoreStationSearch(storeRequestDto);
+            stationSearchResults.ifPresent(storeResponseDtoList::addAll);
         }
         return storeResponseDtoList;
     }
