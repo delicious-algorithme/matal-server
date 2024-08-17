@@ -1,4 +1,4 @@
-package matal.entity;
+package matal.store.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +27,6 @@ public class Review {
     private Store store;
 
     @Builder
-
     public Review(Long id, String review_summary,
                   String review_keywords, Double rating) {
         this.id = id;
