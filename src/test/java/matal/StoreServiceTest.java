@@ -28,8 +28,9 @@ public class StoreServiceTest {
 
     @BeforeEach
     void setUp() {
+        storeRepository.deleteAll();
+
         Store store1 = Store.builder()
-                .id(1L)
                 .keyword("Test")
                 .name("Test Store1")
                 .store_link("ssss")
@@ -49,7 +50,6 @@ public class StoreServiceTest {
                 .build();
 
         Store store2 = Store.builder()
-                .id(2L)
                 .keyword("Test")
                 .name("Test Store2")
                 .store_link("ssss")
