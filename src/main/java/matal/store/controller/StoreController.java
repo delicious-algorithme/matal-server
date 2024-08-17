@@ -35,14 +35,9 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     public List<StoreResponseDto> getStoreListByNmae(@RequestParam(name = "name", required = false) String name) {
-        StoreRequestDto storeRequestDto = new StoreRequestDto(name, null, null);
-        List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
-
-        if (storeRequestDto.name() != null) {
-            Optional<List<StoreResponseDto>> nameSearchResults = storeService.StoreNameSearch(storeRequestDto);
-            nameSearchResults.ifPresent(storeResponseDtoList::addAll);
-        }
-        return storeResponseDtoList;
+        if(name == null)
+            throw new IllegalArgumentException("Error");
+        return storeService.findStoresByName(name);
     }
 
     //카테고리로 가게 리스트 조회
@@ -55,14 +50,9 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     public List<StoreResponseDto> getStoreListByCategory(@RequestParam(name = "category", required = false) String category) {
-        StoreRequestDto storeRequestDto = new StoreRequestDto(null, category, null);
-        List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
-
-        if (storeRequestDto.category() != null) {
-            Optional<List<StoreResponseDto>> categorySearchResults = storeService.StoreCategorySearch(storeRequestDto);
-            categorySearchResults.ifPresent(storeResponseDtoList::addAll);
-        }
-        return storeResponseDtoList;
+        if(category == null)
+            throw new IllegalArgumentException("Error");
+        return storeService.findStoresByCategory(category);
     }
 
     //지하철역으로 가게 리스트 조회
@@ -75,14 +65,9 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     public List<StoreResponseDto> getStoreListByStation( @RequestParam(name = "nearby_station", required = false) String nearby_station) {
-        StoreRequestDto storeRequestDto = new StoreRequestDto(null, null, nearby_station);
-        List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
-
-        if (storeRequestDto.nearby_station() != null) {
-            Optional<List<StoreResponseDto>> stationSearchResults = storeService.StoreStationSearch(storeRequestDto);
-            stationSearchResults.ifPresent(storeResponseDtoList::addAll);
-        }
-        return storeResponseDtoList;
+        if(nearby_station == null)
+            throw new IllegalArgumentException("Error");
+        return storeService.findStoresByStation(nearby_station);
     }
 
 //    //가게 상세 정보 조회
