@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=local")
 @Transactional
 public class StoreServiceTest {
     @Autowired
