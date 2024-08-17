@@ -18,7 +18,6 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
 
-    //가게 이름 검색 조회 리스트
     public List<StoreResponseDto> findStoresByName(String name) {
         return storeRepository.findByNameContaining(name)
                 .orElseThrow(() -> new IllegalArgumentException("Error"))
