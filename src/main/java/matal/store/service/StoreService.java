@@ -1,15 +1,13 @@
 package matal.store.service;
 
 import lombok.RequiredArgsConstructor;
-import matal.store.dto.StoreRequestDto;
+import matal.store.dto.StoreInfoResponseDto;
 import matal.store.dto.StoreResponseDto;
-import matal.store.entity.Store;
 import matal.store.repository.StoreRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,5 +35,10 @@ public class StoreService {
                 .orElseThrow(() -> new IllegalArgumentException("Error"))
                 .stream().map(StoreResponseDto::from)
                 .toList();
+    }
+
+    public StoreInfoResponseDto getStoreInfo(Long id) {
+        return storeRepository.findById(id).map(StoreInfoResponseDto::fromInfo)
+                .orElseThrow(() -> new IllegalArgumentException("Error"));
     }
 }
