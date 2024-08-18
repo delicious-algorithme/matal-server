@@ -6,6 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+
+import matal.store.dto.StoreInfoResponseDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.entity.Store;
 import matal.store.repository.StoreRepository;
@@ -107,5 +109,21 @@ public class StoreServiceTest {
         assertNotNull(responses);
         assertEquals(responses.get(0).address(), store1.getAddress());
         assertEquals(responses.get(1).address(), store2.getAddress());
+    }
+
+    @Test
+    @DisplayName("가게 클릭 시, 가게 번호를 검색하여 가게 상세 정보 조회 테스트")
+    void testStoreInfoGet() {
+        //given
+        List<Store> stores = List.of(store1, store2);
+
+        //when
+        when(storeRepository.findById(2L)).thenReturn(Optional.of(store2));
+        StoreInfoResponseDto response = storeService.getStoreInfo(2L);
+
+        //then
+        assertNotNull(response);
+        assertEquals(response.name(), store2.getName());
+        assertEquals(response.address(), store2.getAddress());
     }
 }
