@@ -1,11 +1,11 @@
 package matal.store.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import matal.store.dto.StoreInfoResponseDto;
 import matal.store.dto.StoreResponseDto;
@@ -35,11 +35,11 @@ public class StoreServiceTest {
 
     @BeforeEach
     void setUp() {
-        store1 = createStore(1L, "Test Store1", "Address 1", "Station 1");
-        store2 = createStore(2L, "Test Store2", "Address 2", "Station 2");
+        store1 = createStore(1L, "Test Store1", "Address 1", "Station 1", 4.5);
+        store2 = createStore(2L, "Test Store2", "Address 2", "Station 2", 4.0);
     }
 
-    private Store createStore(Long id, String name, String address, String nearbyStation) {
+    private Store createStore(Long id, String name, String address, String nearbyStation, Double rating) {
         return Store.builder()
                 .id(id)
                 .keyword("Test")
@@ -55,7 +55,7 @@ public class StoreServiceTest {
                 .longitude(11.11)
                 .positive_keywords("good")
                 .review_summary("summary")
-                .rating(4.5)
+                .rating(rating)
                 .positive_ratio(93.0)
                 .negative_ratio(7.0)
                 .build();
@@ -97,8 +97,8 @@ public class StoreServiceTest {
     @DisplayName("가게 주변 역을 이용한 목록 조회 테스트")
     void testStoreStationSearch() {
         // given
-        store1 = createStore(1L, "Test Store1", "Address 1", "부산역 3번 출구로 부터 10m");
-        store2 = createStore(2L, "Test Store2", "Address 2", "부산역 2번 출구로부터 30m");
+        store1 = createStore(1L, "Test Store1", "Address 1", "부산역 3번 출구로 부터 10m", 4.5);
+        store2 = createStore(2L, "Test Store2", "Address 2", "부산역 2번 출구로부터 30m", 4.0);
         List<Store> stores = List.of(store1, store2);
 
         // when
@@ -125,5 +125,21 @@ public class StoreServiceTest {
         assertNotNull(response);
         assertEquals(response.name(), store2.getName());
         assertEquals(response.address(), store2.getAddress());
+    }
+
+    @Test
+    @DisplayName("별점을 기준으로 오름차순 혹은 내림차순으로 정렬하는 테스트")
+    void testStoreSort() {
+        //given
+        List<Store> stores = List.of(store1, store2);
+        List<StoreResponseDto> storeResponseDto = stores.stream().map(StoreResponseDto::from).collect(Collectors.toList());
+
+        //when
+        List<StoreResponseDto> responses = storeService.sortStores(storeResponseDto, "rating", "upper");
+
+        //then
+        assertNotNull(responses);
+        assertEquals(responses.get(0).id(), 2L);
+        assertTrue(responses.get(0).rating() <= responses.get(1).rating());
     }
 }
