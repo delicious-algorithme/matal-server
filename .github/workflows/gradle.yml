@@ -54,7 +54,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name matal-codedeploy \
-            --deployment-group-name matal-codedeploy \
+            --deployment-group-name matal-BE-codedeploy \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --description "Deploying from GitHub Actions" \
             --file-exists-behavior OVERWRITE \
