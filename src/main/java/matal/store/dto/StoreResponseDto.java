@@ -3,7 +3,7 @@ package matal.store.dto;
 import matal.store.entity.Store;
 
 public record StoreResponseDto(Long id, String name, String category, Long reviews_count, String address,
-                               String nearby_station, String phone, String business_hours, Double rating){
+                               String nearby_station, String phone, String business_hours, Double rating, Double positive_ratio){
 
     public static StoreResponseDto from(Store store) {
         return new StoreResponseDto(
@@ -15,7 +15,8 @@ public record StoreResponseDto(Long id, String name, String category, Long revie
                 store.getNearby_station(),
                 store.getPhone(),
                 store.getBusiness_hours(),
-                store.getRating()
+                store.getRating(),
+                store.getPositive_ratio()
         );
     }
 }
