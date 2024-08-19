@@ -1,15 +1,12 @@
 package matal.store.service;
 
 import lombok.RequiredArgsConstructor;
-import matal.store.dto.StoreRequestDto;
 import matal.store.dto.StoreResponseDto;
-import matal.store.entity.Store;
 import matal.store.repository.StoreRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
