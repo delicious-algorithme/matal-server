@@ -23,7 +23,7 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    //이름으로 가게 리스트 조회
+    //이름으로 가게 리스트 조회 + 정렬 기능
     @GetMapping("/search/name")
     @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
     @ApiResponses(value = {
@@ -32,13 +32,18 @@ public class StoreController {
                         array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreListByNmae(@RequestParam(name = "name", required = false) String name) {
+    public List<StoreResponseDto> getStoreListByNmae(
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
+            @RequestParam(value = "sortOrder", required = false, defaultValue = "upper") String sortOrder
+    ) {
         if(name == null)
             throw new IllegalArgumentException("Error");
-        return storeService.findStoresByName(name);
+        List<StoreResponseDto> results = storeService.findStoresByName(name);
+        return storeService.sortStores(results, sortBy, sortOrder);
     }
 
-    //카테고리로 가게 리스트 조회
+    //카테고리로 가게 리스트 조회 + 정렬 기능
     @GetMapping("/search/category")
     @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
     @ApiResponses(value = {
@@ -47,13 +52,18 @@ public class StoreController {
                             array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreListByCategory(@RequestParam(name = "category", required = false) String category) {
+    public List<StoreResponseDto> getStoreListByCategory(
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
+            @RequestParam(value = "sortOrder", required = false, defaultValue = "upper") String sortOrder
+    ) {
         if(category == null)
             throw new IllegalArgumentException("Error");
-        return storeService.findStoresByCategory(category);
+        List<StoreResponseDto> results = storeService.findStoresByCategory(category);
+        return storeService.sortStores(results, sortBy, sortOrder);
     }
 
-    //지하철역으로 가게 리스트 조회
+    //지하철역으로 가게 리스트 조회 + 정렬 기능
     @GetMapping("/search/nearby_station")
     @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
     @ApiResponses(value = {
@@ -62,10 +72,15 @@ public class StoreController {
                             array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreListByStation( @RequestParam(name = "nearby_station", required = false) String nearby_station) {
+    public List<StoreResponseDto> getStoreListByStation(
+            @RequestParam(name = "nearby_station", required = false) String nearby_station,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
+            @RequestParam(value = "sortOrder", required = false, defaultValue = "upper") String sortOrder
+    ) {
         if(nearby_station == null)
             throw new IllegalArgumentException("Error");
-        return storeService.findStoresByStation(nearby_station);
+        List<StoreResponseDto> results = storeService.findStoresByStation(nearby_station);
+        return storeService.sortStores(results, sortBy, sortOrder);
     }
 
     //가게 상세 정보 조회
