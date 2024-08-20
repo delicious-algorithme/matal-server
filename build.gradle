@@ -28,6 +28,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    //local 저장을 위해 필요
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.apache.commons:commons-csv:1.10.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 

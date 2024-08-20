@@ -1,6 +1,5 @@
 package matal.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,52 +18,60 @@ public class Store {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String keyword;  // 'Keyword' 컬럼
 
     @Column(nullable = false)
-    private String category;
+    private String name;  // 'Name' 컬럼
+
+    @Column(nullable = false, length = 500)
+    private String naver_map_url;  // 'Store link' 컬럼
 
     @Column(nullable = false)
-    private String naver_map_url;
+    private String category;  // 'Category' 컬럼
 
     @Column(nullable = false)
-    private Double rating;
+    private Integer review_count;  // 'Reviews Count' 컬럼
 
     @Column(nullable = false)
-    private String opening_hours;
+    private String address;  // 'Address' 컬럼
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private Integer review_count;
-
-    @Column(nullable = false)
-    private String near_station;
+    private String near_station;  // 'Nearby Station' 컬럼
 
     @Column(nullable = true)
-    private String phone_number;
+    private String phone_number;  // 'Phone' 컬럼
+
+    @Column(nullable = false, length = 500)
+    private String opening_hours;  // 'Business Hours' 컬럼
 
     @Column(nullable = false)
-    private Double latitude;
+    private Double latitude;  // 'Latitude' 컬럼
 
     @Column(nullable = false)
-    private Double longitude;
+    private Double longitude;  // 'Longitude' 컬럼
 
-    @Column(nullable = false)
-    private String menu;
+    @Column(nullable = true)
+    private String positive_keywords;  // 'Positive Keywords' 컬럼
 
     @OneToMany(mappedBy = "store")
-    private List<Review> Reviews = new ArrayList<>();
+    private  List<Review> review_summary=new ArrayList<>();;  // 'Review Summary' 컬럼
+
+    @Column(nullable = false)
+    private Double rating;  // 'Rating' 컬럼
+
+    @Column(nullable = true)
+    private Double positive_ratio;  // 'Positive Ratio' 컬럼
+
+    @Column(nullable = true)
+    private Double negative_ratio;  // 'Negative Ratio' 컬럼
 
     @Builder
-    public Store(Long id, String name, String category,
-                 String naver_map_url, Double rating,
-                 String opening_hours, String address,
-                 Integer review_count, String near_station,
-                 String phone_number, Double latitude,
-                 Double longitude, String menu) {
+    public Store(Long id, String keyword, String name, String category, String naver_map_url, Double rating,
+                 String opening_hours, String address, Integer review_count, String near_station,
+                 String phone_number, Double latitude, Double longitude, String positive_keywords,
+                  Double positive_ratio, Double negative_ratio) {
         this.id = id;
+        this.keyword = keyword;
         this.name = name;
         this.category = category;
         this.naver_map_url = naver_map_url;
@@ -76,6 +83,9 @@ public class Store {
         this.phone_number = phone_number;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.menu = menu;
+        this.positive_keywords = positive_keywords;
+        this.positive_ratio = positive_ratio;
+        this.negative_ratio = negative_ratio;
     }
+
 }
