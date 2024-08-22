@@ -35,4 +35,9 @@ public class StoreService {
                 .stream().map(StoreResponseDto::from)
                 .toList();
     }
+
+    public StoreResponseDto findById(Long id) {
+        return StoreResponseDto.from(storeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Error")));
+    }
 }

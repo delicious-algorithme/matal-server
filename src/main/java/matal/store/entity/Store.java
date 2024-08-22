@@ -63,6 +63,9 @@ public class Store {
     @Column(nullable = false)
     private Double negative_ratio;
 
+    @Column(nullable = false, length = 1000)
+    private String image_urls;
+
     @Builder
     public Store(Long id, String keyword, String name, String store_link,
                  String category, Long reviews_count, String address,
