@@ -108,4 +108,19 @@ public class StoreServiceTest {
         assertEquals(responses.get(0).address(), store1.getAddress());
         assertEquals(responses.get(1).address(), store2.getAddress());
     }
+
+    @Test
+    @DisplayName("고유 ID값을 이용한 가게 상세 정보 조회 테스트")
+    void testFindById() {
+        // given
+        store1 = createStore(1L, "Test Store1", "Address 1", "부산역 3번 출구로 부터 10m");
+
+        // when
+        when(storeRepository.findById(1L)).thenReturn(Optional.of(store1));
+        StoreResponseDto responseDto = storeService.findById(1L);
+
+        // then
+        assertNotNull(responseDto);
+        assertEquals(responseDto.address(), store1.getAddress());
+    }
 }
