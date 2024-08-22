@@ -27,7 +27,7 @@ public class StoreController {
 
     //이름으로 가게 리스트 조회
     @GetMapping("/search/name")
-    @Operation(summary = "가게명으로 가게 리스트 조회", description = "사용자가 가게명을 검색할 때 관련 가게 리스트를 조회하기 위해 사용하는 API")
+    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                 content = {@Content(mediaType ="application/json",
@@ -42,7 +42,7 @@ public class StoreController {
 
     //카테고리로 가게 리스트 조회
     @GetMapping("/search/category")
-    @Operation(summary = "카테고리명으로 가게 리스트 조회", description = "사용자가 카테고리를 검색할 때 관련 가게 리스트를 조회하기 위해 사용하는 API")
+    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(mediaType ="application/json",
@@ -57,28 +57,30 @@ public class StoreController {
 
     //지하철역으로 가게 리스트 조회
     @GetMapping("/search/nearby_station")
-    @Operation(summary = "근처 역 이름으로 가게 리스트 조회", description = "사용자가 인근 역 이름으로 가게 리스트를 조회하기 위해 사용하는 API")
+    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(mediaType ="application/json",
                             array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreListByStation(@RequestParam(name = "nearby_station", required = false) String nearby_station) {
+    public List<StoreResponseDto> getStoreListByStation( @RequestParam(name = "nearby_station", required = false) String nearby_station) {
         if(nearby_station == null)
             throw new IllegalArgumentException("Error");
         return storeService.findStoresByStation(nearby_station);
     }
 
-    //가게 상세 정보 조회
-    @GetMapping("/{id}")
-    @Operation(summary = "고유 ID 값으로 가게 상세 조회", description = "사용자가 가게 리스트 중 하나를 선택할 때 가게의 상세 정보를 조회하기 위해 사용하는 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공",
-            content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
-            @ApiResponse(responseCode = "404", description = "실패"),
-    })
-    public StoreResponseDto getStoreDetail(@PathVariable Long id) {
-        return storeService.findById(id);
-    }
+//    //가게 상세 정보 조회
+//    @GetMapping("{storeid}")
+//    @Operation(summary = "Get store detail infotmation", description = "가게 리스트 중 하나를 클릭하면 해당 가게의 상세 정보, 리뷰 등을 조회할 수 있다.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "성공",
+//            content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+//            @ApiResponse(responseCode = "404", description = "실패"),
+//    })
+//    public Optional<Store> getstoreDetail(
+//            @PathVariable Long storeid
+//    ) {
+//        return storeRepository.findById(storeid);
+//    }
 }
