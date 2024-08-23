@@ -1,8 +1,6 @@
 package matal.store.service;
 
 import lombok.RequiredArgsConstructor;
-import matal.store.dto.StoreInfoResponseDto;
-import matal.store.dto.StoreRequestDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.repository.StoreRepository;
 import org.springframework.stereotype.Service;
@@ -40,9 +38,9 @@ public class StoreService {
                 .toList();
     }
 
-    public StoreInfoResponseDto getStoreInfo(Long id) {
-        return storeRepository.findById(id).map(StoreInfoResponseDto::fromInfo)
-                .orElseThrow(() -> new IllegalArgumentException("Error"));
+    public StoreResponseDto findById(Long id) {
+        return StoreResponseDto.from(storeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Error")));
     }
 
     public List<StoreResponseDto> sortStores(List<StoreResponseDto> storeResponseDtoList, String sortBy, String sortOrder) {

@@ -21,7 +21,7 @@ public class Store {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 1000)
     private String store_link;
 
     @Column(nullable = false)
@@ -39,7 +39,7 @@ public class Store {
     @Column(nullable = true)
     private String phone;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 1000)
     private String business_hours;
 
     @Column(nullable = false)
@@ -51,7 +51,7 @@ public class Store {
     @Column(nullable = false)
     private String positive_keywords;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String review_summary;
 
     @Column(nullable = true)
@@ -62,6 +62,9 @@ public class Store {
 
     @Column(nullable = false)
     private Double negative_ratio;
+
+    @Column(nullable = false, length = 1000)
+    private String image_urls;
 
     @Builder
     public Store(Long id, String keyword, String name, String store_link,

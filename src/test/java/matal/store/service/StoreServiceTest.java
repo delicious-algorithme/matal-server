@@ -112,19 +112,18 @@ public class StoreServiceTest {
     }
 
     @Test
-    @DisplayName("가게 클릭 시, 가게 번호를 검색하여 가게 상세 정보 조회 테스트")
-    void testStoreInfoGet() {
-        //given
-        List<Store> stores = List.of(store1, store2);
+    @DisplayName("고유 ID값을 이용한 가게 상세 정보 조회 테스트")
+    void testFindById() {
+        // given
+        store1 = createStore(1L, "Test Store1", "Address 1", "부산역 3번 출구로 부터 10m", 4.3);
 
-        //when
-        when(storeRepository.findById(2L)).thenReturn(Optional.of(store2));
-        StoreInfoResponseDto response = storeService.getStoreInfo(2L);
+        // when
+        when(storeRepository.findById(1L)).thenReturn(Optional.of(store1));
+        StoreResponseDto responseDto = storeService.findById(1L);
 
-        //then
-        assertNotNull(response);
-        assertEquals(response.name(), store2.getName());
-        assertEquals(response.address(), store2.getAddress());
+        // then
+        assertNotNull(responseDto);
+        assertEquals(responseDto.address(), store1.getAddress());
     }
 
     @Test
