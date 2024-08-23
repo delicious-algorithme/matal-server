@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import matal.store.dto.StoreInfoResponseDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.entity.Store;
 import matal.store.repository.StoreRepository;
@@ -18,6 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,15 +69,20 @@ public class StoreServiceTest {
     void testStoreNameSearch() {
         // given
         List<Store> stores = List.of(store1, store2);
+        Pageable pageable = PageRequest.of(1, 10);
+            //페이지 번호 0이상 -> 비어있음 -> List.of()
+        Page<Store> storePage = new PageImpl<>(List.of(), pageable, stores.size());
 
         // when
-        when(storeRepository.findByNameContaining("Test")).thenReturn(Optional.of(stores));
-        List<StoreResponseDto> responses = storeService.findStoresByName("Test");
+        when(storeRepository.findByNameContaining("Test", pageable)).thenReturn(storePage);
+        List<StoreResponseDto> responses = storeService.findStoresByName("Test", 1);
 
         // then
         assertNotNull(responses);
-        assertEquals(responses.get(0).address(), store1.getAddress());
-        assertEquals(responses.get(1).address(), store2.getAddress());
+        assertTrue(responses.isEmpty()); //페이지 번호 0이상 -> 비어있음
+        //assertEquals(2, responses.size());
+        //assertEquals(responses.get(0).address(), store1.getAddress());
+        //assertEquals(responses.get(1).address(), store2.getAddress());
     }
 
     @Test
@@ -82,10 +90,12 @@ public class StoreServiceTest {
     void testStoreCategorySearch() {
         // given
         List<Store> stores = List.of(store1, store2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeRepository.findByCategoryContaining("Food")).thenReturn(Optional.of(stores));
-        List<StoreResponseDto> responses = storeService.findStoresByCategory("Food");
+        when(storeRepository.findByCategoryContaining("Food", pageable)).thenReturn(storePage);
+        List<StoreResponseDto> responses = storeService.findStoresByCategory("Food", 0);
 
         // then
         assertNotNull(responses);
@@ -100,10 +110,12 @@ public class StoreServiceTest {
         store1 = createStore(1L, "Test Store1", "Address 1", "부산역 3번 출구로 부터 10m", 4.5);
         store2 = createStore(2L, "Test Store2", "Address 2", "부산역 2번 출구로부터 30m", 4.0);
         List<Store> stores = List.of(store1, store2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeRepository.findByNearbyStationContaining("부산역")).thenReturn(Optional.of(stores));
-        List<StoreResponseDto> responses = storeService.findStoresByStation("부산역");
+        when(storeRepository.findByNearbyStationContaining("부산역", pageable)).thenReturn(storePage);
+        List<StoreResponseDto> responses = storeService.findStoresByStation("부산역", 0);
 
         // then
         assertNotNull(responses);

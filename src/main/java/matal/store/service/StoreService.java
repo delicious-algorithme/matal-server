@@ -2,11 +2,14 @@ package matal.store.service;
 
 import lombok.RequiredArgsConstructor;
 import matal.store.dto.StoreResponseDto;
+import matal.store.entity.Store;
 import matal.store.repository.StoreRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,24 +20,36 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
 
-    public List<StoreResponseDto> findStoresByName(String name) {
-        return storeRepository.findByNameContaining(name)
-                .orElseThrow(() -> new IllegalArgumentException("Error"))
-                .stream().map(StoreResponseDto::from)
+    public List<StoreResponseDto> findStoresByName(String name, int page) {
+        if (page < 0 ) throw new IllegalArgumentException("Invalid page number");
+
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Store> storePage = storeRepository.findByNameContaining(name, pageable);
+
+        return storePage.getContent().stream()
+                .map(StoreResponseDto::from)
                 .toList();
     }
 
-    public List<StoreResponseDto> findStoresByCategory(String category) {
-        return storeRepository.findByCategoryContaining(category)
-                .orElseThrow(() -> new IllegalArgumentException("Error"))
-                .stream().map(StoreResponseDto::from)
+    public List<StoreResponseDto> findStoresByCategory(String category, int page) {
+        if (page < 0 ) throw new IllegalArgumentException("Invalid page number");
+
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Store> storePage = storeRepository.findByCategoryContaining(category, pageable);
+
+        return storePage.getContent().stream()
+                .map(StoreResponseDto::from)
                 .toList();
     }
 
-    public List<StoreResponseDto> findStoresByStation(String stationName) {
-        return storeRepository.findByNearbyStationContaining(stationName)
-                .orElseThrow(() -> new IllegalArgumentException("Error"))
-                .stream().map(StoreResponseDto::from)
+    public List<StoreResponseDto> findStoresByStation(String stationName, int page) {
+        if (page < 0 ) throw new IllegalArgumentException("Invalid page number");
+
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Store> storePage = storeRepository.findByNearbyStationContaining(stationName, pageable);
+
+        return storePage.getContent().stream()
+                .map(StoreResponseDto::from)
                 .toList();
     }
 

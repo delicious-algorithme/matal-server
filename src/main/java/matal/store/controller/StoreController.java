@@ -8,14 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import matal.store.dto.StoreRequestDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.service.StoreService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stores")
@@ -36,12 +33,13 @@ public class StoreController {
     })
     public List<StoreResponseDto> getStoreListByNmae(
             @RequestParam(name = "name", required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
             @RequestParam(value = "sortOrder", required = false, defaultValue = "upper") String sortOrder
     ) {
         if(name == null)
             throw new IllegalArgumentException("Error");
-        List<StoreResponseDto> results = storeService.findStoresByName(name);
+        List<StoreResponseDto> results = storeService.findStoresByName(name, page);
         return storeService.sortStores(results, sortBy, sortOrder);
     }
 
@@ -56,12 +54,13 @@ public class StoreController {
     })
     public List<StoreResponseDto> getStoreListByCategory(
             @RequestParam(name = "category", required = false) String category,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
             @RequestParam(value = "sortOrder", required = false, defaultValue = "upper") String sortOrder
     ) {
         if(category == null)
             throw new IllegalArgumentException("Error");
-        List<StoreResponseDto> results = storeService.findStoresByCategory(category);
+        List<StoreResponseDto> results = storeService.findStoresByCategory(category, page);
         return storeService.sortStores(results, sortBy, sortOrder);
     }
 
@@ -76,12 +75,13 @@ public class StoreController {
     })
     public List<StoreResponseDto> getStoreListByStation(
             @RequestParam(name = "nearby_station", required = false) String nearby_station,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
             @RequestParam(value = "sortOrder", required = false, defaultValue = "upper") String sortOrder
     ) {
         if(nearby_station == null)
             throw new IllegalArgumentException("Error");
-        List<StoreResponseDto> results = storeService.findStoresByStation(nearby_station);
+        List<StoreResponseDto> results = storeService.findStoresByStation(nearby_station, page);
         return storeService.sortStores(results, sortBy, sortOrder);
     }
 
