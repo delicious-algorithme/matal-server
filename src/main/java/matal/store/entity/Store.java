@@ -72,7 +72,7 @@ public class Store {
                  String nearby_station, String phone, String business_hours,
                  Double latitude, Double longitude, String positive_keywords,
                  String review_summary, Double rating,
-                 Double positive_ratio, Double negative_ratio) {
+                 Double positive_ratio, Double negative_ratio, String image_urls) {
         this.id = id;
         this.keyword = keyword;
         this.name = name;
@@ -90,5 +90,6 @@ public class Store {
         this.rating = rating;
         this.positive_ratio = positive_ratio;
         this.negative_ratio = negative_ratio;
+        this.image_urls = image_urls;
     }
 }
