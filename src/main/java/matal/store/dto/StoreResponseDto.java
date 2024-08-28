@@ -7,13 +7,13 @@ public record StoreResponseDto(Long id, String keyword, String name, String stor
                                String nearby_station, String phone, String business_hours,
                                Double latitude, Double longitude, String positive_keywords,
                                String review_summary, Double rating,
-                               Double positive_ratio, Double negative_ratio, String image_urls){
+                               Double positive_ratio, Double negative_ratio, String image_urls) {
 
     public static StoreResponseDto from(Store store) {
         return new StoreResponseDto(
                 store.getId(),
+                store.getKeyword(),
                 store.getName(),
-                store.getCategory(),
                 store.getStore_link(),
                 store.getCategory(),
                 store.getReviews_count(),

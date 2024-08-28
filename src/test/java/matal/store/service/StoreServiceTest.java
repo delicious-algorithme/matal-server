@@ -133,4 +133,24 @@ public class StoreServiceTest {
         assertNotNull(responseDto);
         assertEquals(responseDto.address(), store1.getAddress());
     }
+
+    @Test
+    @DisplayName("가게 모든 정보 조회 테스트")
+    void testFindAll() {
+        // given
+        store1 = createStore(1L, "Test Store1", "Address 1", "부산역 3번 출구로 부터 10m", 4.5, "good keywords", "good summary");
+        store2 = createStore(2L, "Test Store2", "Address 2", "부산역 2번 출구로부터 30m", 4.0, "bad keywords", "bad summary");
+        List<Store> stores = List.of(store1);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
+
+        // when
+        when(storeRepository.findAll(pageable)).thenReturn(storePage);
+        List<StoreResponseDto> responseDtos = storeService.findAll(0);
+
+        // then
+        assertNotNull(responseDtos);
+        assertEquals(responseDtos.get(0).address(), store1.getAddress());
+        assertEquals(responseDtos.get(0).name(), store1.getName());
+    }
 }
