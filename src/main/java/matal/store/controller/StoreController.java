@@ -25,7 +25,7 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    //가게 리스트 조회 이름 ANd 카테고리 AND 지하철역 + 정렬 기능
+    // 가게 리스트 조회 이름 ANd 카테고리 AND 지하철역 + 정렬 기능
     @GetMapping("/search")
     @Operation(summary = "가게명 & 카테고리 & 지하철역 & 키워드 로 가게 리스트를 페이지에 따라 조회 및 정렬", description = "사용자가 가게명 & 카테고리 & 지하철역 & 키워드에 관련된 가게를 검색할 때 가게 리스트를 조회하고 원하는 기준에 따라 정렬하기 위해 사용하는 API")
     @ApiResponses(value = {
@@ -48,7 +48,7 @@ public class StoreController {
         return storeService.findStores(name, category, nearby_station, keywords, page, sortBy, sortOrder);
     }
 
-    //가게 상세 정보 조회
+    // 가게 상세 정보 조회
     @GetMapping("/{id}")
     @Operation(summary = "고유 ID 값으로 가게 상세 조회", description = "사용자가 가게 리스트 중 하나를 선택할 때 가게의 상세 정보를 조회하기 위해 사용하는 API")
     @ApiResponses(value = {
@@ -58,5 +58,17 @@ public class StoreController {
     })
     public StoreResponseDto getStoreDetail(@PathVariable Long id) {
         return storeService.findById(id);
+    }
+
+    // 가게 모든 정보 조회
+    @GetMapping("/all")
+    @Operation(summary = "모든 가게 조회", description = "사용자가 대시보드를 클릭했을 때 모든 가게가 조회되기 위해 사용하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "실패"),
+    })
+    public List<StoreResponseDto> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+        return storeService.findAll(page);
     }
 }

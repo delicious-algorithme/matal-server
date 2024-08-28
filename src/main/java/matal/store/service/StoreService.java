@@ -19,6 +19,7 @@ import java.util.List;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+
     public List<StoreResponseDto> findStores(String name, String category, String stationName, String keywords, int page, String sortBy, String sortOrder) {
         if (page < 0) throw new IllegalArgumentException("Invalid page number");
 
@@ -34,5 +35,12 @@ public class StoreService {
     public StoreResponseDto findById(Long id) {
         return StoreResponseDto.from(storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Error")));
+    }
+
+    public List<StoreResponseDto> findAll(int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return storeRepository.findAll(pageable).stream()
+                .map(StoreResponseDto::from)
+                .toList();
     }
 }
