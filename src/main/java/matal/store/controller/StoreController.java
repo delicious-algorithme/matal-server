@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import matal.store.dto.StoreResponseDto;
 import matal.store.service.StoreService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class StoreController {
                             array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreList(
+    public Page<StoreResponseDto> getStoreList(
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "category", required = false) String category,
             @RequestParam(name = "nearby_station", required = false) String nearby_station,
@@ -68,7 +69,7 @@ public class StoreController {
                     content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+    public Page<StoreResponseDto> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
         return storeService.findAll(page);
     }
 }
