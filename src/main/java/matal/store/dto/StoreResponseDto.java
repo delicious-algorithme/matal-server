@@ -46,7 +46,7 @@ public record StoreResponseDto(Long storeId,
                 storeInfo.getBusinessHours(),
                 storeInfo.getLatitude(),
                 storeInfo.getLongitude(),
-                storeInfo.getMenuAndPrice(),
+                storeInfo.getMainMenu(),
                 storeInfo.getImageUrls(),
                 reviewInsight.getPositiveKeywords(),
                 reviewInsight.getNegativeKeywords(),
@@ -61,7 +61,7 @@ public record StoreResponseDto(Long storeId,
                 reviewInsight.getIsWaiting(),
                 reviewInsight.getWaitingTip(),
                 reviewInsight.getIsPetFriendly(),
-                reviewInsight.getRecommendMenu()
+                reviewInsight.getRecommendedMenu()
         );
     }
 }

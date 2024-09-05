@@ -27,8 +27,8 @@ public class StoreReviewInsight {
     @JoinColumn(name = "store_info_id")
     private StoreInfo storeInfo;
 
-    @Column(name = "recommended_menu", nullable = false, length = 500)
-    private String recommendMenu;
+    @Column(name = "recommended_menu", nullable = false, length = 1000)
+    private String recommendedMenu;
 
     @Column(name = "positive_keywords", nullable = false)
     private String positiveKeywords;
@@ -57,13 +57,13 @@ public class StoreReviewInsight {
     @Column(name = "parking", nullable = false)
     private Boolean isParking;
 
-    @Column(name = "parking_tip", nullable = false, length = 500)
+    @Column(name = "parking_tip", nullable = false, length = 1000)
     private String parkingTip;
 
     @Column(name = "waiting", nullable = false)
     private Boolean isWaiting;
 
-    @Column(name = "waiting_tip", nullable = false, length = 500)
+    @Column(name = "waiting_tip", nullable = false, length = 1000)
     private String waitingTip;
 
     @Column(name = "pet_friendly", nullable = false)
@@ -72,7 +72,7 @@ public class StoreReviewInsight {
     @Builder
     public StoreReviewInsight(Long storeId,
                               StoreInfo storeInfo,
-                              String recommendMenu,
+                              String recommendedMenu,
                               String positiveKeywords,
                               String negativeKeywords,
                               String reviewSummary,
@@ -88,7 +88,7 @@ public class StoreReviewInsight {
                               Boolean isPetFriendly) {
         this.storeId = storeId;
         this.storeInfo = storeInfo;
-        this.recommendMenu = recommendMenu;
+        this.recommendedMenu = recommendedMenu;
         this.positiveKeywords = positiveKeywords;
         this.negativeKeywords = negativeKeywords;
         this.reviewSummary = reviewSummary;
