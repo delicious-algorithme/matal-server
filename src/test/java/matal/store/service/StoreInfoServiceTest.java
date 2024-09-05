@@ -62,7 +62,7 @@ public class StoreInfoServiceTest {
                 .businessHours("9-23")
                 .latitude(12.4)
                 .longitude(11.11)
-                .menuAndPrice("계절 숙성 사시미 (소) - 50,000원, 홍가리비찜 - 25,000원, 미나리조개탕 - 23,000원")
+                .mainMenu("계절 숙성 사시미 (소) - 50,000원, 홍가리비찜 - 25,000원, 미나리조개탕 - 23,000원")
                 .imageUrls("https://example.com/image.jpg")
                 .build();
     }
@@ -84,7 +84,7 @@ public class StoreInfoServiceTest {
                 .isWaiting(false)
                 .waitingTip("대기 없음")
                 .isPetFriendly(true)
-                .recommendMenu("홍가리비찜")
+                .recommendedMenu("홍가리비찜")
                 .build();
     }
 
