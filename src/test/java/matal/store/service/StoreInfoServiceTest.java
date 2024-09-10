@@ -89,36 +89,118 @@ public class StoreInfoServiceTest {
     }
 
     @Test
-    @DisplayName("가게 이름을 이용해 목록 조회 테스트 - 별점 오름차순")
-    void testStoreNameSearch() {
+    @DisplayName("필터링 + 검색하여 목록 조회 테스트 - 메뉴(String) & 별점 내림차순")
+    void testStoreKeywordFilter() {
         // given
         List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
-        Pageable pageable = PageRequest.of(1, 10, Sort.by("rating").ascending());
-        Page<StoreInfo> storePage = new PageImpl<>(List.of(), pageable, storeInfos.size());
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
 
-        // when
-        when(storeInfoRepository.findStoresByCriteria("Test", null, null, null, pageable)).thenReturn(storePage);
-        Page<StoreResponseDto> responses = storeService.findStores("Test", null, null, null, 1, "rating", "asc");
+        //when
+        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Test", null, null, pageable)).thenReturn(storePage);
+        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
+        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
+        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
+        Page<StoreResponseDto> responses = storeService.filterStores(null, null, "Test", null, null, null, null, null,
+                null, null, null, null, 0, "rating", "DESC");
 
-        // then
+        //then
         assertNotNull(responses);
-        assertTrue(responses.isEmpty()); // 페이지 번호가 1이므로 비어 있음
+        assertFalse(responses.getContent().isEmpty());
+        assertEquals(storeInfos.size(), responses.getTotalElements());
+        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
+        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
     }
 
     @Test
-    @DisplayName("가게 카테고리 & 키워드를 이용해 목록 조회 테스트 - 별점 오름차순")
-    void testStoreCategorySearch() {
+    @DisplayName("필터링 + 검색하여 목록 조회 테스트 - 모든 조건 & 별점 내림차순")
+    void testStoreAllilter() {
         // given
         List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("rating").ascending());
+        Pageable pageable = PageRequest.of(0, 10);
         Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
 
-        // when
-        when(storeInfoRepository.findStoresByCriteria(null, "Food", null, "keywords", pageable)).thenReturn(storePage);
+        //when
+        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Test", "Address", 9L ,pageable)).thenReturn(storePage);
+        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(75.0, 4.0, "summary", true, true, false, true, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
+        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
+        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
+        Page<StoreResponseDto> responses = storeService.filterStores(null, null, "Test", "Address", 9L, 75.0, 4.0, "summary",
+                true, true, false, true, 0, "rating", "DESC");
+
+        //then
+        assertNotNull(responses);
+        assertFalse(responses.getContent().isEmpty());
+        assertEquals(storeInfos.size(), responses.getTotalElements());
+        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
+        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
+    }
+
+    @Test
+    @DisplayName("필터링 + 검색하여 목록 조회 테스트 - 모든 조건 & 검색(이름, 지하철역) & 별점 내림차순")
+    void testStoreFilterSearch() {
+        // given
+        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
+
+        //when
+        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), "Test", "Station", "Test", "Address", 9L, pageable)).thenReturn(storePage);
+        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(75.0, 4.0, "keywords", true, true, false, true, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
         when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
         when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
 
-        Page<StoreResponseDto> responses = storeService.findStores(null, "Food", null, "keywords", 0, "rating", "asc");
+        Page<StoreResponseDto> responses = storeService.filterStores("Test", "Station", "Test", "Address", 9L, 75.0, 4.0, "keywords",
+                true, true, false, true, 0, "rating", "DESC");
+
+        //then
+        assertNotNull(responses);
+        assertFalse(responses.getContent().isEmpty());
+        assertEquals(storeInfos.size(), responses.getTotalElements());
+        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
+        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
+
+
+    }
+
+    @Test
+    @DisplayName("카테고리 + 검색하여 목록 조회 테스트 - 가게 이름 & 별점 오름차순")
+    void testStoreNameSearch() {
+        // given
+        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
+
+        // when
+        when(storeInfoRepository.findStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), "Test", null, null, pageable)).thenReturn(storePage);
+        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingASC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
+        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
+        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
+        Page<StoreResponseDto> responses = storeService.categoryStores("Test", null, null, 0, "rating", "ASC");
+
+        // then
+        assertNotNull(responses);
+        assertFalse(responses.getContent().isEmpty());
+        assertEquals(storeInfos.size(), responses.getTotalElements());
+        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
+        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
+    }
+
+    @Test
+    @DisplayName("카테고리 + 검색하여 목록 조회 테스트 - 카테고리 & 별점 오름차순")
+    void testStoreCategorySearch() {
+        // given
+        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
+
+        // when
+        when(storeInfoRepository.findStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, "Food", null, pageable)).thenReturn(storePage);
+        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingASC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
+        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
+        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
+
+        Page<StoreResponseDto> responses = storeService.categoryStores(null, "Food", null, 0, "rating", "ASC");
 
         // then
         assertNotNull(responses);
@@ -130,24 +212,26 @@ public class StoreInfoServiceTest {
     }
 
     @Test
-    @DisplayName("가게 주변 역 & 키워드를 이용한 목록 조회 및 정렬 테스트 - 별점 내림차순")
+    @DisplayName("카테고리 + 검색하여 목록 조회 및 정렬 테스트 - 지하철역 & 카테고리 &  별점 내림차순")
     void testStoreStationSearchWithSort() {
         // given
         List<StoreInfo> storeInfos = List.of(storeInfo1);
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("rating").descending());
+        Pageable pageable = PageRequest.of(0, 10);
         Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
 
         // when
-        when(storeInfoRepository.findStoresByCriteria(null, null, "Station 1", "good", pageable)).thenReturn(storePage);
+        when(storeInfoRepository.findStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Station 1", pageable )).thenReturn(storePage);
+        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
         when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
 
-        Page<StoreResponseDto> responses = storeService.findStores(null, null, "Station 1", "good", 0, "rating", "desc");
+        Page<StoreResponseDto> responses = storeService.categoryStores(null, null, "Station 1", 0, "rating", "DESC");
 
         // then
         assertNotNull(responses);
         assertEquals(1, responses.getTotalElements());
         assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
     }
+
 
     @Test
     @DisplayName("고유 ID값을 이용한 가게 상세 정보 조회 테스트")
