@@ -47,11 +47,17 @@ public class StoreController {
             @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
             @RequestParam(value = "sortOrder", required = false, defaultValue = "ASC") String sortOrder
     ) {
-        if(keyword == null && address == null && positiveRatio == null && reviewsCount == null && rating == null && reviewword == null &&
-                isParking == null && isWaiting == null && isPetFriendly == null && isSoloDining == null && name == null && nearByStation == null)
+        if(keyword == null && address == null && positiveRatio == null
+                && reviewsCount == null && rating == null && reviewword == null
+                && isParking == null && isWaiting == null && isPetFriendly == null
+                && isSoloDining == null && name == null && nearByStation == null)
             throw new IllegalArgumentException("최소한 하나의 조건은 입력해야 합니다.");
-        return storeService.filterStores(name, nearByStation, keyword, address, reviewsCount, positiveRatio, rating,
-                reviewword, isSoloDining, isParking, isWaiting, isPetFriendly, page, sortBy, sortOrder);
+        return storeService.filterStores(
+                name, nearByStation, keyword,
+                address, reviewsCount, positiveRatio,
+                rating, reviewword, isSoloDining,
+                isParking, isWaiting, isPetFriendly,
+                page, sortBy, sortOrder);
     }
 
     // 카테고리 선택 + 검색 (가게명 & 지하철역 & 키워드) + 정렬
@@ -73,7 +79,8 @@ public class StoreController {
     ) {
         if(name == null && category == null && nearByStation == null)
             throw new IllegalArgumentException("최소한 하나의 검색 조건은 입력해야 합니다.");
-        return storeService.categoryStores(name, category, nearByStation, page, sortBy, sortOrder);
+        return storeService.categoryStores(name, category, nearByStation,
+                page, sortBy, sortOrder);
     }
 
     // 가게 상세 정보 조회

@@ -25,6 +25,7 @@ public interface StoreInfoRepository extends JpaRepository<StoreInfo, Long> {
                                          @Param("nearby_station") String nearby_station,
                                          Pageable pageable);
 
+
     @Query("SELECT s FROM StoreInfo s WHERE "
             + "(:storeIds IS NULL OR s.storeId IN :storeIds) "
             + "AND (:name IS NULL OR s.name LIKE %:name%) "
