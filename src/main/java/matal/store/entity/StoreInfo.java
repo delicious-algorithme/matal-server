@@ -48,8 +48,8 @@ public class StoreInfo {
     @Column(nullable = false)
     private Double longitude;
 
-    @Column(name = "menu_and_price", nullable = false)
-    private String menuAndPrice;
+    @Column(name = "main_menu", nullable = false, length = 1000)
+    private String mainMenu;
 
     @Column(name = "image_urls", nullable = false, length = 1000)
     private String imageUrls;
@@ -67,7 +67,7 @@ public class StoreInfo {
                      String businessHours,
                      Double latitude,
                      Double longitude,
-                     String menuAndPrice,
+                     String mainMenu,
                      String imageUrls) {
         this.storeId = storeId;
         this.keyword = keyword;
@@ -81,7 +81,7 @@ public class StoreInfo {
         this.businessHours = businessHours;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.menuAndPrice = menuAndPrice;
+        this.mainMenu = mainMenu;
         this.imageUrls = imageUrls;
     }
 }
