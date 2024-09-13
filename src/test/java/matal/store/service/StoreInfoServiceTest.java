@@ -97,12 +97,12 @@ public class StoreInfoServiceTest {
         Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
 
         //when
-        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Test", null, null, pageable)).thenReturn(storePage);
+        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Address", null, pageable)).thenReturn(storePage);
         when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
         when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
         when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-        Page<StoreResponseDto> responses = storeService.filterStores(null, null, "Test", null, null, null, null, null,
-                null, null, null, null, 0, "rating", "DESC");
+        Page<StoreResponseDto> responses = storeService.filterStores(null, null, "Address", null, null, null, null, null,
+                null, null, null, 0, "rating", "DESC");
 
         //then
         assertNotNull(responses);
@@ -121,11 +121,11 @@ public class StoreInfoServiceTest {
         Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
 
         //when
-        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Test", "Address", 9L ,pageable)).thenReturn(storePage);
+        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, "Food", "Address", 9L ,pageable)).thenReturn(storePage);
         when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(75.0, 4.0, "summary", true, true, false, true, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
         when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
         when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-        Page<StoreResponseDto> responses = storeService.filterStores(null, null, "Test", "Address", 9L, 75.0, 4.0, "summary",
+        Page<StoreResponseDto> responses = storeService.filterStores(null, "Food", "Address", 9L, 75.0, 4.0, "summary",
                 true, true, false, true, 0, "rating", "DESC");
 
         //then
@@ -145,12 +145,12 @@ public class StoreInfoServiceTest {
         Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
 
         //when
-        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), "Test", "Station", "Test", "Address", 9L, pageable)).thenReturn(storePage);
+        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), "Test", "Food", "Address", 9L, pageable)).thenReturn(storePage);
         when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(75.0, 4.0, "keywords", true, true, false, true, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
         when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
         when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
 
-        Page<StoreResponseDto> responses = storeService.filterStores("Test", "Station", "Test", "Address", 9L, 75.0, 4.0, "keywords",
+        Page<StoreResponseDto> responses = storeService.filterStores("Test", "Food", "Address", 9L, 75.0, 4.0, "keywords",
                 true, true, false, true, 0, "rating", "DESC");
 
         //then
@@ -159,77 +159,6 @@ public class StoreInfoServiceTest {
         assertEquals(storeInfos.size(), responses.getTotalElements());
         assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
         assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
-
-
-    }
-
-    @Test
-    @DisplayName("카테고리 + 검색하여 목록 조회 테스트 - 가게 이름 & 별점 오름차순")
-    void testStoreNameSearch() {
-        // given
-        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
-
-        // when
-        when(storeInfoRepository.findStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), "Test", null, null, pageable)).thenReturn(storePage);
-        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingASC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
-        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
-        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-        Page<StoreResponseDto> responses = storeService.categoryStores("Test", null, null, 0, "rating", "ASC");
-
-        // then
-        assertNotNull(responses);
-        assertFalse(responses.getContent().isEmpty());
-        assertEquals(storeInfos.size(), responses.getTotalElements());
-        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
-        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
-    }
-
-    @Test
-    @DisplayName("카테고리 + 검색하여 목록 조회 테스트 - 카테고리 & 별점 오름차순")
-    void testStoreCategorySearch() {
-        // given
-        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
-
-        // when
-        when(storeInfoRepository.findStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, "Food", null, pageable)).thenReturn(storePage);
-        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingASC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
-        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
-        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-
-        Page<StoreResponseDto> responses = storeService.categoryStores(null, "Food", null, 0, "rating", "ASC");
-
-        // then
-        assertNotNull(responses);
-        assertEquals(storeInfos.size(), responses.getTotalElements());
-        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
-        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
-        assertEquals(responses.getContent().get(0).negativeKeywords(), storeReviewInsight1.getNegativeKeywords());
-        assertEquals(responses.getContent().get(1).negativeKeywords(), storeReviewInsight2.getNegativeKeywords());
-    }
-
-    @Test
-    @DisplayName("카테고리 + 검색하여 목록 조회 및 정렬 테스트 - 지하철역 & 카테고리 &  별점 내림차순")
-    void testStoreStationSearchWithSort() {
-        // given
-        List<StoreInfo> storeInfos = List.of(storeInfo1);
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
-
-        // when
-        when(storeInfoRepository.findStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Station 1", pageable )).thenReturn(storePage);
-        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
-        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-
-        Page<StoreResponseDto> responses = storeService.categoryStores(null, null, "Station 1", 0, "rating", "DESC");
-
-        // then
-        assertNotNull(responses);
-        assertEquals(1, responses.getTotalElements());
-        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
     }
 
 

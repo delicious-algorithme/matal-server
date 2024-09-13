@@ -31,7 +31,7 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     public Page<StoreResponseDto> getStoreFilterSearch(
-            @RequestParam(name = "menu", required = false) String keyword,
+            @RequestParam(name = "category", required = false) String category,
             @RequestParam(name = "location", required = false) String address,
             @RequestParam(name = "positive ratio", required = false) Double positiveRatio,
             @RequestParam(name = "reviews count", required = false) Long reviewsCount,
@@ -41,45 +41,23 @@ public class StoreController {
             @RequestParam(name = "parking", required = false) Boolean isParking,
             @RequestParam(name = "waiting", required = false) Boolean isWaiting,
             @RequestParam(name = "pet friendly", required = false) Boolean isPetFriendly,
-            @RequestParam(name = "name", required = false) String name,
-            @RequestParam(name = "nearby_station", required = false) String nearByStation,
+
+            @RequestParam(name = "nameOrMenuOrStation", required = false) String nameOrMenuOrStation,
+
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
             @RequestParam(value = "sortOrder", required = false, defaultValue = "ASC") String sortOrder
     ) {
-        if(keyword == null && address == null && positiveRatio == null
+        if(category == null && address == null && positiveRatio == null
                 && reviewsCount == null && rating == null && reviewword == null
                 && isParking == null && isWaiting == null && isPetFriendly == null
-                && isSoloDining == null && name == null && nearByStation == null)
+                && isSoloDining == null && nameOrMenuOrStation == null)
             throw new IllegalArgumentException("최소한 하나의 조건은 입력해야 합니다.");
         return storeService.filterStores(
-                name, nearByStation, keyword,
+                nameOrMenuOrStation, category,
                 address, reviewsCount, positiveRatio,
                 rating, reviewword, isSoloDining,
                 isParking, isWaiting, isPetFriendly,
-                page, sortBy, sortOrder);
-    }
-
-    // 카테고리 선택 + 검색 (가게명 & 지하철역 & 키워드) + 정렬
-    @GetMapping("/categorysearch")
-    @Operation(summary = "카테고리 선택과 검색(가게명 & 지하철역 & 키워드) 로 가게 리스트를 페이지에 따라 조회 및 정렬", description = "사용자가 카테고리를 선택하고 가게명 & 지하철역 & 키워드에 관련된 가게를 검색할 때 가게 리스트를 조회하고 원하는 기준에 따라 정렬하기 위해 사용하는 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(mediaType ="application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
-            @ApiResponse(responseCode = "404", description = "실패"),
-    })
-    public Page<StoreResponseDto> getStoreCategorySearch(
-            @RequestParam(name = "category", required = false) String category,
-            @RequestParam(name = "name", required = false) String name,
-            @RequestParam(name = "nearby_station", required = false) String nearByStation,
-            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "rating") String sortBy,
-            @RequestParam(value = "sortOrder", required = false, defaultValue = "ASC") String sortOrder
-    ) {
-        if(name == null && category == null && nearByStation == null)
-            throw new IllegalArgumentException("최소한 하나의 검색 조건은 입력해야 합니다.");
-        return storeService.categoryStores(name, category, nearByStation,
                 page, sortBy, sortOrder);
     }
 
