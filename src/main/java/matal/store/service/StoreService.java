@@ -25,38 +25,8 @@ public class StoreService {
     private final StoreInfoRepository storeInfoRepository;
     private final StoreReviewInsightRepository storeReviewInsightRepository;
 
-    public Page<StoreResponseDto> categoryStores(String name, String category, String stationName,
-                                                 int page, String sortBy, String sortOrder) {
-        if (page < 0) throw new IllegalArgumentException("Invalid page number");
 
-        Pageable pageable = PageRequest.of(page, 10);
-
-        List<Long> storeIds;
-        if(sortOrder.equals("ASC")) {
-            storeIds = storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingASC(
-                    null, null, null,
-                    null, null, null,
-                    null, sortBy);
-        } else {
-            storeIds = storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(
-                    null, null, null,
-                    null, null, null,
-                    null, sortBy);
-        }
-
-        Page<StoreInfo> storePage = storeInfoRepository.findStoresByCriteria(storeIds, name, category,
-                stationName, pageable);
-
-        List<StoreInfo> filteredStores = new ArrayList<>(storePage.getContent());
-        filteredStores.sort(Comparator.comparing(store -> storeIds.indexOf(store.getStoreId())));
-
-        return new PageImpl<>(filteredStores, pageable,
-                storePage.getTotalElements())
-                .map(this::convertToStoreResponseDto);
-
-    }
-
-    public Page<StoreResponseDto> filterStores(String name, String stationName, String keyword,
+    public Page<StoreResponseDto> filterStores(String nameOrMenuOrStation, String category,
                                                String address, Long reviewsCount, Double rating,
                                                Double positiveRatio, String reviewword, Boolean isSoloDining,
                                                Boolean isParking, Boolean isWaiting, Boolean isPetFriendly,
@@ -78,8 +48,8 @@ public class StoreService {
         }
 
         Page<StoreInfo> storePage = storeInfoRepository.filterStoresByCriteria(
-                storeIds, name, stationName,
-                keyword, address, reviewsCount, pageable);
+                storeIds, nameOrMenuOrStation,
+                category, address, reviewsCount, pageable);
 
         List<StoreInfo> filteredStores = new ArrayList<>(storePage.getContent());
         filteredStores.sort(Comparator.comparing(
