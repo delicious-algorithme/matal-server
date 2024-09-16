@@ -1,7 +1,7 @@
 package matal.store.dto;
 
-import matal.store.entity.StoreInfo;
-import matal.store.entity.StoreReviewInsight;
+import lombok.Builder;
+import matal.store.entity.Store;
 
 public record StoreResponseDto(Long storeId,
                                String keyword,
@@ -32,36 +32,36 @@ public record StoreResponseDto(Long storeId,
                                Boolean isPetFriendly,
                                String recommendMenu) {
 
-    public static StoreResponseDto from(StoreInfo storeInfo, StoreReviewInsight reviewInsight) {
+    public static StoreResponseDto from(Store store) {
         return new StoreResponseDto(
-                storeInfo.getStoreId(),
-                storeInfo.getKeyword(),
-                storeInfo.getName(),
-                storeInfo.getStoreLink(),
-                storeInfo.getCategory(),
-                storeInfo.getReviewsCount(),
-                storeInfo.getAddress(),
-                storeInfo.getNearByStation(),
-                storeInfo.getPhone(),
-                storeInfo.getBusinessHours(),
-                storeInfo.getLatitude(),
-                storeInfo.getLongitude(),
-                storeInfo.getMainMenu(),
-                storeInfo.getImageUrls(),
-                reviewInsight.getPositiveKeywords(),
-                reviewInsight.getNegativeKeywords(),
-                reviewInsight.getReviewSummary(),
-                reviewInsight.getRating(),
-                reviewInsight.getPositiveRatio(),
-                reviewInsight.getNegativeRatio(),
-                reviewInsight.getNeutralRatio(),
-                reviewInsight.getIsSoloDining(),
-                reviewInsight.getIsParking(),
-                reviewInsight.getParkingTip(),
-                reviewInsight.getIsWaiting(),
-                reviewInsight.getWaitingTip(),
-                reviewInsight.getIsPetFriendly(),
-                reviewInsight.getRecommendedMenu()
+                store.getStoreId(),
+                store.getKeyword(),
+                store.getName(),
+                store.getStoreLink(),
+                store.getCategory(),
+                store.getReviewsCount(),
+                store.getAddress(),
+                store.getNearbyStation(),
+                store.getPhone(),
+                store.getBusinessHours(),
+                store.getLatitude(),
+                store.getLongitude(),
+                store.getMainMenu(),
+                store.getImageUrls(),
+                store.getPositiveKeywords(),
+                store.getNegativeKeywords(),
+                store.getReviewSummary(),
+                store.getRating(),
+                store.getPositiveRatio(),
+                store.getNegativeRatio(),
+                store.getNeutralRatio(),
+                store.getIsSoloDining(),
+                store.getIsParking(),
+                store.getParkingTip(),
+                store.getIsWaiting(),
+                store.getWaitingTip(),
+                store.getIsPetFriendly(),
+                store.getRecommendedMenu()
         );
     }
 }
