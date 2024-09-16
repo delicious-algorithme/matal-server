@@ -1,5 +1,6 @@
 package matal.store.dto;
 
+import lombok.Builder;
 import matal.store.entity.Store;
 
 public record StoreResponseDto(Long storeId,
