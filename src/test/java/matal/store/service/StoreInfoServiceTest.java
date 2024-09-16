@@ -6,11 +6,10 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
+import matal.store.dto.StoreListResponseDto;
 import matal.store.dto.StoreResponseDto;
-import matal.store.entity.StoreInfo;
-import matal.store.entity.StoreReviewInsight;
-import matal.store.repository.StoreInfoRepository;
-import matal.store.repository.StoreReviewInsightRepository;
+import matal.store.entity.Store;
+import matal.store.repository.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,184 +25,115 @@ import org.springframework.test.context.ActiveProfiles;
 public class StoreInfoServiceTest {
 
     @Mock
-    private StoreInfoRepository storeInfoRepository;
-
-    @Mock
-    private StoreReviewInsightRepository storeReviewInsightRepository;
+    private StoreRepository storeRepository;
 
     @InjectMocks
     private StoreService storeService;
 
-    private StoreInfo storeInfo1;
-    private StoreInfo storeInfo2;
-    private StoreReviewInsight storeReviewInsight1;
-    private StoreReviewInsight storeReviewInsight2;
+    private Store store1;
+    private Store store2;
 
     @BeforeEach
     void setUp() {
-        storeInfo1 = createStore(1L, "Test Store1", "Address 1", "Station 1");
-        storeInfo2 = createStore(2L, "Test Store2", "Address 2", "Station 2");
-
-        storeReviewInsight1 = createReviewInsight(storeInfo1, "good keywords", "good summary", 4.5);
-        storeReviewInsight2 = createReviewInsight(storeInfo2, "bad keywords", "bad summary", 4.0);
-    }
-
-    private StoreInfo createStore(Long id, String name, String address, String nearbyStation) {
-        return StoreInfo.builder()
-                .storeId(id)
-                .keyword("Test")
-                .name(name)
-                .storeLink("https://example.com")
-                .reviewsCount(10L)
-                .category("Food")
-                .address(address)
-                .nearByStation(nearbyStation)
-                .phone("123-456-789")
-                .businessHours("9-23")
-                .latitude(12.4)
-                .longitude(11.11)
-                .mainMenu("계절 숙성 사시미 (소) - 50,000원, 홍가리비찜 - 25,000원, 미나리조개탕 - 23,000원")
-                .imageUrls("https://example.com/image.jpg")
-                .build();
-    }
-
-    private StoreReviewInsight createReviewInsight(StoreInfo storeInfo, String positiveKeywords, String reviewSummary, double rating) {
-        return StoreReviewInsight.builder()
-                .storeId(storeInfo.getStoreId())
-                .storeInfo(storeInfo)
-                .positiveKeywords(positiveKeywords)
-                .negativeKeywords("No negative keywords")
-                .reviewSummary(reviewSummary)
-                .rating(rating)
-                .positiveRatio(80.0)
+        store1 = Store.builder()
+                .storeId(1L)
+                .keyword("커피, 카페")
+                .name("베스트 커피숍")
+                .storeLink("https://bestcoffeeshop.example.com")
+                .category("카페")
+                .reviewsCount(250L)
+                .address("서울시 커피거리 123")
+                .nearbyStation("중앙역")
+                .phone("010-1234-5678")
+                .businessHours("08:00-22:00")
+                .latitude(37.5665)
+                .longitude(126.9780)
+                .mainMenu("에스프레소, 라떼, 카푸치노")
+                .imageUrls("https://example.com/images/coffee1.jpg, https://example.com/images/coffee2.jpg")
+                .positiveKeywords("친절한 직원, 맛있는 커피")
+                .negativeKeywords("느린 서비스")
+                .reviewSummary("커피 한잔 하며 휴식을 취하기 좋은 곳.")
+                .rating(4.5)
+                .positiveRatio(85.0)
                 .negativeRatio(10.0)
-                .neutralRatio(10.0)
+                .neutralRatio(5.0)
                 .isSoloDining(true)
                 .isParking(true)
-                .parkingTip("주차장이 넓어요")
-                .isWaiting(false)
-                .waitingTip("대기 없음")
+                .parkingTip("건물 뒤쪽에 무료 주차 가능")
+                .isWaiting(true)
+                .waitingTip("주말에는 대기 시간이 길어요")
                 .isPetFriendly(true)
-                .recommendedMenu("홍가리비찜")
+                .recommendedMenu("에스프레소, 라떼")
+                .build();
+
+        store2 = Store.builder()
+                .storeId(2L)
+                .keyword("햄버거, 패스트푸드")
+                .name("버거킹")
+                .storeLink("https://burgerking.example.com")
+                .category("패스트푸드")
+                .reviewsCount(500L)
+                .address("서울시 버거로 456")
+                .nearbyStation("버거역")
+                .phone("010-9876-5432")
+                .businessHours("09:00-23:00")
+                .latitude(37.5670)
+                .longitude(126.9785)
+                .mainMenu("치즈버거, 와퍼, 감자튀김")
+                .imageUrls("https://example.com/images/burger1.jpg, https://example.com/images/burger2.jpg")
+                .positiveKeywords("빠른 서비스, 맛있는 버거")
+                .negativeKeywords("혼잡함")
+                .reviewSummary("빠르게 식사할 수 있는 좋은 곳.")
+                .rating(4.2)
+                .positiveRatio(75.0)
+                .negativeRatio(15.0)
+                .neutralRatio(10.0)
+                .isSoloDining(true)
+                .isParking(false)
+                .parkingTip(null)
+                .isWaiting(true)
+                .waitingTip("점심 시간에는 대기가 필요합니다")
+                .isPetFriendly(false)
+                .recommendedMenu("와퍼, 치즈버거")
                 .build();
     }
-
-    @Test
-    @DisplayName("필터링 + 검색하여 목록 조회 테스트 - 메뉴(String) & 별점 내림차순")
-    void testStoreKeywordFilter() {
-        // given
-        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
-
-        //when
-        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, null, "Address", null, pageable)).thenReturn(storePage);
-        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(null, null, null, null, null, null, null, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
-        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
-        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-        Page<StoreResponseDto> responses = storeService.filterStores(null, null, "Address", null, null, null, null, null,
-                null, null, null, 0, "rating", "DESC");
-
-        //then
-        assertNotNull(responses);
-        assertFalse(responses.getContent().isEmpty());
-        assertEquals(storeInfos.size(), responses.getTotalElements());
-        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
-        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
-    }
-
-    @Test
-    @DisplayName("필터링 + 검색하여 목록 조회 테스트 - 모든 조건 & 별점 내림차순")
-    void testStoreAllilter() {
-        // given
-        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
-
-        //when
-        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), null, "Food", "Address", 9L ,pageable)).thenReturn(storePage);
-        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(75.0, 4.0, "summary", true, true, false, true, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
-        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
-        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-        Page<StoreResponseDto> responses = storeService.filterStores(null, "Food", "Address", 9L, 75.0, 4.0, "summary",
-                true, true, false, true, 0, "rating", "DESC");
-
-        //then
-        assertNotNull(responses);
-        assertFalse(responses.getContent().isEmpty());
-        assertEquals(storeInfos.size(), responses.getTotalElements());
-        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
-        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
-    }
-
-    @Test
-    @DisplayName("필터링 + 검색하여 목록 조회 테스트 - 모든 조건 & 검색(이름, 지하철역) & 별점 내림차순")
-    void testStoreFilterSearch() {
-        // given
-        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
-
-        //when
-        when(storeInfoRepository.filterStoresByCriteria(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()), "Test", "Food", "Address", 9L, pageable)).thenReturn(storePage);
-        when(storeReviewInsightRepository.findStoreIdsByReviewCriteriaRatingDESC(75.0, 4.0, "keywords", true, true, false, true, "rating")).thenReturn(List.of(storeInfo1.getStoreId(), storeInfo2.getStoreId()));
-        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
-        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
-
-        Page<StoreResponseDto> responses = storeService.filterStores("Test", "Food", "Address", 9L, 75.0, 4.0, "keywords",
-                true, true, false, true, 0, "rating", "DESC");
-
-        //then
-        assertNotNull(responses);
-        assertFalse(responses.getContent().isEmpty());
-        assertEquals(storeInfos.size(), responses.getTotalElements());
-        assertEquals(responses.getContent().get(0).address(), storeInfo1.getAddress());
-        assertEquals(responses.getContent().get(1).address(), storeInfo2.getAddress());
-    }
-
 
     @Test
     @DisplayName("고유 ID값을 이용한 가게 상세 정보 조회 테스트")
     void testFindById() {
         // given
-        when(storeInfoRepository.findById(1L)).thenReturn(Optional.of(storeInfo1));
-        when(storeReviewInsightRepository.findById(1L)).thenReturn(Optional.of(storeReviewInsight1));
+        when(storeRepository.findById(1L)).thenReturn(Optional.of(store1));
 
         // when
         StoreResponseDto responseDto = storeService.findById(1L);
 
         // then
         assertNotNull(responseDto);
-        assertEquals(responseDto.address(), storeInfo1.getAddress());
-        assertEquals(responseDto.rating(), storeReviewInsight1.getRating());
+        assertEquals(responseDto.address(), store1.getAddress());
+        assertEquals(responseDto.rating(), store1.getRating());
     }
 
     @Test
     @DisplayName("가게 모든 정보 조회 테스트")
     void testFindAll() {
         // given
-        List<StoreInfo> storeInfos = List.of(storeInfo1, storeInfo2);
+        List<Store> stores = List.of(store1, store2);
         Pageable pageable = PageRequest.of(0, 10);
-        Page<StoreInfo> storePage = new PageImpl<>(storeInfos, pageable, storeInfos.size());
+        Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeInfoRepository.findAll(pageable)).thenReturn(storePage);
-        when(storeReviewInsightRepository.findById(storeInfo1.getStoreId())).thenReturn(Optional.of(storeReviewInsight1));
-        when(storeReviewInsightRepository.findById(storeInfo2.getStoreId())).thenReturn(Optional.of(storeReviewInsight2));
+        when(storeRepository.findAll(pageable)).thenReturn(storePage);
 
-        Page<StoreResponseDto> responseDtos = storeService.findAll(0);
+        Page<StoreListResponseDto> responseDtos = storeService.findAll(0);
 
         // then
         assertNotNull(responseDtos);
-        assertEquals(storeInfos.size(), responseDtos.getTotalElements());
-        assertEquals(responseDtos.getContent().get(0).address(), storeInfo1.getAddress());
-        assertEquals(responseDtos.getContent().get(0).name(), storeInfo1.getName());
-        assertEquals(responseDtos.getContent().get(1).address(), storeInfo2.getAddress());
-        assertEquals(responseDtos.getContent().get(1).name(), storeInfo2.getName());
-
-        assertEquals(responseDtos.getContent().get(0).negativeKeywords(), storeReviewInsight1.getNegativeKeywords());
-        assertEquals(responseDtos.getContent().get(1).negativeKeywords(), storeReviewInsight2.getNegativeKeywords());
-        assertEquals(responseDtos.getContent().get(0).positiveKeywords(), storeReviewInsight1.getPositiveKeywords());
-        assertEquals(responseDtos.getContent().get(1).positiveKeywords(), storeReviewInsight2.getPositiveKeywords());
+        assertEquals(stores.size(), responseDtos.getTotalElements());
+        assertEquals(responseDtos.getContent().get(0).address(), store1.getAddress());
+        assertEquals(responseDtos.getContent().get(0).name(), store1.getName());
+        assertEquals(responseDtos.getContent().get(0).positiveKeywords(), store1.getPositiveKeywords());
+        assertEquals(responseDtos.getContent().get(1).address(), store2.getAddress());
+        assertEquals(responseDtos.getContent().get(1).name(), store2.getName());
+        assertEquals(responseDtos.getContent().get(1).positiveKeywords(), store2.getPositiveKeywords());
     }
 }
