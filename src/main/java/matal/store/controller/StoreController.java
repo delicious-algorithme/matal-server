@@ -26,9 +26,9 @@ public class StoreController {
     @GetMapping("/searchAndFilter")
     public Page<StoreListResponseDto> searchAndFilterStores(
             @RequestParam(required = false) String searchKeywords,
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) List<String> category,
             @RequestParam(required = false) List<String> addresses,
-            @RequestParam(required = false) String positiveKeyword,
+            @RequestParam(required = false) List<String> positiveKeyword,
             @RequestParam(required = false) Double positiveRatio,
             @RequestParam(required = false) Long reviewsCount,
             @RequestParam(required = false) Double rating,
@@ -57,9 +57,9 @@ public class StoreController {
 
         return storeService.searchAndFilterStores(
                 searchKeywords,
-                category,
+                convertListToString(category),
                 convertListToString(addresses),
-                positiveKeyword,
+                convertListToString(positiveKeyword),
                 positiveRatio,
                 reviewsCount,
                 rating,
@@ -104,9 +104,9 @@ public class StoreController {
     }
 
     private boolean isAllParametersNullOrEmpty(String searchKeywords,
-                                               String category,
+                                               List<String> category,
                                                List<String> addresses,
-                                               String positiveKeyword,
+                                               List<String> positiveKeyword,
                                                Double positiveRatio,
                                                Long reviewsCount,
                                                Double rating,
