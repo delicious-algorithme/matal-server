@@ -11,9 +11,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query(value = "SELECT * FROM store WHERE " +
             "(:searchKeywords IS NULL OR MATCH(keyword, name, category, address, nearby_station, main_menu, positive_keywords, review_summary, recommended_menu) AGAINST (:searchKeywords IN BOOLEAN MODE)) AND " +
-            "(:category IS NULL OR category = :category) AND " +
+            "(:category IS NULL OR category REGEXP :category) AND " +
             "(:addresses IS NULL OR address REGEXP :addresses) AND " +
-            "(:positiveKeyword IS NULL OR positive_keywords LIKE %:positiveKeyword%) AND " +
+            "(:positiveKeyword IS NULL OR positive_keywords REGEXP :positiveKeyword) AND " +
             "(:positiveRatio IS NULL OR positive_ratio >= :positiveRatio) AND " +
             "(:reviewsCount IS NULL OR reviews_count >= :reviewsCount) AND " +
             "(:rating IS NULL OR rating >= :rating) AND " +

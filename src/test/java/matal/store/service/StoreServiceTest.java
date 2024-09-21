@@ -3,6 +3,7 @@ package matal.store.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -274,5 +275,40 @@ public class StoreServiceTest {
 
         assertEquals(responseDtos.getContent().get(3).latitude(), store2.getLatitude());
         assertEquals(responseDtos.getContent().get(3).longitude(), store3.getLongitude());
+    }
+
+    @Test
+    @DisplayName("별점순, 긍정비율순 top 10 가게 목록 조회 테스트")
+    void testFindTop() {
+        //given
+        List<Store> topStores = List.of(
+                store8,
+                store3,
+                store5,
+                store6,
+                store1,
+                store9,
+                store7,
+                store2,
+                store4,
+                store10);
+
+        Sort sortAll = Sort.by("rating").descending()
+                .and(Sort.by("positiveRatio").descending());
+        Pageable pageable = PageRequest.of(0, 10, sortAll);
+        Page<Store> topStorePage = new PageImpl<>(topStores, pageable, topStores.size());
+
+        //when
+        when(storeRepository.findAll(pageable)).thenReturn(topStorePage);
+
+        Page<StoreListResponseDto> responseDtos = storeService.findTop();
+
+        //then
+        assertNotNull(responseDtos);
+        assertEquals(topStores.size(), responseDtos.getTotalElements());
+        assertEquals(responseDtos.getContent().get(0).address(), store8.getAddress());
+        assertEquals(responseDtos.getContent().get(0).name(), store8.getName());
+        assertEquals(responseDtos.getContent().get(2).address(), store5.getAddress());
+        assertEquals(responseDtos.getContent().get(2).name(), store5.getName());
     }
 }
