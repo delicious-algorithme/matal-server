@@ -1,21 +1,68 @@
 package matal.store.dto;
 
+import lombok.Builder;
 import matal.store.entity.Store;
 
-public record StoreResponseDto(Long id, String name, String category, Long reviews_count, String address,
-                               String nearby_station, String phone, String business_hours, Double rating){
+public record StoreResponseDto(Long storeId,
+                               String keyword,
+                               String name,
+                               String storeLink,
+                               String category,
+                               Long reviewsCount,
+                               String address,
+                               String nearbyStation,
+                               String phone,
+                               String businessHours,
+                               Double latitude,
+                               Double longitude,
+                               String menuAndPrice,
+                               String imageUrl,
+                               String positiveKeywords,
+                               String negativeKeywords,
+                               String reviewSummary,
+                               Double rating,
+                               Double positiveRatio,
+                               Double negativeRatio,
+                               Double neutralRatio,
+                               Boolean isSoloDining,
+                               Boolean isParking,
+                               String parkingTip,
+                               Boolean isWaiting,
+                               String waitingTip,
+                               Boolean isPetFriendly,
+                               String recommendMenu) {
 
     public static StoreResponseDto from(Store store) {
         return new StoreResponseDto(
-                store.getId(),
+                store.getStoreId(),
+                store.getKeyword(),
                 store.getName(),
+                store.getStoreLink(),
                 store.getCategory(),
-                (long) store.getReviews_count(), // 리뷰의 수를 계산하는 로직
+                store.getReviewsCount(),
                 store.getAddress(),
-                store.getNearby_station(),
+                store.getNearbyStation(),
                 store.getPhone(),
-                store.getBusiness_hours(),
-                store.getRating()
+                store.getBusinessHours(),
+                store.getLatitude(),
+                store.getLongitude(),
+                store.getMainMenu(),
+                store.getImageUrls(),
+                store.getPositiveKeywords(),
+                store.getNegativeKeywords(),
+                store.getReviewSummary(),
+                store.getRating(),
+                store.getPositiveRatio(),
+                store.getNegativeRatio(),
+                store.getNeutralRatio(),
+                store.getIsSoloDining(),
+                store.getIsParking(),
+                store.getParkingTip(),
+                store.getIsWaiting(),
+                store.getWaitingTip(),
+                store.getIsPetFriendly(),
+                store.getRecommendedMenu()
         );
     }
 }
+

@@ -1,91 +1,159 @@
 package matal.store.entity;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
+@Table(name = "store")
 @Getter
-@Table(name = "Store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
-    private Long id;
+    private Long storeId;
 
-    @Column(nullable = false)
+    @Column(name = "keyword", length = 1000)
     private String keyword;
 
-    @Column(nullable = false)
+    @Column(name = "name", length = 255)
     private String name;
 
-    @Column(nullable = true)
-    private String store_link;
+    @Column(name = "store_link", length = 1000)
+    private String storeLink;
 
-    @Column(nullable = false)
+    @Column(name = "category", length = 255)
     private String category;
 
-    @Column(nullable = false)
-    private Long reviews_count;
+    @Column(name = "reviews_count")
+    private Long reviewsCount;
 
-    @Column(nullable = false)
+    @Column(name = "address", length = 255)
     private String address;
 
-    @Column(nullable = false)
-    private String nearby_station;
+    @Column(name = "nearby_station", length = 1000)
+    private String nearbyStation;
 
-    @Column(nullable = true)
+    @Column(name = "phone", length = 255)
     private String phone;
 
-    @Column(nullable = true)
-    private String business_hours;
+    @Column(name = "business_hours", length = 1000)
+    private String businessHours;
 
-    @Column(nullable = false)
+    @Column(name = "latitude")
     private Double latitude;
 
-    @Column(nullable = false)
+    @Column(name = "longitude")
     private Double longitude;
 
-    @Column(nullable = false)
-    private String positive_keywords;
+    @Column(name = "main_menu", length = 1000)
+    private String mainMenu;
 
-    @Column(nullable = false)
-    private String review_summary;
+    @Column(name = "image_urls", length = 1000)
+    private String imageUrls;
 
-    @Column(nullable = true)
+    @Column(name = "positive_keywords", length = 255)
+    private String positiveKeywords;
+
+    @Column(name = "negative_keywords", length = 255)
+    private String negativeKeywords;
+
+    @Column(name = "review_summary", length = 1000)
+    private String reviewSummary;
+
+    @Column(name = "rating")
     private Double rating;
 
-    @Column(nullable = false)
-    private Double positive_ratio;
+    @Column(name = "positive_ratio")
+    private Double positiveRatio;
 
-    @Column(nullable = false)
-    private Double negative_ratio;
+    @Column(name = "negative_ratio")
+    private Double negativeRatio;
+
+    @Column(name = "neutral_ratio")
+    private Double neutralRatio;
+
+    @Column(name = "solo_dining")
+    private Boolean isSoloDining;
+
+    @Column(name = "parking")
+    private Boolean isParking;
+
+    @Column(name = "parking_tip", length = 1000)
+    private String parkingTip;
+
+    @Column(name = "waiting")
+    private Boolean isWaiting;
+
+    @Column(name = "waiting_tip", length = 1000)
+    private String waitingTip;
+
+    @Column(name = "pet_friendly")
+    private Boolean isPetFriendly;
+
+    @Column(name = "recommended_menu", length = 1000)
+    private String recommendedMenu;
 
     @Builder
-    public Store(Long id, String keyword, String name, String store_link,
-                 String category, Long reviews_count, String address,
-                 String nearby_station, String phone, String business_hours,
-                 Double latitude, Double longitude, String positive_keywords,
-                 String review_summary, Double rating,
-                 Double positive_ratio, Double negative_ratio) {
-        this.id = id;
+    public Store(Long storeId,
+                 String keyword,
+                 String name,
+                 String storeLink,
+                 String category,
+                 Long reviewsCount,
+                 String address,
+                 String nearbyStation,
+                 String phone,
+                 String businessHours,
+                 Double latitude,
+                 Double longitude,
+                 String mainMenu,
+                 String imageUrls,
+                 String positiveKeywords,
+                 String negativeKeywords,
+                 String reviewSummary,
+                 Double rating,
+                 Double positiveRatio,
+                 Double negativeRatio,
+                 Double neutralRatio,
+                 Boolean isSoloDining,
+                 Boolean isParking,
+                 String parkingTip,
+                 Boolean isWaiting,
+                 String waitingTip,
+                 Boolean isPetFriendly,
+                 String recommendedMenu) {
+        this.storeId = storeId;
         this.keyword = keyword;
         this.name = name;
-        this.store_link = store_link;
+        this.storeLink = storeLink;
         this.category = category;
-        this.reviews_count = reviews_count;
+        this.reviewsCount = reviewsCount;
         this.address = address;
-        this.nearby_station = nearby_station;
+        this.nearbyStation = nearbyStation;
         this.phone = phone;
-        this.business_hours = business_hours;
+        this.businessHours = businessHours;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.positive_keywords = positive_keywords;
-        this.review_summary = review_summary;
+        this.mainMenu = mainMenu;
+        this.imageUrls = imageUrls;
+        this.positiveKeywords = positiveKeywords;
+        this.negativeKeywords = negativeKeywords;
+        this.reviewSummary = reviewSummary;
         this.rating = rating;
-        this.positive_ratio = positive_ratio;
-        this.negative_ratio = negative_ratio;
+        this.positiveRatio = positiveRatio;
+        this.negativeRatio = negativeRatio;
+        this.neutralRatio = neutralRatio;
+        this.isSoloDining = isSoloDining;
+        this.isParking = isParking;
+        this.parkingTip = parkingTip;
+        this.isWaiting = isWaiting;
+        this.waitingTip = waitingTip;
+        this.isPetFriendly = isPetFriendly;
+        this.recommendedMenu = recommendedMenu;
     }
 }
+

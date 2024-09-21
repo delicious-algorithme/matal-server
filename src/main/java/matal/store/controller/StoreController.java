@@ -7,15 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import matal.store.dto.StoreRequestDto;
+import matal.store.dto.StoreListResponseDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.service.StoreService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stores")
@@ -25,62 +23,120 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    //이름으로 가게 리스트 조회
-    @GetMapping("/search/name")
-    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공",
-                content = {@Content(mediaType ="application/json",
-                        array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
-            @ApiResponse(responseCode = "404", description = "실패"),
-    })
-    public List<StoreResponseDto> getStoreListByNmae(@RequestParam(name = "name", required = false) String name) {
-        if(name == null)
-            throw new IllegalArgumentException("Error");
-        return storeService.findStoresByName(name);
+    @GetMapping("/searchAndFilter")
+    public Page<StoreListResponseDto> searchAndFilterStores(
+            @RequestParam(required = false) String searchKeywords,
+            @RequestParam(required = false) List<String> category,
+            @RequestParam(required = false) List<String> addresses,
+            @RequestParam(required = false) List<String> positiveKeyword,
+            @RequestParam(required = false) Double positiveRatio,
+            @RequestParam(required = false) Long reviewsCount,
+            @RequestParam(required = false) Double rating,
+            @RequestParam(required = false) Boolean isSoloDining,
+            @RequestParam(required = false) Boolean isParking,
+            @RequestParam(required = false) Boolean isWaiting,
+            @RequestParam(required = false) Boolean isPetFriendly,
+            @RequestParam(defaultValue = "NULL") String orderByRating,
+            @RequestParam(defaultValue = "NULL") String orderByPositiveRatio,
+            @RequestParam(required = true, defaultValue = "0") int page) {
+
+        if (isAllParametersNullOrEmpty(
+                searchKeywords,
+                category,
+                addresses,
+                positiveKeyword,
+                positiveRatio,
+                reviewsCount,
+                rating,
+                isSoloDining,
+                isParking,
+                isWaiting,
+                isPetFriendly)) {
+            throw new IllegalArgumentException("Bad Request");
+        }
+
+        return storeService.searchAndFilterStores(
+                searchKeywords,
+                convertListToString(category),
+                convertListToString(addresses),
+                convertListToString(positiveKeyword),
+                positiveRatio,
+                reviewsCount,
+                rating,
+                isSoloDining,
+                isParking,
+                isWaiting,
+                isPetFriendly,
+                orderByRating,
+                orderByPositiveRatio,
+                page);
     }
 
-    //카테고리로 가게 리스트 조회
-    @GetMapping("/search/category")
-    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
+    @GetMapping("/{id}")
+    @Operation(summary = "고유 ID 값으로 가게 상세 조회", description = "사용자가 가게 리스트 중 하나를 선택할 때 가게의 상세 정보를 조회하기 위해 사용하는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(mediaType ="application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
+            content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreListByCategory(@RequestParam(name = "category", required = false) String category) {
-        if(category == null)
-            throw new IllegalArgumentException("Error");
-        return storeService.findStoresByCategory(category);
+    public StoreResponseDto getStoreDetail(@PathVariable Long id) {
+
+        return storeService.findById(id);
     }
 
-    //지하철역으로 가게 리스트 조회
-    @GetMapping("/search/nearby_station")
-    @Operation(summary = "Search store List Bu name", description = "검색 결과로 나온 가게 리스트들을 확인할 수 있다.")
+    @GetMapping("/all")
+    @Operation(summary = "모든 가게 조회", description = "사용자가 대시보드를 클릭했을 때 모든 가게가 조회되기 위해 사용하는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(mediaType ="application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = StoreResponseDto.class)))}),
+                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public List<StoreResponseDto> getStoreListByStation( @RequestParam(name = "nearby_station", required = false) String nearby_station) {
-        if(nearby_station == null)
-            throw new IllegalArgumentException("Error");
-        return storeService.findStoresByStation(nearby_station);
+    public Page<StoreListResponseDto> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+
+        return storeService.findAll(page);
     }
 
-//    //가게 상세 정보 조회
-//    @GetMapping("{storeid}")
-//    @Operation(summary = "Get store detail infotmation", description = "가게 리스트 중 하나를 클릭하면 해당 가게의 상세 정보, 리뷰 등을 조회할 수 있다.")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "성공",
-//            content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
-//            @ApiResponse(responseCode = "404", description = "실패"),
-//    })
-//    public Optional<Store> getstoreDetail(
-//            @PathVariable Long storeid
-//    ) {
-//        return storeRepository.findById(storeid);
-//    }
+    private String convertListToString(List<String> addresses) {
+
+        if(addresses == null || addresses.isEmpty())
+            return null;
+        return String.join("|", addresses);
+    }
+
+    private boolean isAllParametersNullOrEmpty(String searchKeywords,
+                                               List<String> category,
+                                               List<String> addresses,
+                                               List<String> positiveKeyword,
+                                               Double positiveRatio,
+                                               Long reviewsCount,
+                                               Double rating,
+                                               Boolean isSoloDining,
+                                               Boolean isParking,
+                                               Boolean isWaiting,
+                                               Boolean isPetFriendly) {
+
+        return (searchKeywords == null || searchKeywords.isEmpty()) &&
+                (category == null || category.isEmpty()) &&
+                (addresses == null || addresses.isEmpty()) &&
+                (positiveKeyword == null || positiveKeyword.isEmpty()) &&
+                (positiveRatio == null) &&
+                (reviewsCount == null) &&
+                (rating == null) &&
+                (isSoloDining == null) &&
+                (isParking == null) &&
+                (isWaiting == null) &&
+                (isPetFriendly == null);
+    }
+
+    @GetMapping("/top")
+    @Operation(summary = "상위 10개의 가게 조회", description = "별점, 긍정비율 순으로 정렬했을 때 상위 10개의 가게 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "실패"),
+    })
+    private Page<StoreListResponseDto> getStoretop() {
+        return storeService.findTop();
+    }
+
 }
