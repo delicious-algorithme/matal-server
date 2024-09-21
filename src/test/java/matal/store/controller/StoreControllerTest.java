@@ -275,4 +275,34 @@ public class StoreControllerTest {
                 .andExpect(jsonPath("$.name").value(storeDetail.name()))
                 .andExpect(jsonPath("$.address").value(storeDetail.address()));
     }
+
+    @Test
+    @DisplayName("top10 가게 조회 기능 테스트")
+    @WithMockUser(username = "test", roles = "USER")
+    void testGetStoreTop() throws Exception {
+        //given
+        List<StoreListResponseDto> topStores = List.of(
+                stores.get(4),
+                stores.get(2),
+                stores.get(0),
+                stores.get(6),
+                stores.get(5),
+                stores.get(1),
+                stores.get(7),
+                stores.get(8),
+                stores.get(3),
+                stores.get(9));
+
+        Page<StoreListResponseDto> storePage = new PageImpl<>(topStores);
+        when(storeService.findTop()).thenReturn(storePage);
+
+        //when & then
+        mockMvc.perform(get("/api/stores/top")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value(stores.get(4).name()))
+                .andExpect(jsonPath("$.content[1].name").value(stores.get(2).name()))
+                .andExpect(jsonPath("$.content[2].name").value(stores.get(0).name()));
+    }
 }

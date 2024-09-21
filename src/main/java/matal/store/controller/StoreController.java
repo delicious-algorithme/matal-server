@@ -127,4 +127,16 @@ public class StoreController {
                 (isWaiting == null) &&
                 (isPetFriendly == null);
     }
+
+    @GetMapping("/top")
+    @Operation(summary = "상위 10개의 가게 조회", description = "별점, 긍정비율 순으로 정렬했을 때 상위 10개의 가게 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "실패"),
+    })
+    private Page<StoreListResponseDto> getStoretop() {
+        return storeService.findTop();
+    }
+
 }
