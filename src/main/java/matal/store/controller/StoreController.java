@@ -25,6 +25,12 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/searchAndFilter")
+    @Operation(summary = "통합 필터 및 검색 기능", description = "사용자가 검색과 필터를 통해 특정 유형의 가게를 불러올 때 사용할 수 있는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(schema = @Schema(implementation = StoreListResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "실패"),
+    })
     public ResponseEntity<Page<StoreListResponseDto>> searchAndFilterStores(
             @RequestParam(required = false) String searchKeywords,
             @RequestParam(required = false) List<String> category,
@@ -91,7 +97,7 @@ public class StoreController {
     @Operation(summary = "모든 가게 조회", description = "사용자가 대시보드를 클릭했을 때 모든 가게가 조회되기 위해 사용하는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = StoreListResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     public ResponseEntity<Page<StoreListResponseDto>> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
@@ -103,7 +109,7 @@ public class StoreController {
     @Operation(summary = "상위 10개의 가게 조회", description = "별점, 긍정비율 순으로 정렬했을 때 상위 10개의 가게 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = StoreListResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     private ResponseEntity<Page<StoreListResponseDto>> getStoretop() {
