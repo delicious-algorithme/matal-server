@@ -13,6 +13,7 @@ import matal.store.dto.StoreListResponseDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.service.StoreService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +25,7 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/searchAndFilter")
-    public Page<StoreListResponseDto> searchAndFilterStores(
+    public ResponseEntity<Page<StoreListResponseDto>> searchAndFilterStores(
             @RequestParam(required = false) String searchKeywords,
             @RequestParam(required = false) List<String> category,
             @RequestParam(required = false) List<String> addresses,
@@ -55,7 +56,7 @@ public class StoreController {
             throw new IllegalArgumentException("Bad Request");
         }
 
-        return storeService.searchAndFilterStores(
+        Page<StoreListResponseDto> storeListResopnse = storeService.searchAndFilterStores(
                 searchKeywords,
                 convertListToString(category),
                 convertListToString(addresses),
@@ -70,6 +71,8 @@ public class StoreController {
                 orderByRating,
                 orderByPositiveRatio,
                 page);
+
+        return ResponseEntity.ok().body(storeListResopnse);
     }
 
     @GetMapping("/{id}")
@@ -79,9 +82,9 @@ public class StoreController {
             content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public StoreResponseDto getStoreDetail(@PathVariable Long id) {
-
-        return storeService.findById(id);
+    public ResponseEntity<StoreResponseDto> getStoreDetail(@PathVariable Long id) {
+        StoreResponseDto storeResponse = storeService.findById(id);
+        return ResponseEntity.ok().body(storeResponse);
     }
 
     @GetMapping("/all")
@@ -91,9 +94,21 @@ public class StoreController {
                     content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public Page<StoreListResponseDto> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+    public ResponseEntity<Page<StoreListResponseDto>> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+        Page<StoreListResponseDto> storeListResponse = storeService.findAll(page);
+        return ResponseEntity.ok().body(storeListResponse);
+    }
 
-        return storeService.findAll(page);
+    @GetMapping("/top")
+    @Operation(summary = "상위 10개의 가게 조회", description = "별점, 긍정비율 순으로 정렬했을 때 상위 10개의 가게 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "실패"),
+    })
+    private ResponseEntity<Page<StoreListResponseDto>> getStoretop() {
+        Page<StoreListResponseDto> storeListResponse = storeService.findTop();
+        return ResponseEntity.ok().body(storeListResponse);
     }
 
     private String convertListToString(List<String> addresses) {
@@ -127,16 +142,4 @@ public class StoreController {
                 (isWaiting == null) &&
                 (isPetFriendly == null);
     }
-
-    @GetMapping("/top")
-    @Operation(summary = "상위 10개의 가게 조회", description = "별점, 긍정비율 순으로 정렬했을 때 상위 10개의 가게 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(schema = @Schema(implementation = StoreResponseDto.class))}),
-            @ApiResponse(responseCode = "404", description = "실패"),
-    })
-    private Page<StoreListResponseDto> getStoretop() {
-        return storeService.findTop();
-    }
-
 }

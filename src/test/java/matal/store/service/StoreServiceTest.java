@@ -7,6 +7,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
+import matal.global.exception.NotFoundException;
 import matal.store.dto.StoreListResponseDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.entity.Store;
@@ -310,5 +311,15 @@ public class StoreServiceTest {
         assertEquals(responseDtos.getContent().get(0).name(), store8.getName());
         assertEquals(responseDtos.getContent().get(2).address(), store5.getAddress());
         assertEquals(responseDtos.getContent().get(2).name(), store5.getName());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 고유 ID 값으로 가게 조회 시 발생하는 예외 테스트")
+    void testNotFoundException() {
+        //when
+        when(storeRepository.findById(1L)).thenThrow(NotFoundException.class);
+
+        //then
+        assertThrows(NotFoundException.class, () -> storeService.findById(1L));
     }
 }

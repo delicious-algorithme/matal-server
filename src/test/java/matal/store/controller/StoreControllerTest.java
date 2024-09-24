@@ -2,11 +2,14 @@ package matal.store.controller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import matal.global.exception.NotFoundException;
+import matal.global.exception.ResponseCode;
 import matal.store.dto.StoreListResponseDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.service.StoreService;
@@ -304,5 +307,20 @@ public class StoreControllerTest {
                 .andExpect(jsonPath("$.content[0].name").value(stores.get(4).name()))
                 .andExpect(jsonPath("$.content[1].name").value(stores.get(2).name()))
                 .andExpect(jsonPath("$.content[2].name").value(stores.get(0).name()));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 고유 ID 값으로 가게 조회 시 발생하는 API 예외 테스트")
+    @WithMockUser(username = "test", roles = "USER")
+    void testNotFoundException() throws Exception {
+        // given
+        when(storeService.findById(1L)).thenThrow(new NotFoundException(ResponseCode.NOT_FOUND_STORE_ID));
+
+        // when & then
+        mockMvc.perform(get("/api/stores/1")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 }

@@ -1,6 +1,8 @@
 package matal.store.service;
 
 import lombok.RequiredArgsConstructor;
+import matal.global.exception.NotFoundException;
+import matal.global.exception.ResponseCode;
 import matal.store.dto.StoreListResponseDto;
 import matal.store.dto.StoreResponseDto;
 import matal.store.entity.Store;
@@ -22,7 +24,7 @@ public class StoreService {
     public Page<StoreListResponseDto> searchAndFilterStores(
             String searchKeywords,
             String category,
-            String addresse,
+            String addresses,
             String positiveKeywords,
             Double minPositiveRatio,
             Long reviewsCount,
@@ -40,7 +42,7 @@ public class StoreService {
         return storeRepository.searchAndFilterStores(
                 searchKeywords,
                 category,
-                addresse,
+                addresses,
                 positiveKeywords,
                 minPositiveRatio,
                 reviewsCount,
@@ -56,7 +58,7 @@ public class StoreService {
 
     public StoreResponseDto findById(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없는 가게 입니다."));
+                .orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_STORE_ID));
 
         return StoreResponseDto.from(store);
     }
