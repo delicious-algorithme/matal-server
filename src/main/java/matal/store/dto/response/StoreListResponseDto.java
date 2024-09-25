@@ -1,6 +1,6 @@
-package matal.store.dto;
+package matal.store.dto.response;
 
-import matal.store.entity.Store;
+import matal.store.domain.Store;
 
 public record StoreListResponseDto(
         Long storeId,

@@ -19,4 +19,15 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(exception.getResponseCode().getStatus()).body(errorResponse);
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException exception, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                exception.getResponseCode().getMessage(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return ResponseEntity.status(exception.getResponseCode().getStatus()).body(errorResponse);
+    }
 }
