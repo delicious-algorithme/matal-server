@@ -1,14 +1,20 @@
 package matal.store.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import matal.store.dto.StoreListResponseDto;
-import matal.store.dto.StoreResponseDto;
+import matal.global.exception.NotFoundException;
+import matal.global.exception.ResponseCode;
+import matal.store.dto.request.StoreSearchFilterRequestDto;
+import matal.store.dto.response.StoreListResponseDto;
+import matal.store.dto.response.StoreResponseDto;
 import matal.store.service.StoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,9 +45,45 @@ public class StoreControllerTest {
 
     private StoreResponseDto storeResponse;
     private List<StoreListResponseDto> stores;
+    private StoreSearchFilterRequestDto validRequestDto;
+    private StoreSearchFilterRequestDto invalidRequestDto;
 
     @BeforeEach
     void setUp() {
+        validRequestDto = new StoreSearchFilterRequestDto(
+                "커피",
+                List.of("카페"),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0
+        );
+
+        invalidRequestDto = new StoreSearchFilterRequestDto(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0
+        );
+
         storeResponse = new StoreResponseDto(
                 1L,
                 "커피, 카페",
@@ -201,39 +244,36 @@ public class StoreControllerTest {
     @WithMockUser(username = "test", roles = "USER")
     void testSearchAndFilterStores() throws Exception {
         // given
-        String searchKeywords = "커피";
-        String category = "카페";
         List<StoreListResponseDto> filteredStores = List.of(stores.get(0), stores.get(6), stores.get(5));
         Page<StoreListResponseDto> storePage = new PageImpl<>(filteredStores);
 
-        when(storeService.searchAndFilterStores(
-                searchKeywords,
-                category,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                "NULL",
-                "NULL",
-                0
-        )).thenReturn(storePage);
+        // when
+        when(storeService.searchAndFilterStores(any(StoreSearchFilterRequestDto.class))).thenReturn(storePage);
 
-        // when & then
-        mockMvc.perform(get("/api/stores/searchAndFilter")
+        // then
+        mockMvc.perform(post("/api/stores/searchAndFilter")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .contentType("application/json")
-                        .param("searchKeywords", searchKeywords)
-                        .param("category", category)
-                        .param("page", "0"))
+                        .content(objectMapper.writeValueAsString(validRequestDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].name").value(stores.get(0).name()))
                 .andExpect(jsonPath("$.content[1].name").value(stores.get(6).name()))
-                .andExpect(jsonPath("$.content[2].name").value(stores.get(5).name()));
+                .andExpect(jsonPath("$.content[2].name").value(stores.get(5).name()))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("검색 및 필터링 기능 - 특정 카테고리 및 키워드 요청 테스트 시 발생하는 예외 처리")
+    @WithMockUser(username = "test", roles = "USER")
+    void testSearchAndFilterStoresException() throws Exception {
+
+        // then
+        mockMvc.perform(post("/api/stores/searchAndFilter")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRequestDto)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
     @Test
@@ -243,10 +283,10 @@ public class StoreControllerTest {
         // given
         Page<StoreListResponseDto> storePage = new PageImpl<>(stores);
 
-        // 실제 데이터 반환
+        // when
         when(storeService.findAll(0)).thenReturn(storePage);
 
-        // when & then
+        // then
         mockMvc.perform(get("/api/stores/all")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType("application/json")
@@ -264,9 +304,11 @@ public class StoreControllerTest {
     void testGetStoreDetail_Success() throws Exception {
         // given
         StoreListResponseDto storeDetail = stores.get(0);
+
+        // when
         when(storeService.findById(1L)).thenReturn(storeResponse);
 
-        // when & then
+        // then
         mockMvc.perform(get("/api/stores/1")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType("application/json"))
@@ -294,9 +336,11 @@ public class StoreControllerTest {
                 stores.get(9));
 
         Page<StoreListResponseDto> storePage = new PageImpl<>(topStores);
+
+        // when
         when(storeService.findTop()).thenReturn(storePage);
 
-        //when & then
+        // then
         mockMvc.perform(get("/api/stores/top")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType("application/json"))
@@ -304,5 +348,20 @@ public class StoreControllerTest {
                 .andExpect(jsonPath("$.content[0].name").value(stores.get(4).name()))
                 .andExpect(jsonPath("$.content[1].name").value(stores.get(2).name()))
                 .andExpect(jsonPath("$.content[2].name").value(stores.get(0).name()));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 고유 ID 값으로 가게 조회 시 발생하는 API 예외 테스트")
+    @WithMockUser(username = "test", roles = "USER")
+    void testNotFoundException() throws Exception {
+        // when
+        when(storeService.findById(1L)).thenThrow(new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID));
+
+        // then
+        mockMvc.perform(get("/api/stores/1")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 }

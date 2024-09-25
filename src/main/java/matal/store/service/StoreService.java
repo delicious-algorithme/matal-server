@@ -1,10 +1,13 @@
 package matal.store.service;
 
 import lombok.RequiredArgsConstructor;
-import matal.store.dto.StoreListResponseDto;
-import matal.store.dto.StoreResponseDto;
-import matal.store.entity.Store;
-import matal.store.repository.StoreRepository;
+import matal.global.exception.NotFoundException;
+import matal.global.exception.ResponseCode;
+import matal.store.dto.request.StoreSearchFilterRequestDto;
+import matal.store.dto.response.StoreListResponseDto;
+import matal.store.dto.response.StoreResponseDto;
+import matal.store.domain.Store;
+import matal.store.domain.repository.StoreRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,44 +22,31 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
 
-    public Page<StoreListResponseDto> searchAndFilterStores(
-            String searchKeywords,
-            String category,
-            String addresse,
-            String positiveKeywords,
-            Double minPositiveRatio,
-            Long reviewsCount,
-            Double rating,
-            Boolean soloDining,
-            Boolean parking,
-            Boolean waiting,
-            Boolean petFriendly,
-            String orderByRating,
-            String orderByPositiveRatio,
-            int page) {
+    public Page<StoreListResponseDto> searchAndFilterStores(StoreSearchFilterRequestDto filterRequestDto) {
 
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(filterRequestDto.getPage(), 10);
 
         return storeRepository.searchAndFilterStores(
-                searchKeywords,
-                category,
-                addresse,
-                positiveKeywords,
-                minPositiveRatio,
-                reviewsCount,
-                rating,
-                soloDining,
-                parking,
-                waiting,
-                petFriendly,
-                orderByRating,
-                orderByPositiveRatio,
-                pageable).map(StoreListResponseDto::from);
+                filterRequestDto.getSearchKeywords(),
+                filterRequestDto.convertCategoryToString(),
+                filterRequestDto.convertAddressesToString(),
+                filterRequestDto.convertPositiverKeywordsToString(),
+                filterRequestDto.getPositiveRatio(),
+                filterRequestDto.getReviewsCount(),
+                filterRequestDto.getRating(),
+                filterRequestDto.getIsSoloDining(),
+                filterRequestDto.getIsParking(),
+                filterRequestDto.getIsWaiting(),
+                filterRequestDto.getIsPetFriendly(),
+                filterRequestDto.getOrderByRating(),
+                filterRequestDto.getOrderByPositiveRatio(),
+                pageable
+        ).map(StoreListResponseDto::from);
     }
 
     public StoreResponseDto findById(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없는 가게 입니다."));
+                .orElseThrow(() -> new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID));
 
         return StoreResponseDto.from(store);
     }
