@@ -9,7 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
 import matal.store.dto.request.StoreSearchFilterRequestDto;
@@ -281,21 +283,29 @@ public class StoreControllerTest {
     @WithMockUser(username = "test", roles = "USER")
     void testGetAllStores() throws Exception {
         // given
-        Page<StoreListResponseDto> storePage = new PageImpl<>(stores);
+        List<StoreListResponseDto> sortedStores = stores.stream()
+                .sorted(Comparator.comparingDouble(StoreListResponseDto::rating).reversed())
+                .sorted(Comparator.comparingDouble(StoreListResponseDto::positiveRatio).reversed())
+                .collect(Collectors.toList());
+        Page<StoreListResponseDto> storePage = new PageImpl<>(sortedStores);
+
 
         // when
-        when(storeService.findAll(0)).thenReturn(storePage);
+        when(storeService.findAll(0, "DESC", "DESC")).thenReturn(storePage);
 
         // then
         mockMvc.perform(get("/api/stores/all")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType("application/json")
-                        .param("page", "0"))
+                        .param("page", "0")
+                        .param("orderByRating", "DESC")
+                        .param("orderByPositiveRatio", "DESC"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].storeId").value(stores.get(0).storeId()))
-                .andExpect(jsonPath("$.content[1].storeId").value(stores.get(1).storeId()))
-                .andExpect(jsonPath("$.content[2].storeId").value(stores.get(2).storeId()))
-                .andExpect(jsonPath("$.content[9].storeId").value(stores.get(9).storeId()));
+                .andExpect(jsonPath("$.content[0].storeId").value(sortedStores.get(0).storeId()))
+                .andExpect(jsonPath("$.content[1].storeId").value(sortedStores.get(1).storeId()))
+                .andExpect(jsonPath("$.content[2].storeId").value(sortedStores.get(2).storeId()))
+                .andExpect(jsonPath("$.content[9].storeId").value(sortedStores.get(9).storeId()))
+                .andDo(print());
     }
 
     @Test
@@ -315,7 +325,8 @@ public class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.storeId").value(storeDetail.storeId()))
                 .andExpect(jsonPath("$.name").value(storeDetail.name()))
-                .andExpect(jsonPath("$.address").value(storeDetail.address()));
+                .andExpect(jsonPath("$.address").value(storeDetail.address()))
+                .andDo(print());
     }
 
     @Test
@@ -347,7 +358,8 @@ public class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].name").value(stores.get(4).name()))
                 .andExpect(jsonPath("$.content[1].name").value(stores.get(2).name()))
-                .andExpect(jsonPath("$.content[2].name").value(stores.get(0).name()));
+                .andExpect(jsonPath("$.content[2].name").value(stores.get(0).name()))
+                .andDo(print());
     }
 
     @Test

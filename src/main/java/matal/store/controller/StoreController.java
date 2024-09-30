@@ -56,8 +56,11 @@ public class StoreController {
                     content = {@Content(schema = @Schema(implementation = StoreListResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public ResponseEntity<Page<StoreListResponseDto>> getStoreAll(@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        Page<StoreListResponseDto> storeListResponse = storeService.findAll(page);
+    public ResponseEntity<Page<StoreListResponseDto>> getStoreAll(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "orderByRating", required = false) String orderByRating,
+            @RequestParam(name = "orderByPositiveRatio", required = false) String orderByPositiveRatio) {
+        Page<StoreListResponseDto> storeListResponse = storeService.findAll(page, orderByRating, orderByPositiveRatio);
         return ResponseEntity.ok().body(storeListResponse);
     }
 
