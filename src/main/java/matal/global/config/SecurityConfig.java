@@ -1,4 +1,4 @@
-package matal.config;
+package matal.global.config;
 
 import lombok.RequiredArgsConstructor;
 import matal.jwt.JwtFilter;

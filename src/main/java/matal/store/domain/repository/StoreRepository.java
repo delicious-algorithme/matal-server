@@ -1,6 +1,6 @@
-package matal.store.repository;
+package matal.store.domain.repository;
 
-import matal.store.entity.Store;
+import matal.store.domain.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,10 +22,10 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "(:waiting IS NULL OR waiting = :waiting) AND " +
             "(:petFriendly IS NULL OR pet_friendly = :petFriendly) " +
             "ORDER BY " +
-            "IF(:orderByRating = 'ASC', rating, NULL) ASC, " +
-            "IF(:orderByRating = 'DESC', rating, NULL) DESC, " +
-            "IF(:orderByPositiveRatio = 'ASC', positive_ratio, NULL) ASC, " +
-            "IF(:orderByPositiveRatio = 'DESC', positive_ratio, NULL) DESC",
+            "CASE WHEN :orderByRating = 'ASC' THEN rating END ASC, " +
+            "CASE WHEN :orderByRating = 'DESC' THEN rating END DESC, " +
+            "CASE WHEN :orderByPositiveRatio = 'ASC' THEN positive_ratio END ASC, " +
+            "CASE WHEN :orderByPositiveRatio = 'DESC' THEN positive_ratio END DESC",
             nativeQuery = true)
     Page<Store> searchAndFilterStores(
             @Param("searchKeywords") String searchKeywords,
@@ -42,4 +42,15 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             @Param("orderByRating") String orderByRating,
             @Param("orderByPositiveRatio") String orderByPositiveRatio,
             Pageable pageable);
+
+    @Query(value = "SELECT * FROM store " +
+            "ORDER BY " +
+            "CASE WHEN :orderByRating = 'ASC' THEN rating END ASC, " +
+            "CASE WHEN :orderByRating = 'DESC' THEN rating END DESC, " +
+            "CASE WHEN :orderByPositiveRatio = 'ASC' THEN positive_ratio END ASC, " +
+            "CASE WHEN :orderByPositiveRatio = 'DESC' THEN positive_ratio END DESC",
+            nativeQuery = true)
+    Page<Store> findAllOrderByRatingOrPositiveRatio(@Param("orderByRating") String orderByRating,
+                                                    @Param("orderByPositiveRatio") String orderByPositiveRatio,
+                                                    Pageable pageable);
 }

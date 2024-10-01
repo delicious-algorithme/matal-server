@@ -3,14 +3,15 @@ package matal.store.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
-import matal.store.dto.StoreListResponseDto;
-import matal.store.dto.StoreResponseDto;
-import matal.store.entity.Store;
-import matal.store.repository.StoreRepository;
+import matal.global.exception.NotFoundException;
+import matal.store.dto.request.StoreSearchFilterRequestDto;
+import matal.store.dto.response.StoreListResponseDto;
+import matal.store.dto.response.StoreResponseDto;
+import matal.store.domain.Store;
+import matal.store.domain.repository.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,9 +42,28 @@ public class StoreServiceTest {
     private Store store8;
     private Store store9;
     private Store store10;
+    private StoreSearchFilterRequestDto requestDto;
 
     @BeforeEach
     void setUp() {
+         requestDto = new StoreSearchFilterRequestDto(
+                "커피",
+                List.of("카페"),
+                List.of("서울"),
+                List.of("맛있는 커피"),
+                80.0,
+                100L,
+                4.0,
+                true,
+                true,
+                true,
+                true,
+                "desc",
+                "asc",
+                0
+        );
+
+
         store1 = createStoreWithCustomValues(
                 1L,
                 "베스트 커피숍",
@@ -178,9 +198,9 @@ public class StoreServiceTest {
         Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeRepository.findAll(pageable)).thenReturn(storePage);
+        when(storeRepository.findAllOrderByRatingOrPositiveRatio("DESC", "DESC", pageable)).thenReturn(storePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.findAll(0);
+        Page<StoreListResponseDto> responseDtos = storeService.findAll(0, "DESC", "DESC");
 
         // then
         assertNotNull(responseDtos);
@@ -248,21 +268,7 @@ public class StoreServiceTest {
                 pageable
         )).thenReturn(storePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.searchAndFilterStores(
-                searchKeywords,
-                category,
-                address,
-                positiveKeywords,
-                minPositiveRatio,
-                reviewsCount,
-                rating,
-                soloDining,
-                parking,
-                waiting,
-                petFriendly,
-                orderByRating,
-                orderByPositiveRatio,
-                0);
+        Page<StoreListResponseDto> responseDtos = storeService.searchAndFilterStores(requestDto);
 
         // then
         assertNotNull(responseDtos);
@@ -310,5 +316,15 @@ public class StoreServiceTest {
         assertEquals(responseDtos.getContent().get(0).name(), store8.getName());
         assertEquals(responseDtos.getContent().get(2).address(), store5.getAddress());
         assertEquals(responseDtos.getContent().get(2).name(), store5.getName());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 고유 ID 값으로 가게 조회 시 발생하는 예외 테스트")
+    void testNotFoundException() {
+        //when
+        when(storeRepository.findById(1L)).thenThrow(NotFoundException.class);
+
+        //then
+        assertThrows(NotFoundException.class, () -> storeService.findById(1L));
     }
 }
