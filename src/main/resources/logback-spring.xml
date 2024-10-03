@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%5level] %logger{30} - %msg%n"/>
+    <property name="LOG_PATH" value="../logs"/>
+    <property name="MAX_FILE_SIZE" value="50MB"/>
+    <property name="MAX_HISTORY" value="30"/>
+    <property name="TOTAL_SIZE_CAP" value="1GB"/>
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+
+
+    <!--local 환경 설정-->
+    <springProfile name="local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+
+    <!--prod 환경 설정-->
+    <springProfile name="prod">
+        <include resource="warn-appender.xml"/>
+        <include resource="error-appender.xml"/>
+        <include resource="info-appender.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="WARN"/>
+            <appender-ref ref="ERROR"/>
+            <appender-ref ref="INFO"/>
+        </root>
+    </springProfile>
+
+</configuration>
