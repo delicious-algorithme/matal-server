@@ -1,4 +1,4 @@
-package matal.member.dto;
+bipackage matal.member.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -22,8 +22,6 @@ public class MemberSignUpRequestDto {
 
     private String checkpwd;
 
-    private String birth;
-
     private Role role;
 
     public Member toEntity() {
@@ -31,7 +29,6 @@ public class MemberSignUpRequestDto {
                 .email(email)
                 .name(name)
                 .password(password)
-                .birth(birth)
                 .role(Role.USER)
                 .build();
     }
