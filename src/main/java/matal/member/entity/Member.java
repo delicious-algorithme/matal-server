@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -43,9 +42,6 @@ public class Member {
     
     public void addUserAuthority() {
         this.role = Role.USER;
-    }
-    public void encodePassword(PasswordEncoder passwordEncoder){
-        this.pwd = passwordEncoder.encode(pwd);
     }
 
     @Builder
