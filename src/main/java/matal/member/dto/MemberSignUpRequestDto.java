@@ -18,7 +18,7 @@ public class MemberSignUpRequestDto {
     private String name;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
-    private String pwd;
+    private String password;
 
     private String checkpwd;
 
@@ -30,7 +30,7 @@ public class MemberSignUpRequestDto {
         return Member.builder()
                 .email(email)
                 .name(name)
-                .pwd(pwd)
+                .password(password)
                 .birth(birth)
                 .role(Role.USER)
                 .build();
