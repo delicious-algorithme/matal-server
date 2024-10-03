@@ -54,6 +54,7 @@ public class MemberController {
                     .body("{\"error\": \"서버 오류가 발생했습니다.\"}");
         }
     }
+    
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "사용자의 정보를 저장하는 API")
     public ResponseEntity<?> logout(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) throws Exception {
