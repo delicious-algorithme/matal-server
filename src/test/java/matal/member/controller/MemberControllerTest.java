@@ -56,7 +56,7 @@ public class MemberControllerTest {
         MemberSignUpRequestDto requestDto = MemberSignUpRequestDto.builder()
                 .email("test@example.com")
                 .name("테스트 사용자")
-                .pwd("password")
+                .password("password")
                 .checkpwd("password")
                 .birth("20010101")
                 .build();
