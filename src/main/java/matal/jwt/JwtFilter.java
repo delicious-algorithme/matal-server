@@ -19,10 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-
     private final String secretKey;
     private final BlackListRepository blackListRepository;
-
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
