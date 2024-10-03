@@ -42,4 +42,15 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             @Param("orderByRating") String orderByRating,
             @Param("orderByPositiveRatio") String orderByPositiveRatio,
             Pageable pageable);
+
+    @Query(value = "SELECT * FROM store " +
+            "ORDER BY " +
+            "CASE WHEN :orderByRating = 'ASC' THEN rating END ASC, " +
+            "CASE WHEN :orderByRating = 'DESC' THEN rating END DESC, " +
+            "CASE WHEN :orderByPositiveRatio = 'ASC' THEN positive_ratio END ASC, " +
+            "CASE WHEN :orderByPositiveRatio = 'DESC' THEN positive_ratio END DESC",
+            nativeQuery = true)
+    Page<Store> findAllOrderByRatingOrPositiveRatio(@Param("orderByRating") String orderByRating,
+                                                    @Param("orderByPositiveRatio") String orderByPositiveRatio,
+                                                    Pageable pageable);
 }

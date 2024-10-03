@@ -51,9 +51,11 @@ public class StoreService {
         return StoreResponseDto.from(store);
     }
 
-    public Page<StoreListResponseDto> findAll(int page) {
+    public Page<StoreListResponseDto> findAll(int page,
+                                              String orderByRatio,
+                                              String orderByPositiveRatio) {
         Pageable pageable = PageRequest.of(page, 10);
-        return storeRepository.findAll(pageable).map(StoreListResponseDto::from);
+        return storeRepository.findAllOrderByRatingOrPositiveRatio(orderByRatio,orderByPositiveRatio, pageable).map(StoreListResponseDto::from);
     }
 
     public Page<StoreListResponseDto> findTop() {

@@ -198,9 +198,9 @@ public class StoreServiceTest {
         Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeRepository.findAll(pageable)).thenReturn(storePage);
+        when(storeRepository.findAllOrderByRatingOrPositiveRatio("DESC", "DESC", pageable)).thenReturn(storePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.findAll(0);
+        Page<StoreListResponseDto> responseDtos = storeService.findAll(0, "DESC", "DESC");
 
         // then
         assertNotNull(responseDtos);
