@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
+    
     private final MemberService memberService;
+    
     @PostMapping("/register")
     @Operation(summary = "회원가입", description = "사용자의 정보를 저장하는 API")
     public Long register(@Valid @RequestBody MemberSignUpRequestDto memberSignUpRequestDto) //회원 id 리턴
