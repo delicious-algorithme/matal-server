@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService {
     public LoginResponse login(MemberLoginDto requestDto) throws Exception {
         Member member = memberRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일 입니다."));
-        if(!passwordEncoder.matches(requestDto.getPwd(), member.getPwd())){
+        if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())){
             throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
         }
         // 엑세스 토큰 생성
@@ -63,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
             throw new Exception("이미 존재하는 이메일입니다.");
         }
 
-        if(!requestDto.getPwd().equals(requestDto.getCheckpwd())){
+        if(!requestDto.getPassword().equals(requestDto.getCheckpwd())){
             throw new Exception("비밀번호가 일치하지 않습니다.");
         }
 
