@@ -23,7 +23,7 @@ public class Member {
     private Long member_id;
 
     @Column(nullable = false)
-    private String pwd;
+    private String password;
 
     @Column(nullable = false)
     private String name;
@@ -45,9 +45,9 @@ public class Member {
     }
 
     @Builder
-    public Member(String name, String pwd, String email, String birth, Role role) {
+    public Member(String name, String password, String email, String birth, Role role) {
         this.name = name;
-        this.pwd=pwd;
+        this.password=password;
         this.email = email;
         this.birth=birth;
         this.role=role;
