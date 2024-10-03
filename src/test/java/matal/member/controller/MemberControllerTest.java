@@ -58,7 +58,6 @@ public class MemberControllerTest {
                 .name("테스트 사용자")
                 .password("password")
                 .checkpwd("password")
-                .birth("20010101")
                 .build();
 
         // 회원가입 성공 시 반환될 회원 ID
