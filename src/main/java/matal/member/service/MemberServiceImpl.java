@@ -18,13 +18,16 @@ import org.springframework.stereotype.Service;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    
     private final BlackListRepository blackListRepository;
+    
     private final PasswordEncoder passwordEncoder;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
+    
     @Value("${jwt.access.expiration}")
-    private Long accessExpiredMs;  // 엑세스 토큰 만료 시간
+    private Long accessExpiredMs;  
 
     @Override
     public LoginResponse login(MemberLoginDto requestDto) throws Exception {
@@ -64,10 +67,13 @@ public class MemberServiceImpl implements MemberService {
             throw new Exception("비밀번호가 일치하지 않습니다.");
         }
 
+        String encodedPassword = passwordEncoder.encode(requestDto.getPwd());
+        requestDto.setPwd(encodedPassword); 
+        
         Member member = memberRepository.save(requestDto.toEntity());
-        member.encodePassword(passwordEncoder);
         member.addUserAuthority();
         return member.getMember_id();
+        
     }
 }
 
