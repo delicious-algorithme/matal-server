@@ -1,19 +1,29 @@
 package matal.member.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
+import java.time.LocalDateTime;
+
+
+
 @NoArgsConstructor
 @Entity
+@Getter
 @Table(name = "Member")
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name="member_id")
+    private Long member_id;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private String name;
@@ -21,17 +31,20 @@ public class Member {
     @Column(nullable = false)
     private String email;
 
-    @Column
-    private String picture;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    @Column
-    private String birth;
+    private LocalDateTime last_login;
+    
+    public void addUserAuthority() {
+        this.role = Role.USER;
+    }
 
     @Builder
-    public Member(String name, String email, String picture, String birth) {
+    public Member(String name, String password, String email, Role role) {
         this.name = name;
+        this.password=password;
         this.email = email;
-        this.picture = picture;
-        this.birth=birth;
+        this.role=role;
     }
 }
