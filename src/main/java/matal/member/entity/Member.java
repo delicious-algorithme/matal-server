@@ -40,6 +40,7 @@ public class Member {
     private Role role;
 
     private LocalDateTime last_login;
+    
     public void addUserAuthority() {
         this.role = Role.USER;
     }
