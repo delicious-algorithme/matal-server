@@ -96,7 +96,6 @@ public class MemberServiceImplTest {
                 .name("John Doe")
                 .password("password")
                 .checkpwd("password")
-                .birth("1990-01-01")
                 .role(Role.USER)
                 .build();
 
@@ -126,7 +125,6 @@ public class MemberServiceImplTest {
                 .name("John Doe")
                 .password("password")
                 .checkpwd("password")
-                .birth("1990-01-01")
                 .role(Role.USER)
                 .build();
 
@@ -150,7 +148,6 @@ public class MemberServiceImplTest {
                 .name("John Doe")
                 .password("password")
                 .checkpwd("differentPassword")
-                .birth("1990-01-01")
                 .role(Role.USER)
                 .build();
 
