@@ -30,7 +30,7 @@ public class MemberController {
     
     @PostMapping("/register")
     @Operation(summary = "회원가입", description = "사용자의 정보를 저장하는 API")
-    public Long register(@Valid @RequestBody MemberSignUpRequestDto memberSignUpRequestDto) //회원 id 리턴
+    public Long register(@Valid @RequestBody MemberSignUpRequestDto memberSignUpRequestDto)
             throws Exception {
         return memberService.signUp(memberSignUpRequestDto);
     }
