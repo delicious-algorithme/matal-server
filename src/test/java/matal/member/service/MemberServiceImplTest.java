@@ -59,10 +59,10 @@ public class MemberServiceImplTest {
         MemberLoginDto loginDto = new MemberLoginDto("test@test.com", "wrongpassword");
         Member member = new Member();
         member.setEmail("test@test.com");
-        member.setPwd("encodedPassword");
+        member.setPassword("encodedPassword");
 
         when(memberRepository.findByEmail(loginDto.getEmail())).thenReturn(Optional.of(member));
-        when(passwordEncoder.matches(loginDto.getPwd(), member.getPwd())).thenReturn(false);
+        when(passwordEncoder.matches(loginDto.getPassword(), member.getPassword())).thenReturn(false);
 
         // When & Then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -94,7 +94,7 @@ public class MemberServiceImplTest {
         MemberSignUpRequestDto signUpDto = MemberSignUpRequestDto.builder()
                 .email("test@test.com")
                 .name("John Doe")
-                .pwd("password")
+                .password("password")
                 .checkpwd("password")
                 .birth("1990-01-01")
                 .role(Role.USER)
@@ -106,7 +106,7 @@ public class MemberServiceImplTest {
 
         // Mock 설정: 이메일이 중복되지 않고 비밀번호가 인코딩되어 저장됨
         when(memberRepository.findByEmail(signUpDto.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(signUpDto.getPwd())).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(signUpDto.getPassword())).thenReturn("encodedPassword");
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         // When: 회원가입 실행
@@ -124,7 +124,7 @@ public class MemberServiceImplTest {
         MemberSignUpRequestDto signUpDto = MemberSignUpRequestDto.builder()
                 .email("test@test.com")
                 .name("John Doe")
-                .pwd("password")
+                .password("password")
                 .checkpwd("password")
                 .birth("1990-01-01")
                 .role(Role.USER)
@@ -148,7 +148,7 @@ public class MemberServiceImplTest {
         MemberSignUpRequestDto signUpDto = MemberSignUpRequestDto.builder()
                 .email("test@test.com")
                 .name("John Doe")
-                .pwd("password")
+                .password("password")
                 .checkpwd("differentPassword")
                 .birth("1990-01-01")
                 .role(Role.USER)
