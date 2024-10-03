@@ -67,8 +67,8 @@ public class MemberServiceImpl implements MemberService {
             throw new Exception("비밀번호가 일치하지 않습니다.");
         }
 
-        String encodedPassword = passwordEncoder.encode(requestDto.getPwd());
-        requestDto.setPwd(encodedPassword); 
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        requestDto.setPassword(encodedPassword); 
         
         Member member = memberRepository.save(requestDto.toEntity());
         member.addUserAuthority();
