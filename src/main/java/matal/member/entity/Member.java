@@ -31,10 +31,6 @@ public class Member {
     @Column(nullable = false)
     private String email;
 
-    @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "생년월일은 yyyyMMdd 형식이어야 합니다.")
-    @Column
-    private String birth;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -45,11 +41,10 @@ public class Member {
     }
 
     @Builder
-    public Member(String name, String password, String email, String birth, Role role) {
+    public Member(String name, String password, String email, Role role) {
         this.name = name;
         this.password=password;
         this.email = email;
-        this.birth=birth;
         this.role=role;
     }
 }
