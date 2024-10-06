@@ -10,6 +10,18 @@ files:
   - source: scripts
     destination: /home/ubuntu/backend/
     overwrite: yes
+  - source: logback-spring.xml
+    destination: /home/ubuntu/backend/
+    overwrite: yes
+  - source: warn-appender.xml
+    destination: /home/ubuntu/backend/
+    overwrite: yes
+  - source: error-appender.xml
+    destination: /home/ubuntu/backend/
+    overwrite: yes
+  - source: info-appender.xml
+    destination: /home/ubuntu/backend/
+    overwrite: yes
 
 permissions:
   - object: /
