@@ -2,7 +2,11 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%5level] %logger{30} - %msg%n"/>
+    <property name="LOCAL_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%highlight(%5level)] %logger{0} [%F:%line] : %msg%n"/>
+    <property name="WARN_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [WARN] [%logger{36}] [%F:%line] : %msg%n"/>
+    <property name="ERROR_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [ERROR] [%logger{40}] [%F:%line] [%M] : %msg%n"/>
+    <property name="INFO_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [INFO] %msg%n"/>
+
     <property name="LOG_PATH" value="../logs"/>
     <property name="MAX_FILE_SIZE" value="50MB"/>
     <property name="MAX_HISTORY" value="30"/>
@@ -14,7 +18,7 @@
     <springProfile name="local">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>${LOG_PATTERN}</pattern>
+                <pattern>${LOCAL_LOG_PATTERN}</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
