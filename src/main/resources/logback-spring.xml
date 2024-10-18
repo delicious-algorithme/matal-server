@@ -7,7 +7,7 @@
     <property name="ERROR_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [ERROR] [%logger{40}] [%F:%line] [%M] : %msg%n"/>
     <property name="INFO_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [INFO] %msg%n"/>
 
-    <property name="LOG_PATH" value="../logs"/>
+    <property name="LOG_PATH" value="/home/ubuntu/backend/logs"/>
     <property name="MAX_FILE_SIZE" value="50MB"/>
     <property name="MAX_HISTORY" value="30"/>
     <property name="TOTAL_SIZE_CAP" value="1GB"/>

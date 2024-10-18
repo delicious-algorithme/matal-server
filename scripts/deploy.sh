@@ -1,6 +1,13 @@
 #!/bin/bash
 
+cd /home/ubuntu/backend || exit
+
 REPOSITORY=/home/ubuntu/backend
+LOG_BASE_DIR="$REPOSITORY/logs"
+LOG_INFO_DIR="$LOG_BASE_DIR/info"
+LOG_WARN_DIR="$LOG_BASE_DIR/warn"
+LOG_ERROR_DIR="$LOG_BASE_DIR/error"
+LOG_BACKUP_DIR="$LOG_BASE_DIR/backup"
 
 echo "> 현재 구동 중인 애플리케이션 pid 확인"
 
@@ -15,6 +22,18 @@ else
   kill -15 $CURRENT_PID
   sleep 5
 fi
+
+echo "> 로그 디렉토리 생성 및 권한 설정"
+
+mkdir -p $LOG_INFO_DIR
+mkdir -p $LOG_WARN_DIR
+mkdir -p $LOG_ERROR_DIR
+mkfir -p $LOG_BACKUP_DIR/info
+mkfir -p $LOG_BACKUP_DIR/warn
+mkfir -p $LOG_BACKUP_DIR/error
+
+sudo chmod -R 775 $LOG_BASE_DIR
+sudo chown -R ubuntu:ubuntu $LOG_BASE_DIR
 
 echo "> 새 애플리케이션 배포"
 
