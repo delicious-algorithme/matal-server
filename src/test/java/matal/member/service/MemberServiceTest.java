@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,10 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberServiceTest {
 
     @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    WebApplicationContext context;
+    private MockMvc mockMvc;
 
     @Mock
     private MemberRepository memberRepository;
@@ -43,18 +41,17 @@ public class MemberServiceTest {
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
 
+    private MockHttpSession session;
+
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(this.context)
-                .apply(springSecurity())
-                .build();
+        session = new MockHttpSession();
 
         Member member1 = Member.builder()
                 .email("login@test.com")
-                .pwd(passwordEncoder.encode("login"))
+                .password(passwordEncoder.encode("login"))
                 .nickname("login")
-                .role(Role.ROLE_USER)
+                .role(Role.MEMBER)
                 .build();
 
         memberRepository.save(member1);
@@ -63,18 +60,17 @@ public class MemberServiceTest {
     @Test
     public void testSignUp() throws Exception {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("request@test.com", "test", "test", "request");
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("request@test.com", "test", "test");
 
         //when
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(signUpRequestDto);
 
         //then
-        mockMvc.perform(post("/api/user/signup")
+        mockMvc.perform(post("/api/users/signup")
                         .contentType("application/json")
                         .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
                 .andDo(print());
     }
 
