@@ -10,6 +10,7 @@ public enum ResponseCode {
     * member
      */
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "일치하는 이메일이 존재하지 않습니다."),
+    MEMBER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "회원가입 정보를 올바르게 입력해주세요."),
     MEMBER_AUTH_EXCEPTION(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     MEMBER_ALREADY_EXIST_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 이메일 정보입니다."),
 

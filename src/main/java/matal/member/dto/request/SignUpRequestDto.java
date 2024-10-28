@@ -1,8 +1,11 @@
 package matal.member.dto.request;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public record SignUpRequestDto(
-        String email,
-        String password,
+        @Email String email,
+        @NotBlank String password,
         String nickname
 ) {
 }
