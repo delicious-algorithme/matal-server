@@ -1,4 +1,4 @@
-package matal.user.domain;
+package matal.member.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "member")
-public class User {
+@Table(name = "MEMBER")
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String pwd;
+    private String password;
 
     @Column(nullable = false)
     private String nickname;
@@ -30,9 +30,13 @@ public class User {
     private Role role;
 
     @Builder
-    public User(String email, String pwd, String nickname, Role role) {
+    public Member(String email,
+                  String password,
+                  String nickname,
+                  Role role
+    ) {
         this.email = email;
-        this.pwd = pwd;
+        this.password = password;
         this.nickname = nickname;
         this.role = role;
     }

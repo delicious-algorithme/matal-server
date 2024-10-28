@@ -1,9 +1,8 @@
-package matal.user.dto.request;
+package matal.member.dto.request;
 
 public record SignUpRequestDto(
         String email,
-        String pwd,
-        String pwdChek,
+        String password,
         String nickname
 ) {
 }

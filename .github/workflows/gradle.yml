@@ -45,7 +45,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Zip the JAR file
+      - name: Zip the JAR files
         run: zip -r myapp.zip build/libs/*.jar appspec.yml scripts
 
       - name: Upload the ZIP file to S3

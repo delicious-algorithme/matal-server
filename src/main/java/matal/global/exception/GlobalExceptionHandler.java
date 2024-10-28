@@ -30,4 +30,26 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(exception.getResponseCode().getStatus()).body(errorResponse);
     }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(AuthException exception, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                exception.getResponseCode().getMessage(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return ResponseEntity.status(exception.getResponseCode().getStatus()).body(errorResponse);
+    }
+
+    @ExceptionHandler(AlreadyExistException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException exception, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                exception.getResponseCode().getMessage(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return ResponseEntity.status(exception.getResponseCode().getStatus()).body(errorResponse);
+    }
 }
