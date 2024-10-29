@@ -45,8 +45,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Zip the JAR files
-        run: zip -r myapp.zip build/libs/*.jar appspec.yml scripts
+      - name: Zip the JAR file
+        run: |
+          zip -r myapp.zip build/libs/*.jar appspec.yml scripts \
+          src/main/resources/logback-spring.xml \
+          src/main/resources/warn-appender.xml \
+          src/main/resources/error-appender.xml \
+          src/main/resources/info-appender.xml
 
       - name: Upload the ZIP file to S3
         run: aws s3 cp myapp.zip s3://matal-s3/
