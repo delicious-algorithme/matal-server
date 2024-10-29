@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private static final String SESSION_KEY = "mebmer";
+    private static final String SESSION_KEY = "member";
 
     private final MemberRepository memberRepository;
 

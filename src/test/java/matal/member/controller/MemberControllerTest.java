@@ -1,13 +1,10 @@
 package matal.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import matal.member.domain.Role;
-import matal.member.domain.Member;
 import matal.member.domain.repository.MemberRepository;
 import matal.member.dto.request.LoginRequestDto;
 import matal.member.dto.request.SignUpRequestDto;
 import matal.member.service.MemberService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,7 +20,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,25 +42,15 @@ public class MemberControllerTest {
 
     private MockHttpSession session;
 
-
-    @BeforeEach
-    public void setup() {
-
-        Member member1 = Member.builder()
-                .email("login@test.com")
-                .password(passwordEncoder.encode("login"))
-                .nickname("login")
-                .role(Role.MEMBER)
-                .build();
-
-        memberRepository.save(member1);
-    }
-
     @Test
     @DisplayName("회원가입 성공 테스트")
-    public void testSignUpSuccess() throws Exception {
+    void testSignUpSuccess() throws Exception {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("request@test.com", "test", "test");
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
+                "test@test.com",
+                "test",
+                "test"
+        );
 
         //when
         ObjectMapper objectMapper = new ObjectMapper();
@@ -80,9 +66,13 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("회원가입 시 비어있는 이메일 값으로 인한 실패 테스트")
-    public void testSignUpFailure() throws Exception {
+    void testSignUpFailure() throws Exception {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(null, "test", "test");
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
+                null,
+                "test",
+                "test"
+        );
 
         //when
         ObjectMapper objectMapper = new ObjectMapper();
@@ -100,7 +90,11 @@ public class MemberControllerTest {
     @DisplayName("회원가입 시 비어있는 비밀번호 값으로 인한 실패 테스트")
     public void testSignUpFailure2() throws Exception {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("test@test.com", null, "test");
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
+                "test@test.com",
+                null,
+                "test"
+        );
 
         //when
         ObjectMapper objectMapper = new ObjectMapper();
@@ -116,7 +110,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("로그인 성공 테스트")
-    public void testLoginSuccess() throws Exception {
+    void testLoginSuccess() throws Exception {
         //given
         LoginRequestDto loginRequestDto = new LoginRequestDto("test@test.com", "test");
 
@@ -145,7 +139,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("로그인 시 비어있는 이메일 값으로 인한 실패 테스트")
-    public void testLoginFailure() throws Exception {
+    void testLoginFailure() throws Exception {
         //given
         LoginRequestDto loginRequestDto = new LoginRequestDto(null, "test");
 
@@ -169,7 +163,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("로그인 시 비어있는 비밀번호 값으로 인한 실패 테스트")
-    public void testLoginFailure2() throws Exception {
+    void testLoginFailure2() throws Exception {
         //given
         LoginRequestDto loginRequestDto = new LoginRequestDto("test@test.com", null);
 
@@ -193,7 +187,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("로그인 시 올바르지 않은 이메일 형식으로 인한 실패 테스트")
-    public void testLoginFailure3() throws Exception {
+    void testLoginFailure3() throws Exception {
         //given
         LoginRequestDto loginRequestDto = new LoginRequestDto("test", "test");
 
@@ -217,7 +211,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("로그아웃 성공 테스트")
-    public void testLogout() throws Exception {
+    void testLogout() throws Exception {
         //given
 
         //when
