@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOCAL_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%highlight(%5level)] %logger{0} [%F:%line] : %msg%n"/>
+    <property name="WARN_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [WARN] [%logger{36}] [%F:%line] : %msg%n"/>
+    <property name="ERROR_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [ERROR] [%logger{40}] [%F:%line] [%M] : %msg%n"/>
+    <property name="INFO_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [INFO] %msg%n"/>
+
+    <property name="LOG_PATH" value="/home/ubuntu/backend/logs"/>
+    <property name="MAX_FILE_SIZE" value="50MB"/>
+    <property name="MAX_HISTORY" value="30"/>
+    <property name="TOTAL_SIZE_CAP" value="1GB"/>
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+
+
+    <!--local 환경 설정-->
+    <springProfile name="local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOCAL_LOG_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+
+    <!--prod 환경 설정-->
+    <springProfile name="prod">
+        <include resource="warn-appender.xml"/>
+        <include resource="error-appender.xml"/>
+        <include resource="info-appender.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="WARN"/>
+            <appender-ref ref="ERROR"/>
+            <appender-ref ref="INFO"/>
+        </root>
+    </springProfile>
+
+</configuration>
