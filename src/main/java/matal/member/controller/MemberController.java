@@ -51,7 +51,7 @@ public class MemberController {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 정보",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
-    public ResponseEntity<Void> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
+    public ResponseEntity<Void> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         memberService.login(loginRequestDto, session);
         return ResponseEntity.ok().build();
