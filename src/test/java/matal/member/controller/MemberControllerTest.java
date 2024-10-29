@@ -127,7 +127,6 @@ public class MemberControllerTest {
             return null;
         }).when(memberService).login(any(), any());
 
-
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(loginRequestDto);
 
@@ -145,18 +144,17 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 실패 테스트")
+    @DisplayName("로그인 시 비어있는 이메일 값으로 인한 실패 테스트")
     public void testLoginFailure() throws Exception {
         //given
-        LoginRequestDto loginRequestDto = new LoginRequestDto("test@test.com", "test");
+        LoginRequestDto loginRequestDto = new LoginRequestDto(null, "test");
 
         //when
         doAnswer(invocationOnMock -> {
             session = invocationOnMock.getArgument(1);
-            session.setAttribute("member", loginRequestDto.email());
+            session.setAttribute("member", null);
             return null;
         }).when(memberService).login(any(), any());
-
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(loginRequestDto);
@@ -165,12 +163,55 @@ public class MemberControllerTest {
         ResultActions resultActions = mockMvc.perform(post("/api/users/login")
                         .contentType("application/json")
                         .content(requestBody))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andDo(print());
+    }
 
-        session = (MockHttpSession) resultActions.andReturn().getRequest().getSession();
-        String mockEmail = (String) session.getAttribute("member");
-        assertThat(session).isNotNull();
-        assertThat(mockEmail).isEqualTo(loginRequestDto.email());
+    @Test
+    @DisplayName("로그인 시 비어있는 비밀번호 값으로 인한 실패 테스트")
+    public void testLoginFailure2() throws Exception {
+        //given
+        LoginRequestDto loginRequestDto = new LoginRequestDto("test@test.com", null);
+
+        //when
+        doAnswer(invocationOnMock -> {
+            session = invocationOnMock.getArgument(1);
+            session.setAttribute("member", null);
+            return null;
+        }).when(memberService).login(any(), any());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBody = objectMapper.writeValueAsString(loginRequestDto);
+
+        //then
+        ResultActions resultActions = mockMvc.perform(post("/api/users/login")
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("로그인 시 올바르지 않은 이메일 형식으로 인한 실패 테스트")
+    public void testLoginFailure3() throws Exception {
+        //given
+        LoginRequestDto loginRequestDto = new LoginRequestDto("test", "test");
+
+        //when
+        doAnswer(invocationOnMock -> {
+            session = invocationOnMock.getArgument(1);
+            session.setAttribute("member", null);
+            return null;
+        }).when(memberService).login(any(), any());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBody = objectMapper.writeValueAsString(loginRequestDto);
+
+        //then
+        ResultActions resultActions = mockMvc.perform(post("/api/users/login")
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 }
