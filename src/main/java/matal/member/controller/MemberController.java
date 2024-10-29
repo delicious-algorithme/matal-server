@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import matal.global.exception.ErrorResponse;
 import matal.member.dto.request.LoginRequestDto;
@@ -36,7 +37,7 @@ public class MemberController {
                     content = {@Content(schema = @Schema(implementation = Void.class))}),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 회원 정보",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
-    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         memberService.signUp(signUpRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -50,7 +51,7 @@ public class MemberController {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 정보",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
-    public ResponseEntity<Void> singIn(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
+    public ResponseEntity<Void> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         memberService.login(loginRequestDto, session);
         return ResponseEntity.ok().build();

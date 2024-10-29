@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import matal.global.exception.AlreadyExistException;
 import matal.global.exception.AuthException;
-import matal.global.exception.BadRequestException;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
 import matal.member.domain.Member;
@@ -29,9 +28,6 @@ public class MemberService {
     @Transactional
     public void signUp(SignUpRequestDto signUpRequestDto) {
 
-        if(signUpRequestDto.email().isBlank() || signUpRequestDto.password().isBlank())
-            throw new BadRequestException(ResponseCode.MEMBER_BAD_REQUEST);
-
         if(memberRepository.findByEmail(signUpRequestDto.email()).isPresent())
             throw new AlreadyExistException(ResponseCode.MEMBER_ALREADY_EXIST_EXCEPTION);
 
@@ -43,18 +39,18 @@ public class MemberService {
 
         Member member = memberRepository.findByEmail(loginRequestDto.email())
                 .orElseThrow(() -> new NotFoundException(ResponseCode.MEMBER_NOT_FOUND));
-        if(!passwordEncoder.matches(loginRequestDto.password(), member.getPassword())) {
+
+        if(!passwordEncoder.matches(loginRequestDto.password(), member.getPassword()))
             throw new AuthException(ResponseCode.MEMBER_AUTH_EXCEPTION);
-        }
+
         session.setAttribute(SESSION_KEY, member.getEmail());
     }
 
     @Transactional
     public void logout(HttpSession session) {
 
-        if(session != null) {
+        if(session != null)
             session.invalidate();
-        }
     }
 
     public void saveUser(SignUpRequestDto signUpRequestDto) {
