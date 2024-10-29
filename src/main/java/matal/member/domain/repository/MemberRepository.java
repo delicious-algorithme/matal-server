@@ -1,10 +1,13 @@
-package matal.member.repository;
+package matal.member.domain.repository;
 
-import matal.member.entity.Member;
+import matal.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional <Member> findByEmail(String email); // 중복 가입 확인
+
+    boolean existsByEmail(String email);
+
+    Optional<Member> findByEmail(String email);
 }
