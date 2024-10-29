@@ -214,4 +214,18 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("로그아웃 성공 테스트")
+    public void testLogout() throws Exception {
+        //given
+
+        //when
+
+        //then
+        mockMvc.perform(post("/api/users/logout")
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }
