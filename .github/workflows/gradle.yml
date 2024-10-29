@@ -46,7 +46,12 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Zip the JAR file
-        run: zip -r myapp.zip build/libs/*.jar appspec.yml scripts logback-spring.xml warn-appender.xml error-appender.xml info-appender.xml
+        run: |
+          zip -r myapp.zip build/libs/*.jar appspec.yml scripts \
+          src/main/resources/logback-spring.xml \
+          src/main/resources/warn-appender.xml \
+          src/main/resources/error-appender.xml \
+          src/main/resources/info-appender.xml
 
       - name: Upload the ZIP file to S3
         run: aws s3 cp myapp.zip s3://matal-s3/
