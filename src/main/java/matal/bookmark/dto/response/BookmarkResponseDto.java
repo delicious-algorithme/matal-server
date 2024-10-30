@@ -1,15 +1,15 @@
 package matal.bookmark.dto.response;
 
 import matal.bookmark.domain.Bookmark;
-import matal.store.domain.Store;
+import matal.store.dto.response.StoreListResponseDto;
 
 public record BookmarkResponseDto(Long bookmarkId,
-                                  Store store) {
+                                  StoreListResponseDto storeResponseDto) {
 
     public static BookmarkResponseDto from(Bookmark bookmark) {
         return new BookmarkResponseDto(
                 bookmark.getBookmarkId(),
-                bookmark.getStore()
+                StoreListResponseDto.from(bookmark.getStore())
         );
     }
 }
