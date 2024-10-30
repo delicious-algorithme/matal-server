@@ -17,6 +17,7 @@ import matal.global.exception.ResponseCode;
 import matal.member.domain.Member;
 import matal.member.domain.Role;
 import matal.member.domain.repository.MemberRepository;
+import matal.member.dto.request.AuthMember;
 import matal.member.dto.request.LoginRequestDto;
 import matal.member.dto.request.SignUpRequestDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,8 +107,9 @@ public class MemberServiceTest {
 
         // then
         memberService.login(loginRequestDto, session);
-        String sessionEmail = (String) session.getAttribute("member");
-        assertThat(sessionEmail).isEqualTo(loginRequestDto.email());
+        AuthMember authMember = (AuthMember) session.getAttribute("member");
+        assertThat(authMember).isNotNull();
+        assertThat(authMember.email()).isEqualTo(loginRequestDto.email());
     }
 
     @Test

@@ -1,7 +1,10 @@
 package matal.global.config;
 
+import java.util.List;
+import matal.global.auth.LoginMemberArgumentResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -35,5 +38,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .exposedHeaders(EXPOSED_HEADERS)
                 .allowCredentials(ALLOW_CREDENTIALS)
                 .maxAge(3600);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 }

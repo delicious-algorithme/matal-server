@@ -1,11 +1,13 @@
 package matal.bookmark.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -20,7 +22,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "BOOKMARK")
+@Table(name = "bookmark", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"member_id", "store_id"})
+})
 public class Bookmark {
 
     @Id
@@ -34,22 +38,16 @@ public class Bookmark {
     private Store store;
 
     @CreatedDate
+    @Column(name = "created_date",updatable = false)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
+    @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
     @Builder
-    public Bookmark(Long bookmarkId,
-                    Member member,
-                    Store store,
-                    LocalDateTime createdDate,
-                    LocalDateTime modifiedDate
-    ) {
-        this.bookmarkId = bookmarkId;
+    public Bookmark(Member member, Store store) {
         this.member = member;
         this.store = store;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
     }
 }
