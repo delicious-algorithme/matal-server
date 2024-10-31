@@ -10,7 +10,7 @@ public record AuthMember(Long memberId,
 
     public static AuthMember from(Member member) {
         return new AuthMember(
-                member.getMemberId(),
+                member.getId(),
                 member.getEmail(),
                 member.getNickname(),
                 member.getRole()
