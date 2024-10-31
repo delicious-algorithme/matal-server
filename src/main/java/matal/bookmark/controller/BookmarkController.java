@@ -37,7 +37,7 @@ public class BookmarkController {
             @ApiResponse(responseCode = "201", description = "북마크 생성 성공",
                     content = {@Content(schema = @Schema(implementation = Void.class))}),
             @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
-                    content = {@Content(schema = @Schema(implementation = Void.class))}),
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "가게 조회 실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
     public ResponseEntity<Void> createBookmark(@LoginMember AuthMember authMember, @RequestBody Long storeId) {
@@ -51,7 +51,7 @@ public class BookmarkController {
             @ApiResponse(responseCode = "200", description = "북마크 조회 성공",
                     content = {@Content(schema = @Schema(implementation = Void.class))}),
             @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
-                    content = {@Content(schema = @Schema(implementation = Void.class))}),
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "회원 조회 실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
     public ResponseEntity<List<BookmarkResponseDto>> getBookmarks(@LoginMember AuthMember authMember) {
@@ -65,7 +65,7 @@ public class BookmarkController {
             @ApiResponse(responseCode = "204", description = "북마크 삭제 성공",
                     content = {@Content(schema = @Schema(implementation = Void.class))}),
             @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
-                    content = {@Content(schema = @Schema(implementation = Void.class))}),
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "북마크 정보 조회 실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
     public ResponseEntity<Void> deleteBookmark(@LoginMember AuthMember authMember, @PathVariable Long id) {
