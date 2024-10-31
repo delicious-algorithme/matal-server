@@ -69,7 +69,7 @@ public class BookmarkController {
             @ApiResponse(responseCode = "404", description = "북마크 정보 조회 실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
     public ResponseEntity<Void> deleteBookmark(@LoginMember AuthMember authMember, @PathVariable Long id) {
-        bookmarkService.deleteBookmark(id);
+        bookmarkService.deleteBookmark(authMember, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

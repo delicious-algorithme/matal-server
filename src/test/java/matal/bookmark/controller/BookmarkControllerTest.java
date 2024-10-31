@@ -208,7 +208,7 @@ public class BookmarkControllerTest {
         // given
 
         // when
-        doNothing().when(bookmarkService).deleteBookmark(any());
+        doNothing().when(bookmarkService).deleteBookmark(any(), any());
 
         // then
         mockMvc.perform(delete("/api/bookmarks/1")
@@ -224,7 +224,7 @@ public class BookmarkControllerTest {
         // given
 
         // when
-        doNothing().when(bookmarkService).deleteBookmark(any());
+        doNothing().when(bookmarkService).deleteBookmark(any(), any());
 
         // then
         mockMvc.perform(delete("/api/bookmarks/1")
@@ -240,7 +240,7 @@ public class BookmarkControllerTest {
 
         // when
         doThrow(new NotFoundException(ResponseCode.BOOKMARK_NOT_FOUND))
-                .when(bookmarkService).deleteBookmark(any());
+                .when(bookmarkService).deleteBookmark(any(), any());
 
         // then
         mockMvc.perform(delete("/api/bookmarks/1")
