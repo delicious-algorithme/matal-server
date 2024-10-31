@@ -28,9 +28,9 @@ echo "> 로그 디렉토리 생성 및 권한 설정"
 mkdir -p $LOG_INFO_DIR
 mkdir -p $LOG_WARN_DIR
 mkdir -p $LOG_ERROR_DIR
-mkfir -p $LOG_BACKUP_DIR/info
-mkfir -p $LOG_BACKUP_DIR/warn
-mkfir -p $LOG_BACKUP_DIR/error
+mkdir -p $LOG_BACKUP_DIR/info
+mkdir -p $LOG_BACKUP_DIR/warn
+mkdir -p $LOG_BACKUP_DIR/error
 
 sudo chmod -R 775 $LOG_BASE_DIR
 sudo chown -R ubuntu:ubuntu $LOG_BASE_DIR
