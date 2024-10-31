@@ -9,6 +9,7 @@ import matal.global.exception.ResponseCode;
 import matal.member.domain.Member;
 import matal.member.domain.Role;
 import matal.member.domain.repository.MemberRepository;
+import matal.member.dto.request.AuthMember;
 import matal.member.dto.request.LoginRequestDto;
 import matal.member.dto.request.SignUpRequestDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,19 +32,19 @@ public class MemberService {
         if(memberRepository.findByEmail(signUpRequestDto.email()).isPresent())
             throw new AlreadyExistException(ResponseCode.MEMBER_ALREADY_EXIST_EXCEPTION);
 
-        saveUser(signUpRequestDto);
+        saveMember(signUpRequestDto);
     }
 
     @Transactional(readOnly = true)
     public void login(LoginRequestDto loginRequestDto, HttpSession session) {
 
         Member member = memberRepository.findByEmail(loginRequestDto.email())
-                .orElseThrow(() -> new NotFoundException(ResponseCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ResponseCode.MEMBER_NOT_FOUND_EMAIL));
 
         if(!passwordEncoder.matches(loginRequestDto.password(), member.getPassword()))
             throw new AuthException(ResponseCode.MEMBER_AUTH_EXCEPTION);
 
-        session.setAttribute(SESSION_KEY, member.getEmail());
+        session.setAttribute(SESSION_KEY, AuthMember.from(member));
     }
 
     @Transactional
@@ -53,7 +54,7 @@ public class MemberService {
             session.invalidate();
     }
 
-    public void saveUser(SignUpRequestDto signUpRequestDto) {
+    public void saveMember(SignUpRequestDto signUpRequestDto) {
 
         Member newMember = Member.builder()
                 .email(signUpRequestDto.email())
