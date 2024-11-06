@@ -1,6 +1,7 @@
 package matal.store.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import matal.store.dto.response.StoreListResponseDto;
 import matal.store.dto.response.StoreResponseDto;
 import matal.store.domain.Store;
 import matal.store.domain.repository.StoreRepository;
+import matal.store.domain.repository.originStoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,9 +31,12 @@ public class StoreServiceTest {
 
     @Mock
     private StoreRepository storeRepository;
-
+    @Mock
+    private originStoreRepository originRepository;
     @InjectMocks
     private StoreService storeService;
+    @InjectMocks
+    private originStoreService originStoreService;
 
     private Store store1;
     private Store store2;
@@ -46,7 +52,7 @@ public class StoreServiceTest {
 
     @BeforeEach
     void setUp() {
-         requestDto = new StoreSearchFilterRequestDto(
+        requestDto = new StoreSearchFilterRequestDto(
                 "커피",
                 List.of("카페"),
                 List.of("서울"),
@@ -198,7 +204,7 @@ public class StoreServiceTest {
         Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeRepository.findAllOrderByRatingOrPositiveRatio("DESC", "DESC", pageable)).thenReturn(storePage);
+        when(originRepository.findAllOrderByRatingOrPositiveRatio("DESC", "DESC", pageable)).thenReturn(storePage);
 
         Page<StoreListResponseDto> responseDtos = storeService.findAll(0, "DESC", "DESC");
 
@@ -214,7 +220,7 @@ public class StoreServiceTest {
     }
 
     @Test
-    @DisplayName("가게 검색 및 필터링 테스트")
+    @DisplayName("기존 가게 검색 및 필터링 테스트")
     void testSearchAndFilterStores() {
         // given
         String searchKeywords = "커피";
@@ -251,7 +257,7 @@ public class StoreServiceTest {
                 filteredStores.size());
 
         // when
-        when(storeRepository.searchAndFilterStores(
+        when(originRepository.searchAndFilterStores(
                 searchKeywords,
                 category,
                 address,
@@ -268,7 +274,7 @@ public class StoreServiceTest {
                 pageable
         )).thenReturn(storePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.searchAndFilterStores(requestDto);
+        Page<StoreListResponseDto> responseDtos = originStoreService.searchAndFilterStores(requestDto);
 
         // then
         assertNotNull(responseDtos);
@@ -281,6 +287,66 @@ public class StoreServiceTest {
 
         assertEquals(responseDtos.getContent().get(3).latitude(), store2.getLatitude());
         assertEquals(responseDtos.getContent().get(3).longitude(), store3.getLongitude());
+    }
+    @Test
+    @DisplayName("동적 쿼리 가게 검색 및 필터링 테스트")
+    void dynamictestSearchAndFilterStores() {
+        // given
+        String searchKeywords = "커피";
+        List<String> category = List.of("카페"); // 카테고리를 List로 수정
+        List<String> addresses = List.of("서울"); // 주소를 List로 수정
+        List<String> positiveKeywords = List.of("맛있는 커피"); // 긍정 키워드를 List로 수정
+        Double minPositiveRatio = 80.0;
+        Long reviewsCount = 100L;
+        Double rating = 4.0;
+        Boolean soloDining = true;
+        Boolean parking = true;
+        Boolean waiting = true;
+        Boolean petFriendly = true;
+        String orderByRating = "desc";
+        String orderByPositiveRatio = "asc";
+        int page = 0;
+
+        Pageable pageable = PageRequest.of(page, 10);
+
+        List<Store> filteredStores = List.of(store1, store2, store3, store4, store5, store6, store7, store8, store9, store10);
+        Page<Store> storePage = new PageImpl<>(filteredStores, pageable, filteredStores.size());
+
+        // when
+        when(storeRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(storePage);
+
+        StoreSearchFilterRequestDto filterRequestDto = new StoreSearchFilterRequestDto(
+                searchKeywords,
+                category,
+                addresses,
+                positiveKeywords,
+                minPositiveRatio,
+                reviewsCount,
+                rating,
+                soloDining,
+                parking,
+                waiting,
+                petFriendly,
+                orderByRating,
+                orderByPositiveRatio,
+                page
+        );
+
+        // 서비스 메서드 호출
+        Page<StoreListResponseDto> responseDtos = storeService.searchAndFilterStores(filterRequestDto);
+
+        //then
+        assertNotNull(responseDtos);
+        assertEquals(10, responseDtos.getTotalElements());
+        assertEquals(responseDtos.getContent().get(0).name(), store1.getName());
+        assertEquals(responseDtos.getContent().get(0).address(), store1.getAddress());
+
+        assertEquals(responseDtos.getContent().get(1).storeLink(), store2.getStoreLink());
+        assertEquals(responseDtos.getContent().get(1).positiveKeywords(), store2.getPositiveKeywords());
+
+        assertEquals(responseDtos.getContent().get(3).latitude(), store2.getLatitude());
+        assertEquals(responseDtos.getContent().get(3).longitude(), store3.getLongitude());
+
     }
 
     @Test
