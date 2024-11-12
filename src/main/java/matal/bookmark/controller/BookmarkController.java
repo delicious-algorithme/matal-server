@@ -1,6 +1,7 @@
 package matal.bookmark.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,7 +41,7 @@ public class BookmarkController {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "가게 조회 실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
-    public ResponseEntity<Void> createBookmark(@LoginMember AuthMember authMember, @RequestBody Long storeId) {
+    public ResponseEntity<Void> createBookmark(@LoginMember @Parameter(hidden = true) AuthMember authMember, @RequestBody Long storeId) {
         bookmarkService.saveBookmark(authMember, storeId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
