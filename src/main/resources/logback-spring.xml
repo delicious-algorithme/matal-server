@@ -35,7 +35,10 @@
         <include resource="error-appender.xml"/>
         <include resource="info-appender.xml"/>
 
-        <root level="INFO">
+        <logger name="org.hibernate.SQL" level="WARN"/>
+        <logger name="org.hibernate.orm.jdbc.bind" level="OFF"/>
+
+        <root level="WARN">
             <appender-ref ref="WARN"/>
             <appender-ref ref="ERROR"/>
             <appender-ref ref="INFO"/>
