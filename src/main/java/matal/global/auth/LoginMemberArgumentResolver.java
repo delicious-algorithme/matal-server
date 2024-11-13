@@ -13,6 +13,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final String SESSION_KEY = "member";
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(LoginMember.class) &&
@@ -28,8 +30,13 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         HttpSession session = request.getSession(false);
         if (session == null) {
+            throw new AuthException(ResponseCode.SESSION_VALUE_EXCEPTION);
+        }
+
+        Object authMember = session.getAttribute(SESSION_KEY);
+        if (authMember == null) {
             throw new AuthException(ResponseCode.SESSION_AUTH_EXCEPTION);
         }
-        return session.getAttribute("member");
+        return authMember;
     }
 }
