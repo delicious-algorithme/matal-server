@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import matal.bookmark.domain.Bookmark;
 import matal.bookmark.domain.repository.BookmarkRepository;
 import matal.bookmark.dto.response.BookmarkResponseDto;
+import matal.global.exception.AlreadyExistException;
 import matal.global.exception.AuthException;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
@@ -31,6 +32,9 @@ public class BookmarkService {
                 .orElseThrow(() -> new NotFoundException(ResponseCode.MEMBER_NOT_FOUND_ID));
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID));
+
+        if(bookmarkRepository.existsBookmarkByStoreAndMember(store, member))
+            throw new AlreadyExistException(ResponseCode.BOOKMARK_ALREADY_EXIST);
 
         bookmarkRepository.save(createBookmark(member, store));
     }
