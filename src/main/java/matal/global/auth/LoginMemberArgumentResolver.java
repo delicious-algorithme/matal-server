@@ -30,12 +30,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         HttpSession session = request.getSession(false);
         if (session == null) {
-            throw new AuthException(ResponseCode.SESSION_AUTH_EXCEPTION);
+            throw new AuthException(ResponseCode.SESSION_VALUE_EXCEPTION);
         }
 
         Object authMember = session.getAttribute(SESSION_KEY);
         if (authMember == null) {
-            throw new AuthException(ResponseCode.SESSION_AUTH_EXCEPTION); // 세션에 "member"가 없을 때 예외
+            throw new AuthException(ResponseCode.SESSION_AUTH_EXCEPTION);
         }
         return authMember;
     }
