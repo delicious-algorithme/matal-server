@@ -10,6 +10,7 @@ public enum ResponseCode {
     * bookmark
      */
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "북마크 정보를 찾을 수 없습니다."),
+    BOOKMARK_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 북마크 입니다."),
 
     /*
     * member & session
