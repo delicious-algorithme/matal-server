@@ -13,6 +13,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final String SESSION_KEY = "member";
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(LoginMember.class) &&
@@ -30,6 +32,11 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         if (session == null) {
             throw new AuthException(ResponseCode.SESSION_AUTH_EXCEPTION);
         }
-        return session.getAttribute("member");
+
+        Object authMember = session.getAttribute(SESSION_KEY);
+        if (authMember == null) {
+            throw new AuthException(ResponseCode.SESSION_AUTH_EXCEPTION); // 세션에 "member"가 없을 때 예외
+        }
+        return authMember;
     }
 }
