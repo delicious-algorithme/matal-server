@@ -1,6 +1,5 @@
 package matal.bookmark.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import matal.bookmark.domain.Bookmark;
 import matal.bookmark.domain.repository.BookmarkRepository;
@@ -14,12 +13,17 @@ import matal.member.domain.repository.MemberRepository;
 import matal.member.dto.request.AuthMember;
 import matal.store.domain.Store;
 import matal.store.domain.repository.StoreRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class BookmarkService {
+
+    private static final int PAGE_SIZE = 10;
 
     private final BookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
@@ -40,10 +44,10 @@ public class BookmarkService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookmarkResponseDto> getBookmarks(AuthMember authMember) {
+    public Page<BookmarkResponseDto> getBookmarks(AuthMember authMember, int page) {
         validateMember(authMember.memberId());
-        return bookmarkRepository.findBookmarksByMemberId(authMember.memberId())
-                .stream().map(BookmarkResponseDto::from).toList();
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return bookmarkRepository.findBookmarksByMemberId(authMember.memberId(), pageable).map(BookmarkResponseDto::from);
     }
 
     @Transactional
