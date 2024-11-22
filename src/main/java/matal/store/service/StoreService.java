@@ -20,11 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StoreService {
 
+    private static final int PAGE_SIZE = 10;
+
     private final StoreRepository storeRepository;
 
     public Page<StoreListResponseDto> searchAndFilterStores(StoreSearchFilterRequestDto filterRequestDto) {
 
-        Pageable pageable = PageRequest.of(filterRequestDto.getPage(), 10);
+        Pageable pageable = PageRequest.of(filterRequestDto.getPage(), PAGE_SIZE);
 
         return storeRepository.searchAndFilterStores(
                 filterRequestDto.getSearchKeywords(),
@@ -54,14 +56,14 @@ public class StoreService {
     public Page<StoreListResponseDto> findAll(int page,
                                               String orderByRatio,
                                               String orderByPositiveRatio) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         return storeRepository.findAllOrderByRatingOrPositiveRatio(orderByRatio,orderByPositiveRatio, pageable).map(StoreListResponseDto::from);
     }
 
     public Page<StoreListResponseDto> findTop() {
         Sort sortAll = Sort.by("rating").descending()
                 .and(Sort.by("positiveRatio").descending());
-        Pageable pageable = PageRequest.of(0, 10, sortAll);
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE, sortAll);
         return storeRepository.findAll(pageable).map(StoreListResponseDto::from);
     }
 }

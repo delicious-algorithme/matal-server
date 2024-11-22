@@ -31,7 +31,9 @@ public class StoreController {
                     content = {@Content(schema = @Schema(implementation = StoreListResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
-    public ResponseEntity<Page<StoreListResponseDto>> searchAndFilterStores(@RequestBody StoreSearchFilterRequestDto requestDto) {
+    public ResponseEntity<Page<StoreListResponseDto>> searchAndFilterStores(
+            @RequestBody StoreSearchFilterRequestDto requestDto)
+    {
         requestDto.validateFields();
         Page<StoreListResponseDto> response = storeService.searchAndFilterStores(requestDto);
         return ResponseEntity.ok().body(response);

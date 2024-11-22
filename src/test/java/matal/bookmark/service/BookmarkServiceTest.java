@@ -21,7 +21,6 @@ import matal.member.domain.repository.MemberRepository;
 import matal.member.dto.request.AuthMember;
 import matal.store.domain.Store;
 import matal.store.domain.repository.StoreRepository;
-import matal.store.dto.response.StoreListResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
@@ -165,15 +168,19 @@ public class BookmarkServiceTest {
                 )
         );
 
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Bookmark> bookmarkPage = new PageImpl<>(bookmarks, pageable, bookmarks.size());
+
+
         // when
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(bookmarkRepository.findBookmarksByMemberId(any())).thenReturn(bookmarks);
+        when(bookmarkRepository.findBookmarksByMemberId(any(), any())).thenReturn(bookmarkPage);
 
         // then
-        List<BookmarkResponseDto> response = bookmarkService.getBookmarks(mockMember);
-        assertThat(response.get(0).storeResponseDto().address()).isEqualTo(bookmarks.get(0).getStore().getAddress());
-        assertThat(response.get(1).storeResponseDto().address()).isEqualTo(bookmarks.get(1).getStore().getAddress());
-        assertThat(response.get(0).storeResponseDto().name()).isEqualTo(bookmarks.get(0).getStore().getName());
+        Page<BookmarkResponseDto> response = bookmarkService.getBookmarks(mockMember, 0);
+        assertThat(response.get().toList().get(0).storeResponseDto().address()).isEqualTo(bookmarks.get(0).getStore().getAddress());
+        assertThat(response.get().toList().get(1).storeResponseDto().address()).isEqualTo(bookmarks.get(1).getStore().getAddress());
+        assertThat(response.get().toList().get(0).storeResponseDto().name()).isEqualTo(bookmarks.get(0).getStore().getName());
     }
 
     @Test
@@ -186,7 +193,7 @@ public class BookmarkServiceTest {
                 .thenThrow(new NotFoundException(ResponseCode.MEMBER_NOT_FOUND_ID));
 
         // then
-        assertThrows(NotFoundException.class, () -> bookmarkService.getBookmarks(mockMember));
+        assertThrows(NotFoundException.class, () -> bookmarkService.getBookmarks(mockMember, 0));
     }
 
     @Test
