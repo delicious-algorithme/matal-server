@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import matal.bookmark.dto.response.BookmarkResponseDto;
 import matal.bookmark.service.BookmarkService;
+import matal.global.exception.AuthException;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
 import matal.member.domain.Role;
@@ -27,6 +28,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,6 +54,7 @@ public class BookmarkControllerTest {
     private MockHttpSession mockSession;
     private AuthMember mockMember;
     private List<BookmarkResponseDto> bookmarkResponseDtos;
+    private Page<BookmarkResponseDto> bookmarkPage;
 
     @BeforeEach
     void beforeEach() {
@@ -95,6 +101,8 @@ public class BookmarkControllerTest {
                         )
                 )
         );
+
+        Pageable pageable = PageRequest.of(0, 10);
     }
 
     @Test
@@ -155,18 +163,21 @@ public class BookmarkControllerTest {
     @DisplayName("북마크 리스트 조회 성공 테스트")
     void testGetBookmarksSuccess() throws Exception {
         // given
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<BookmarkResponseDto> bookmarks = new PageImpl<>(bookmarkResponseDtos, pageable, bookmarkResponseDtos.size());
+
 
         // when
-        when(bookmarkService.getBookmarks(mockMember)).thenReturn(bookmarkResponseDtos);
+        when(bookmarkService.getBookmarks(mockMember, 0)).thenReturn(bookmarks);
 
         // then
-        mockMvc.perform(get("/api/bookmarks")
+        mockMvc.perform(get("/api/bookmarks?page=0")
                         .contentType("application/json")
                         .session(mockSession))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookmarkId").value(bookmarkResponseDtos.get(0).bookmarkId()))
-                .andExpect(jsonPath("$[0].storeResponseDto.name").value(bookmarkResponseDtos.get(0).storeResponseDto().name()))
-                .andExpect(jsonPath("$[1].storeResponseDto.name").value(bookmarkResponseDtos.get(1).storeResponseDto().name()))
+                .andExpect(jsonPath("$.content[0].bookmarkId").value(bookmarkResponseDtos.get(0).bookmarkId()))
+                .andExpect(jsonPath("$.content[0].storeResponseDto.name").value(bookmarkResponseDtos.get(0).storeResponseDto().name()))
+                .andExpect(jsonPath("$.content[1].storeResponseDto.name").value(bookmarkResponseDtos.get(1).storeResponseDto().name()))
                 .andDo(print());
     }
 
@@ -176,10 +187,11 @@ public class BookmarkControllerTest {
         // given
 
         // when
-        when(bookmarkService.getBookmarks(mockMember)).thenReturn(bookmarkResponseDtos);
+        when(bookmarkService.getBookmarks(mockMember, 0))
+                .thenThrow(new AuthException(ResponseCode.SESSION_VALUE_EXCEPTION));
 
         // then
-        mockMvc.perform(get("/api/bookmarks")
+        mockMvc.perform(get("/api/bookmarks?page=0")
                         .contentType("application/json"))
                 .andExpect(status().isUnauthorized())
                 .andDo(print());
@@ -192,7 +204,7 @@ public class BookmarkControllerTest {
 
         // when
         doThrow(new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID))
-                .when(bookmarkService).getBookmarks(mockMember);
+                .when(bookmarkService).getBookmarks(mockMember, 0);
 
         // then
         mockMvc.perform(get("/api/bookmarks")
