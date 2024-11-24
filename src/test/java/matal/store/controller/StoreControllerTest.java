@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
+import matal.store.dto.RestPage;
 import matal.store.dto.request.StoreSearchFilterRequestDto;
 import matal.store.dto.response.StoreListResponseDto;
 import matal.store.dto.response.StoreResponseDto;
@@ -288,10 +289,10 @@ public class StoreControllerTest {
                 .sorted(Comparator.comparingDouble(StoreListResponseDto::positiveRatio).reversed())
                 .collect(Collectors.toList());
         Page<StoreListResponseDto> storePage = new PageImpl<>(sortedStores);
-
+        RestPage<StoreListResponseDto> responseDtoPage = new RestPage<>(storePage);
 
         // when
-        when(storeService.findAll(0, "DESC", "DESC")).thenReturn(storePage);
+        when(storeService.findAll(0, "DESC", "DESC")).thenReturn(responseDtoPage);
 
         // then
         mockMvc.perform(get("/api/stores/all")
@@ -347,9 +348,10 @@ public class StoreControllerTest {
                 stores.get(9));
 
         Page<StoreListResponseDto> storePage = new PageImpl<>(topStores);
+        RestPage<StoreListResponseDto> responseDtoPage = new RestPage<>(storePage);
 
         // when
-        when(storeService.findTop()).thenReturn(storePage);
+        when(storeService.findTop()).thenReturn(responseDtoPage);
 
         // then
         mockMvc.perform(get("/api/stores/top")

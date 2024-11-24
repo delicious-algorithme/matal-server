@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import matal.global.exception.ErrorResponse;
+import matal.store.dto.RestPage;
 import matal.store.dto.request.StoreSearchFilterRequestDto;
 import matal.store.dto.response.StoreListResponseDto;
 import matal.store.dto.response.StoreResponseDto;
@@ -58,11 +59,11 @@ public class StoreController {
                     content = {@Content(schema = @Schema(implementation = StoreListResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    public ResponseEntity<Page<StoreListResponseDto>> getStoreAll(
+    public ResponseEntity<RestPage<StoreListResponseDto>> getStoreAll(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "orderByRating", required = false) String orderByRating,
             @RequestParam(name = "orderByPositiveRatio", required = false) String orderByPositiveRatio) {
-        Page<StoreListResponseDto> storeListResponse = storeService.findAll(page, orderByRating, orderByPositiveRatio);
+        RestPage<StoreListResponseDto> storeListResponse = storeService.findAll(page, orderByRating, orderByPositiveRatio);
         return ResponseEntity.ok().body(storeListResponse);
     }
 
@@ -73,8 +74,8 @@ public class StoreController {
                     content = {@Content(schema = @Schema(implementation = StoreListResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패"),
     })
-    private ResponseEntity<Page<StoreListResponseDto>> getStoreTop() {
-        Page<StoreListResponseDto> storeListResponse = storeService.findTop();
+    private ResponseEntity<RestPage<StoreListResponseDto>> getStoreTop() {
+        RestPage<StoreListResponseDto> storeListResponse = storeService.findTop();
         return ResponseEntity.ok().body(storeListResponse);
     }
 }
