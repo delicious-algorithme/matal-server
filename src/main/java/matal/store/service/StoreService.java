@@ -1,7 +1,6 @@
 package matal.store.service;
 
 import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.function.Supplier;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -29,15 +30,10 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final MeterRegistry meterRegistry;
 
-    private double lastMemoryUsage = 0;
 
     public Page<StoreListResponseDto> searchAndFilterStores(StoreSearchFilterRequestDto filterRequestDto) {
 
-        measureCount("store.search.count", "searchAndFilterStores");
-        measureMemory("store.search.memory", "searchAndFilterStores");
-        Timer.Sample timer = Timer.start(meterRegistry);
-
-        try {
+        return executeWithMetricsAndMemory("store.filter", "searchAndFilterStores", () -> {
             Pageable pageable = PageRequest.of(filterRequestDto.getPage(), PAGE_SIZE);
 
             return storeRepository.searchAndFilterStores(
@@ -56,72 +52,63 @@ public class StoreService {
                     filterRequestDto.getOrderByPositiveRatio(),
                     pageable
             ).map(StoreListResponseDto::from);
-        } finally {
-            stopTimer(timer, "store.search.time", "searchAndFilterStores");
-        }
+        });
     }
 
     public StoreResponseDto findById(Long storeId) {
 
-        measureCount("store.Id.count", "findById");
-        measureMemory("store.Id.memory", "findById");
-        Timer.Sample timer = Timer.start(meterRegistry);
-
-        try {
+        return executeWithMetricsAndMemory("store.detail", "findById", () -> {
             Store store = storeRepository.findById(storeId)
                     .orElseThrow(() -> new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID));
 
             return StoreResponseDto.from(store);
-        } finally {
-            stopTimer(timer, "store.Id.time", "findById");
-        }
+        });
     }
 
     public Page<StoreListResponseDto> findAll(int page,
                                               String orderByRatio,
                                               String orderByPositiveRatio) {
 
-        measureCount("store.all.count", "findAll");
-        measureMemory("store.all.memory", "findAll");
-        Timer.Sample timer = Timer.start(meterRegistry);
-
-        try {
+        return executeWithMetricsAndMemory("store.all", "findAll", () -> {
             Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 
             return storeRepository.findAllOrderByRatingOrPositiveRatio(orderByRatio, orderByPositiveRatio, pageable).map(StoreListResponseDto::from);
-        } finally {
-            stopTimer(timer, "store.all.time", "findAll");
-        }
+        });
     }
 
     public Page<StoreListResponseDto> findTop() {
 
-        measureCount("store.top.count", "findTop");
-        measureMemory("store.top.memory", "findTop");
-        Timer.Sample timer = Timer.start(meterRegistry);
+            return executeWithMetricsAndMemory("store.top", "findTop", () -> {
+                Sort sortAll = Sort.by("rating").descending()
+                        .and(Sort.by("positiveRatio").descending());
+                Pageable pageable = PageRequest.of(0, PAGE_SIZE, sortAll);
 
-        try {
-            Sort sortAll = Sort.by("rating").descending()
-                    .and(Sort.by("positiveRatio").descending());
-            Pageable pageable = PageRequest.of(0, PAGE_SIZE, sortAll);
-
-            return storeRepository.findAll(pageable).map(StoreListResponseDto::from);
-        } finally {
-            stopTimer(timer, "store.top.time", "findTop");
-        }
+                return storeRepository.findAll(pageable).map(StoreListResponseDto::from);
+            });
     }
 
-    private void measureMemory(String metricName, String methodName) {
+    private <T> T executeWithMetricsAndMemory(String metricPrefix, String methodName, Supplier<T> action) {
+        measureCount(metricPrefix + ".count", methodName);
+        Timer.Sample timer = Timer.start(meterRegistry);
 
         Runtime runtime = Runtime.getRuntime();
-        lastMemoryUsage = (runtime.totalMemory() - runtime.freeMemory()) / (1024.0 * 1024.0);
+        double startMemory = (runtime.totalMemory() - runtime.freeMemory()) / (1024.0 * 1024.0);
 
-        Gauge.builder(metricName, () -> lastMemoryUsage)
-                .tag("class", this.getClass().getName())
-                .tag("metric", methodName)
-                .description("Memory usage during " + methodName)
-                .baseUnit("MB")
-                .register(meterRegistry);
+        try {
+            return action.get();
+        } finally {
+            double endMemory = (runtime.totalMemory() - runtime.freeMemory()) / (1024.0 * 1024.0);
+            double memoryUsed = endMemory - startMemory;
+
+            Counter.builder(metricPrefix + ".memory")
+                    .tag("class", this.getClass().getName())
+                    .tag("method", methodName)
+                    .description("Memory usage during " + methodName)
+                    .register(meterRegistry)
+                    .increment(memoryUsed);
+
+            stopTimer(timer, metricPrefix + ".time", methodName);
+        }
     }
 
     private void measureCount(String metricName, String methodName) {
