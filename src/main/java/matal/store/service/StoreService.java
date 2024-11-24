@@ -8,6 +8,7 @@ import matal.store.dto.response.StoreListResponseDto;
 import matal.store.dto.response.StoreResponseDto;
 import matal.store.domain.Store;
 import matal.store.domain.repository.StoreRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +47,7 @@ public class StoreService {
         ).map(StoreListResponseDto::from);
     }
 
+    @Cacheable(value = "store", key = "'store_' + #storeId")
     public StoreResponseDto findById(Long storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID));
@@ -53,6 +55,7 @@ public class StoreService {
         return StoreResponseDto.from(store);
     }
 
+    @Cacheable(value = "stores", key = "'stores_' + #page")
     public Page<StoreListResponseDto> findAll(int page,
                                               String orderByRatio,
                                               String orderByPositiveRatio) {
@@ -60,6 +63,7 @@ public class StoreService {
         return storeRepository.findAllOrderByRatingOrPositiveRatio(orderByRatio,orderByPositiveRatio, pageable).map(StoreListResponseDto::from);
     }
 
+    @Cacheable(value = "top10Stores", key = "'topStores_10'")
     public Page<StoreListResponseDto> findTop() {
         Sort sortAll = Sort.by("rating").descending()
                 .and(Sort.by("positiveRatio").descending());
