@@ -13,6 +13,7 @@ import java.util.Optional;
 import matal.bookmark.domain.Bookmark;
 import matal.bookmark.domain.repository.BookmarkRepository;
 import matal.bookmark.dto.response.BookmarkResponseDto;
+import matal.bookmark.dto.response.BookmarkStoreIdsResponseDto;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
 import matal.member.domain.Member;
@@ -154,7 +155,7 @@ public class BookmarkServiceTest {
     }
 
     @Test
-    @DisplayName("북마크 리스트 조회 성공 테스트")
+    @DisplayName("북마크 페이지 조회 성공 테스트")
     void testGetBookmarksSuccess() {
         // given
         List<Bookmark> bookmarks = List.of(
@@ -184,7 +185,7 @@ public class BookmarkServiceTest {
     }
 
     @Test
-    @DisplayName("북마크 리스트 조회 시 회원 정보 없음으로 인한 실패 테스트")
+    @DisplayName("북마크 페이지 조회 시 회원 정보 없음으로 인한 실패 테스트")
     void testGetBookmarksFailure() {
         // given
 
@@ -194,6 +195,48 @@ public class BookmarkServiceTest {
 
         // then
         assertThrows(NotFoundException.class, () -> bookmarkService.getBookmarks(mockMember, 0));
+    }
+
+    @Test
+    @DisplayName("북마크 가게 아이디 조회 성공 테스트")
+    void testGetBookmarkStoresIdsSuccess() {
+        // given
+        List<BookmarkStoreIdsResponseDto> bookmarks = List.of(
+                new BookmarkStoreIdsResponseDto(
+                        1L,
+                        1L
+                ),
+                new BookmarkStoreIdsResponseDto(
+                        1L,
+                        2L
+                )
+        );
+
+
+        // when
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+        when(bookmarkRepository.findBookmarkStoreIdsByMemberId(any())).thenReturn(bookmarks);
+
+        // then
+        List<BookmarkStoreIdsResponseDto> response = bookmarkService.getBookmarkStoreIds(mockMember);
+        assertThat(response.get(0).bookmarkId()).isEqualTo(bookmarks.get(0).bookmarkId());
+        assertThat(response.get(1).bookmarkId()).isEqualTo(bookmarks.get(1).bookmarkId());
+        assertThat(response.get(0).storeId()).isEqualTo(bookmarks.get(0).storeId());
+        assertThat(response.get(1).storeId()).isEqualTo(bookmarks.get(1).storeId());
+
+    }
+
+    @Test
+    @DisplayName("북마크 가게 아이디 조회 시 회원 정보 없음으로 인한 실패 테스트")
+    void testGetBookmarkStoresIdsFailure() {
+        // given
+
+        // when
+        when(memberRepository.findById(any()))
+                .thenThrow(new NotFoundException(ResponseCode.MEMBER_NOT_FOUND_ID));
+
+        // then
+        assertThrows(NotFoundException.class, () -> bookmarkService.getBookmarkStoreIds(mockMember));
     }
 
     @Test

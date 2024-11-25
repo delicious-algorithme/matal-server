@@ -7,8 +7,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import matal.bookmark.dto.response.BookmarkResponseDto;
+import matal.bookmark.dto.response.BookmarkStoreIdsResponseDto;
 import matal.bookmark.service.BookmarkService;
 import matal.global.auth.LoginMember;
 import matal.global.exception.ErrorResponse;
@@ -51,7 +53,7 @@ public class BookmarkController {
     }
 
     @GetMapping
-    @Operation(summary = "북마크 조회 기능", description = "사용자가 북마크한 가게들을 조회할 때 사용하는 API")
+    @Operation(summary = "북마크 페이징 조회 기능", description = "사용자가 북마크한 가게들을 10개씩 조회할 때 사용하는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "북마크 조회 성공",
                     content = {@Content(schema = @Schema(implementation = Void.class))}),
@@ -64,6 +66,22 @@ public class BookmarkController {
             @RequestParam(name = "page", defaultValue = "0") int page)
     {
         Page<BookmarkResponseDto> bookmarkResponse = bookmarkService.getBookmarks(authMember, page);
+        return ResponseEntity.ok(bookmarkResponse);
+    }
+
+    @GetMapping("/ids")
+    @Operation(summary = "북마크 IDs 조회 기능", description = "사용자가 북마크한 가게들을 모두 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "북마크 조회 성공",
+                    content = {@Content(schema = @Schema(implementation = Void.class))}),
+            @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "회원 조회 실패",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
+    public ResponseEntity<List<BookmarkStoreIdsResponseDto>> getBookmarkStoreIds(
+            @LoginMember @Parameter(hidden = true) AuthMember authMember)
+    {
+        List<BookmarkStoreIdsResponseDto> bookmarkResponse = bookmarkService.getBookmarkStoreIds(authMember);
         return ResponseEntity.ok(bookmarkResponse);
     }
 
