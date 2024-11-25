@@ -53,7 +53,7 @@ public class BookmarkService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookmarkStoreIdsResponseDto> getBookmarkAndStoreIds(AuthMember authMember) {
+    public List<BookmarkStoreIdsResponseDto> getBookmarkStoreIds(AuthMember authMember) {
         validateMember(authMember.memberId());
         return bookmarkRepository.findBookmarkStoreIdsByMemberId(authMember.memberId());
     }

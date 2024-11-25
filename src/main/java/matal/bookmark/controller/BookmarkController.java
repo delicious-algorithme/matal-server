@@ -78,10 +78,10 @@ public class BookmarkController {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "회원 조회 실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
-    public ResponseEntity<List<BookmarkStoreIdsResponseDto>> getBookmarksId(
+    public ResponseEntity<List<BookmarkStoreIdsResponseDto>> getBookmarkStoreIds(
             @LoginMember @Parameter(hidden = true) AuthMember authMember)
     {
-        List<BookmarkStoreIdsResponseDto> bookmarkResponse = bookmarkService.getBookmarkAndStoreIds(authMember);
+        List<BookmarkStoreIdsResponseDto> bookmarkResponse = bookmarkService.getBookmarkStoreIds(authMember);
         return ResponseEntity.ok(bookmarkResponse);
     }
 

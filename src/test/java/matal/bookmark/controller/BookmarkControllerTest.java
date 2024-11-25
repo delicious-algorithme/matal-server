@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import matal.bookmark.dto.response.BookmarkResponseDto;
+import matal.bookmark.dto.response.BookmarkStoreIdsResponseDto;
 import matal.bookmark.service.BookmarkService;
 import matal.global.exception.AuthException;
 import matal.global.exception.NotFoundException;
@@ -101,8 +102,6 @@ public class BookmarkControllerTest {
                         )
                 )
         );
-
-        Pageable pageable = PageRequest.of(0, 10);
     }
 
     @Test
@@ -160,7 +159,7 @@ public class BookmarkControllerTest {
     }
 
     @Test
-    @DisplayName("북마크 리스트 조회 성공 테스트")
+    @DisplayName("북마크 페이지 조회 성공 테스트")
     void testGetBookmarksSuccess() throws Exception {
         // given
         Pageable pageable = PageRequest.of(0, 10);
@@ -182,7 +181,7 @@ public class BookmarkControllerTest {
     }
 
     @Test
-    @DisplayName("북마크 리스트 조회 시 세션 정보 없음으로 인한 실패 테스트")
+    @DisplayName("북마크 페이지 조회 시 세션 정보 없음으로 인한 실패 테스트")
     void testGetBookmarksFailure() throws Exception {
         // given
 
@@ -198,7 +197,7 @@ public class BookmarkControllerTest {
     }
 
     @Test
-    @DisplayName("북마크 리스트 조회 시 회원 정보를 찾지 못해 발생하는 실패 테스트")
+    @DisplayName("북마크 페이지 조회 시 회원 정보를 찾지 못해 발생하는 실패 테스트")
     void testGetBookmarksFailure2() throws Exception {
         // given
 
@@ -208,6 +207,68 @@ public class BookmarkControllerTest {
 
         // then
         mockMvc.perform(get("/api/bookmarks")
+                        .contentType("application/json")
+                        .session(mockSession))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("북마크, 가게 아이디 조회 성공 테스트")
+    void testGetBookmarkStoreIdsSuccess() throws Exception {
+        // given
+        List<BookmarkStoreIdsResponseDto> bookmarks = List.of(
+                new BookmarkStoreIdsResponseDto(
+                        1L, 1L
+                ),
+                new BookmarkStoreIdsResponseDto(
+                        1L, 2L
+                )
+        );
+
+
+        // when
+        when(bookmarkService.getBookmarkStoreIds(mockMember)).thenReturn(bookmarks);
+
+        // then
+        mockMvc.perform(get("/api/bookmarks/ids")
+                        .contentType("application/json")
+                        .session(mockSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].bookmarkId").value(1L))
+                .andExpect(jsonPath("$[0].storeId").value(1L))
+                .andExpect(jsonPath("$[1].bookmarkId").value(1L))
+                .andExpect(jsonPath("$[1].storeId").value(2L))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("북마크 가게 아이디 조회 시 세션 정보 없음으로 인한 실패 테스트")
+    void testGetBookmarkStoreIdsFailure() throws Exception {
+        // given
+
+        // when
+        when(bookmarkService.getBookmarkStoreIds(mockMember))
+                .thenThrow(new AuthException(ResponseCode.SESSION_VALUE_EXCEPTION));
+
+        // then
+        mockMvc.perform(get("/api/bookmarks/ids")
+                        .contentType("application/json"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("북마크 가게 아이디 조회 시 회원 정보를 찾지 못해 발생하는 실패 테스트")
+    void testGetBookmarkStoreIdsFailure2() throws Exception {
+        // given
+
+        // when
+        doThrow(new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID))
+                .when(bookmarkService).getBookmarkStoreIds(mockMember);
+
+        // then
+        mockMvc.perform(get("/api/bookmarks/ids")
                         .contentType("application/json")
                         .session(mockSession))
                 .andExpect(status().isNotFound())
