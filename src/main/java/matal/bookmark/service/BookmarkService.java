@@ -1,8 +1,10 @@
 package matal.bookmark.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import matal.bookmark.domain.Bookmark;
 import matal.bookmark.domain.repository.BookmarkRepository;
+import matal.bookmark.dto.response.BookmarkStoreIdsResponseDto;
 import matal.bookmark.dto.response.BookmarkResponseDto;
 import matal.global.exception.AlreadyExistException;
 import matal.global.exception.AuthException;
@@ -48,6 +50,12 @@ public class BookmarkService {
         validateMember(authMember.memberId());
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         return bookmarkRepository.findBookmarksByMemberId(authMember.memberId(), pageable).map(BookmarkResponseDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookmarkStoreIdsResponseDto> getBookmarkAndStoreIds(AuthMember authMember) {
+        validateMember(authMember.memberId());
+        return bookmarkRepository.findBookmarkStoreIdsByMemberId(authMember.memberId());
     }
 
     @Transactional
