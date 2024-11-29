@@ -29,22 +29,21 @@ public class StoreService {
 
     public Page<StoreListResponseDto> searchAndFilterStores(StoreSearchFilterRequestDto filterRequestDto) {
 
-        Pageable pageable = PageRequest.of(filterRequestDto.getPage(), PAGE_SIZE);
+        Sort sort = Sort.by(Direction.DESC, filterRequestDto.sortTarget);
+        Pageable pageable = PageRequest.of(filterRequestDto.page(), PAGE_SIZE);
 
         return storeRepository.searchAndFilterStores(
-                filterRequestDto.getSearchKeywords(),
+                filterRequestDto.searchKeywords(),
                 filterRequestDto.convertCategoryToString(),
                 filterRequestDto.convertAddressesToString(),
                 filterRequestDto.convertPositiverKeywordsToString(),
-                filterRequestDto.getPositiveRatio(),
-                filterRequestDto.getReviewsCount(),
-                filterRequestDto.getRating(),
-                filterRequestDto.getIsSoloDining(),
-                filterRequestDto.getIsParking(),
-                filterRequestDto.getIsWaiting(),
-                filterRequestDto.getIsPetFriendly(),
-                filterRequestDto.getOrderByRating(),
-                filterRequestDto.getOrderByPositiveRatio(),
+                filterRequestDto.positiveRatio(),
+                filterRequestDto.reviewsCount(),
+                filterRequestDto.rating(),
+                filterRequestDto.isSoloDining(),
+                filterRequestDto.isParking(),
+                filterRequestDto.isWaiting(),
+                filterRequestDto.isPetFriendly(),
                 pageable
         ).map(StoreListResponseDto::from);
     }

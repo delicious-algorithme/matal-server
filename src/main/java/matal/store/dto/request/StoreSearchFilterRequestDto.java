@@ -10,35 +10,10 @@ import matal.global.exception.ResponseCode;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StoreSearchFilterRequestDto {
-
-    private final String searchKeywords;
-
-    private final  List<String> category;
-
-    private final List<String> addresses;
-
-    private final List<String> positiveKeyword;
-
-    private final Double positiveRatio;
-
-    private final Long reviewsCount;
-
-    private final Double rating;
-
-    private final Boolean isSoloDining;
-
-    private final Boolean isParking;
-
-    private final Boolean isWaiting;
-
-    private final Boolean isPetFriendly;
-
-    private final String orderByRating;
-
-    private final String orderByPositiveRatio;
-
-    private final int page;
+public record StoreSearchFilterRequestDto(String searchKeywords, List<String> category, List<String> addresses,
+                                          List<String> positiveKeyword, Double positiveRatio, Long reviewsCount,
+                                          Double rating, Boolean isSoloDining, Boolean isParking, Boolean isWaiting,
+                                          Boolean isPetFriendly, String sortTarget, int page) {
 
     public void validateFields() {
         if (searchKeywords == null &&

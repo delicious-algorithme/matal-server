@@ -20,12 +20,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "(:soloDining IS NULL OR solo_dining = :soloDining) AND " +
             "(:parking IS NULL OR parking = :parking) AND " +
             "(:waiting IS NULL OR waiting = :waiting) AND " +
-            "(:petFriendly IS NULL OR pet_friendly = :petFriendly) " +
-            "ORDER BY " +
-            "CASE WHEN :orderByRating = 'ASC' THEN rating END ASC, " +
-            "CASE WHEN :orderByRating = 'DESC' THEN rating END DESC, " +
-            "CASE WHEN :orderByPositiveRatio = 'ASC' THEN positive_ratio END ASC, " +
-            "CASE WHEN :orderByPositiveRatio = 'DESC' THEN positive_ratio END DESC",
+            "(:petFriendly IS NULL OR pet_friendly = :petFriendly) ",
             nativeQuery = true)
     Page<Store> searchAndFilterStores(
             @Param("searchKeywords") String searchKeywords,
@@ -39,7 +34,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             @Param("parking") Boolean parking,
             @Param("waiting") Boolean waiting,
             @Param("petFriendly") Boolean petFriendly,
-            @Param("orderByRating") String orderByRating,
-            @Param("orderByPositiveRatio") String orderByPositiveRatio,
             Pageable pageable);
 }

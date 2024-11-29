@@ -230,8 +230,6 @@ public class StoreServiceTest {
         Boolean parking = true;
         Boolean waiting = true;
         Boolean petFriendly = true;
-        String orderByRating = "desc";
-        String orderByPositiveRatio = "asc";
 
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -265,8 +263,6 @@ public class StoreServiceTest {
                 parking,
                 waiting,
                 petFriendly,
-                orderByRating,
-                orderByPositiveRatio,
                 pageable
         )).thenReturn(storePage);
 
