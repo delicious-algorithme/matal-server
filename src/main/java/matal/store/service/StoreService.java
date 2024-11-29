@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,14 +57,14 @@ public class StoreService {
         return StoreResponseDto.from(store);
     }
 
-    @Cacheable(value = "stores", key = "'stores_' + #orderByRatio + '_' + #orderByPositiveRatio + '_' + #page")
+    @Cacheable(value = "stores", key = "'stores_' + #sortTarget + '_' + #page")
     public RestPage<StoreListResponseDto> findAll(int page,
-                                                  String orderByRatio,
-                                                  String orderByPositiveRatio) {
+                                                  String sortTarget) {
 
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Sort sort = Sort.by(Direction.DESC, sortTarget);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE, sort);
         Page<StoreListResponseDto> responseDtoPage =
-                storeRepository.findAllOrderByRatingOrPositiveRatio(orderByRatio,orderByPositiveRatio, pageable)
+                storeRepository.findAll(pageable)
                         .map(StoreListResponseDto::from);
 
         return new RestPage<>(responseDtoPage);

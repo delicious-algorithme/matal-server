@@ -286,21 +286,19 @@ public class StoreControllerTest {
         // given
         List<StoreListResponseDto> sortedStores = stores.stream()
                 .sorted(Comparator.comparingDouble(StoreListResponseDto::rating).reversed())
-                .sorted(Comparator.comparingDouble(StoreListResponseDto::positiveRatio).reversed())
                 .collect(Collectors.toList());
         Page<StoreListResponseDto> storePage = new PageImpl<>(sortedStores);
         RestPage<StoreListResponseDto> responseDtoPage = new RestPage<>(storePage);
 
         // when
-        when(storeService.findAll(0, "DESC", "DESC")).thenReturn(responseDtoPage);
+        when(storeService.findAll(0, "rating")).thenReturn(responseDtoPage);
 
         // then
         mockMvc.perform(get("/api/stores/all")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType("application/json")
                         .param("page", "0")
-                        .param("orderByRating", "DESC")
-                        .param("orderByPositiveRatio", "DESC"))
+                        .param("sortTarget", "rating"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].storeId").value(sortedStores.get(0).storeId()))
                 .andExpect(jsonPath("$.content[1].storeId").value(sortedStores.get(1).storeId()))

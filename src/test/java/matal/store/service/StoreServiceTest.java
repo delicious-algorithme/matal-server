@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
@@ -194,13 +195,14 @@ public class StoreServiceTest {
     void testFindAll() {
         // given
         List<Store> stores = List.of(store1, store2);
-        Pageable pageable = PageRequest.of(0, 10);
+        Sort sort = Sort.by(Direction.DESC, "rating");
+        Pageable pageable = PageRequest.of(0, 10, sort);
         Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeRepository.findAllOrderByRatingOrPositiveRatio("DESC", "DESC", pageable)).thenReturn(storePage);
+        when(storeRepository.findAll(pageable)).thenReturn(storePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.findAll(0, "DESC", "DESC");
+        Page<StoreListResponseDto> responseDtos = storeService.findAll(0, "rating");
 
         // then
         assertNotNull(responseDtos);
