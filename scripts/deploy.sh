@@ -2,8 +2,8 @@
 
 cd /home/ubuntu/backend || exit
 
-REPOSITORY=/home/ubuntu
-LOG_BASE_DIR="$REPOSITORY/logs"
+REPOSITORY=/home/ubuntu/backend
+LOG_BASE_DIR=/home/ubuntu/logs
 LOG_INFO_DIR="$LOG_BASE_DIR/info"
 LOG_WARN_DIR="$LOG_BASE_DIR/warn"
 LOG_ERROR_DIR="$LOG_BASE_DIR/error"
