@@ -16,31 +16,31 @@ public class Store {
     @Column(name = "store_id")
     private Long storeId;
 
-    @Column(name = "keyword", length = 1000)
+    @Column(name = "keyword", length = 20)
     private String keyword;
 
-    @Column(name = "name", length = 255)
+    @Column(name = "name", length = 30)
     private String name;
 
-    @Column(name = "store_link", length = 1000)
+    @Column(name = "store_link", length = 460)
     private String storeLink;
 
-    @Column(name = "category", length = 255)
+    @Column(name = "category", length = 20)
     private String category;
 
     @Column(name = "reviews_count")
     private Long reviewsCount;
 
-    @Column(name = "address", length = 255)
+    @Column(name = "address", length = 70)
     private String address;
 
-    @Column(name = "nearby_station", length = 1000)
+    @Column(name = "nearby_station", length = 50)
     private String nearbyStation;
 
-    @Column(name = "phone", length = 255)
+    @Column(name = "phone", length = 20)
     private String phone;
 
-    @Column(name = "business_hours", length = 1000)
+    @Column(name = "business_hours", length = 670)
     private String businessHours;
 
     @Column(name = "latitude")
@@ -49,19 +49,19 @@ public class Store {
     @Column(name = "longitude")
     private Double longitude;
 
-    @Column(name = "main_menu", length = 1000)
+    @Column(name = "main_menu", length = 100)
     private String mainMenu;
 
-    @Column(name = "image_urls", length = 1000)
+    @Column(name = "image_urls", length = 490)
     private String imageUrls;
 
-    @Column(name = "positive_keywords", length = 255)
+    @Column(name = "positive_keywords", length = 50)
     private String positiveKeywords;
 
-    @Column(name = "negative_keywords", length = 255)
+    @Column(name = "negative_keywords", length = 60)
     private String negativeKeywords;
 
-    @Column(name = "review_summary", length = 1000)
+    @Column(name = "review_summary", length = 110)
     private String reviewSummary;
 
     @Column(name = "rating")
@@ -82,19 +82,19 @@ public class Store {
     @Column(name = "parking")
     private Boolean isParking;
 
-    @Column(name = "parking_tip", length = 1000)
+    @Column(name = "parking_tip", length = 70)
     private String parkingTip;
 
     @Column(name = "waiting")
     private Boolean isWaiting;
 
-    @Column(name = "waiting_tip", length = 1000)
+    @Column(name = "waiting_tip", length = 60)
     private String waitingTip;
 
     @Column(name = "pet_friendly")
     private Boolean isPetFriendly;
 
-    @Column(name = "recommended_menu", length = 1000)
+    @Column(name = "recommended_menu", length = 120)
     private String recommendedMenu;
 
     @Builder
