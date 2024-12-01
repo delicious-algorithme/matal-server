@@ -39,9 +39,6 @@ public class StoreController {
             @RequestBody StoreSearchFilterRequestDto requestDto)
     {
         requestDto.validateFields();
-        List<String> validaString = List.of("rating", "positive_ratio");
-        if(!validaString.contains(requestDto.sortTarget()))
-            throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
         Page<StoreListResponseDto> response = storeService.searchAndFilterStores(requestDto);
         return ResponseEntity.ok().body(response);
     }

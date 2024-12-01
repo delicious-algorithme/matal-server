@@ -1,5 +1,6 @@
 package matal.store.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
@@ -33,14 +34,20 @@ public class StoreService {
         Sort sort = Sort.by(Direction.DESC, filterRequestDto.sortTarget());
         Pageable pageable = PageRequest.of(filterRequestDto.page(), PAGE_SIZE, sort);
 
+        List<Long> fullTextResultIds = null;
+
+        if (filterRequestDto.searchKeywords() != null && !filterRequestDto.searchKeywords().isBlank()) {
+            fullTextResultIds = storeRepository.searchByFullText(filterRequestDto.searchKeywords());
+        }
+
         return storeRepository.searchAndFilterStores(
-                filterRequestDto.searchKeywords(),
-                filterRequestDto.convertCategoryToString(),
-                filterRequestDto.convertAddressesToString(),
-                filterRequestDto.convertPositiverKeywordsToString(),
+                fullTextResultIds,
+                filterRequestDto.category(),
+                filterRequestDto.addresses(),
+                filterRequestDto.positiveKeyword(),
                 filterRequestDto.positiveRatio(),
-                filterRequestDto.reviewsCount(),
                 filterRequestDto.rating(),
+                filterRequestDto.reviewsCount(),
                 filterRequestDto.isSoloDining(),
                 filterRequestDto.isParking(),
                 filterRequestDto.isWaiting(),

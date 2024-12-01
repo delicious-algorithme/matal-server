@@ -34,6 +34,7 @@ public record StoreSearchFilterRequestDto(String searchKeywords,
                 sortTarget == null) {
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
         }
+        validateSort(sortTarget);
         validatePage();
     }
 
@@ -43,24 +44,9 @@ public record StoreSearchFilterRequestDto(String searchKeywords,
         }
     }
 
-    public String convertCategoryToString() {
-        if (this.category == null || this.category.isEmpty()) {
-            return null;
-        }
-        return String.join("|", this.category);
-    }
-
-    public String convertAddressesToString() {
-        if (this.addresses.isEmpty()) {
-            return null;
-        }
-        return String.join("|", this.addresses);
-    }
-
-    public String convertPositiverKeywordsToString() {
-        if (this.positiveKeyword.isEmpty()) {
-            return null;
-        }
-        return String.join("|", this.positiveKeyword);
+    private void validateSort(String sortTarget) {
+        List<String> validatedString = List.of("rating", "positive_ratio");
+        if(!validatedString.contains(sortTarget))
+            throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
     }
 }
