@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query(value = "SELECT * FROM store WHERE " +
-            "(:searchKeywords IS NULL OR MATCH(keyword, name, category, address, nearby_station, main_menu, positive_keywords, review_summary, recommended_menu) AGAINST (:searchKeywords IN BOOLEAN MODE)) AND " +
+            "(:searchKeywords IS NULL OR MATCH(keyword, name, category, address, nearby_station, main_menu, positive_keywords, review_summary, recommended_menu) AGAINST (:searchKeywords)) AND " +
             "(:category IS NULL OR category REGEXP :category) AND " +
             "(:addresses IS NULL OR address REGEXP :addresses) AND " +
             "(:positiveKeyword IS NULL OR positive_keywords REGEXP :positiveKeyword) AND " +
@@ -20,8 +20,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "(:soloDining IS NULL OR solo_dining = :soloDining) AND " +
             "(:parking IS NULL OR parking = :parking) AND " +
             "(:waiting IS NULL OR waiting = :waiting) AND " +
-            "(:petFriendly IS NULL OR pet_friendly = :petFriendly) ",
-            nativeQuery = true)
+            "(:petFriendly IS NULL OR pet_friendly = :petFriendly) ", nativeQuery = true)
     Page<Store> searchAndFilterStores(
             @Param("searchKeywords") String searchKeywords,
             @Param("category") String category,

@@ -39,6 +39,9 @@ public class StoreController {
             @RequestBody StoreSearchFilterRequestDto requestDto)
     {
         requestDto.validateFields();
+        List<String> validaString = List.of("rating", "positive_ratio");
+        if(!validaString.contains(requestDto.sortTarget()))
+            throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
         Page<StoreListResponseDto> response = storeService.searchAndFilterStores(requestDto);
         return ResponseEntity.ok().body(response);
     }
@@ -81,7 +84,7 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     private ResponseEntity<RestPage<StoreListResponseDto>> getStoreTop() {
-        RestPage<StoreListResponseDto> storeListResponse = storeService.findTop();
+        RestPage<StoreListResponseDto> storeListResponse = storeService.findTop10Stores();
         return ResponseEntity.ok().body(storeListResponse);
     }
 }

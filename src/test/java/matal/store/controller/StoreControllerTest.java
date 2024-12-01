@@ -65,13 +65,11 @@ public class StoreControllerTest {
                 null,
                 null,
                 null,
-                null,
-                null,
+                "rating",
                 0
         );
 
         invalidRequestDto = new StoreSearchFilterRequestDto(
-                null,
                 null,
                 null,
                 null,
@@ -349,7 +347,7 @@ public class StoreControllerTest {
         RestPage<StoreListResponseDto> responseDtoPage = new RestPage<>(storePage);
 
         // when
-        when(storeService.findTop()).thenReturn(responseDtoPage);
+        when(storeService.findTop10Stores()).thenReturn(responseDtoPage);
 
         // then
         mockMvc.perform(get("/api/stores/top")

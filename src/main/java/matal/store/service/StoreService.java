@@ -24,13 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoreService {
 
     private static final int PAGE_SIZE = 10;
+    private static final int TOP10_PAGE = 0;
 
     private final StoreRepository storeRepository;
 
     public Page<StoreListResponseDto> searchAndFilterStores(StoreSearchFilterRequestDto filterRequestDto) {
 
-        Sort sort = Sort.by(Direction.DESC, filterRequestDto.sortTarget);
-        Pageable pageable = PageRequest.of(filterRequestDto.page(), PAGE_SIZE);
+        Sort sort = Sort.by(Direction.DESC, filterRequestDto.sortTarget());
+        Pageable pageable = PageRequest.of(filterRequestDto.page(), PAGE_SIZE, sort);
 
         return storeRepository.searchAndFilterStores(
                 filterRequestDto.searchKeywords(),
@@ -70,11 +71,11 @@ public class StoreService {
     }
 
     @Cacheable(value = "top10Stores", key = "'topStores_10'")
-    public RestPage<StoreListResponseDto> findTop() {
+    public RestPage<StoreListResponseDto> findTop10Stores() {
 
         Sort sortAll = Sort.by("rating").descending()
                 .and(Sort.by("positiveRatio").descending());
-        Pageable pageable = PageRequest.of(0, PAGE_SIZE, sortAll);
+        Pageable pageable = PageRequest.of(TOP10_PAGE, PAGE_SIZE, sortAll);
 
         Page<StoreListResponseDto> responseDtoPage =
                 storeRepository.findAll(pageable).map(StoreListResponseDto::from);

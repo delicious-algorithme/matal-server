@@ -1,19 +1,23 @@
 package matal.store.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import matal.global.exception.BadRequestException;
 import matal.global.exception.ResponseCode;
 
-@AllArgsConstructor
-@Getter
-@Setter
-public record StoreSearchFilterRequestDto(String searchKeywords, List<String> category, List<String> addresses,
-                                          List<String> positiveKeyword, Double positiveRatio, Long reviewsCount,
-                                          Double rating, Boolean isSoloDining, Boolean isParking, Boolean isWaiting,
-                                          Boolean isPetFriendly, String sortTarget, int page) {
+public record StoreSearchFilterRequestDto(String searchKeywords,
+                                          List<String> category,
+                                          List<String> addresses,
+                                          List<String> positiveKeyword,
+                                          Double positiveRatio,
+                                          Long reviewsCount,
+                                          Double rating,
+                                          Boolean isSoloDining,
+                                          Boolean isParking,
+                                          Boolean isWaiting,
+                                          Boolean isPetFriendly,
+                                          @JsonProperty(defaultValue = "rating") String sortTarget,
+                                          int page) {
 
     public void validateFields() {
         if (searchKeywords == null &&
@@ -26,7 +30,8 @@ public record StoreSearchFilterRequestDto(String searchKeywords, List<String> ca
                 isSoloDining == null &&
                 isParking == null &&
                 isWaiting == null &&
-                isPetFriendly == null) {
+                isPetFriendly == null &&
+                sortTarget == null) {
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
         }
         validatePage();

@@ -59,8 +59,7 @@ public class StoreServiceTest {
                 true,
                 true,
                 true,
-                "desc",
-                "asc",
+                "rating",
                 0
         );
 
@@ -231,7 +230,8 @@ public class StoreServiceTest {
         Boolean waiting = true;
         Boolean petFriendly = true;
 
-        Pageable pageable = PageRequest.of(0, 10);
+        Sort sort = Sort.by(Direction.DESC, requestDto.sortTarget());
+        Pageable pageable = PageRequest.of(0, 10, sort);
 
         List<Store> filteredStores = List.of(
                 store1,
@@ -305,7 +305,7 @@ public class StoreServiceTest {
         //when
         when(storeRepository.findAll(pageable)).thenReturn(topStorePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.findTop();
+        Page<StoreListResponseDto> responseDtos = storeService.findTop10Stores();
 
         //then
         assertNotNull(responseDtos);
