@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface StoreRepository extends JpaRepository<Store, Long> {
+public interface StoreRepository extends JpaRepository<Store, Long>, StoreRepositoryCustom {
 
     @Query(value = "SELECT * FROM store WHERE " +
             "(:searchKeywords IS NULL OR MATCH(keyword, name, category, address, nearby_station, main_menu, positive_keywords, review_summary, recommended_menu) AGAINST (:searchKeywords)) AND " +
