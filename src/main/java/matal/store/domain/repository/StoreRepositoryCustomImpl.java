@@ -65,7 +65,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
 
     private BooleanExpression categoriesLike(List<String> categories) {
         return categories == null ? null
-                : Expressions.allOf(categories.stream().map(this::categoryLike).toArray(BooleanExpression[]::new));
+                : Expressions.anyOf(categories.stream().map(this::categoryLike).toArray(BooleanExpression[]::new));
     }
 
     private BooleanExpression categoryLike(String category) {
@@ -74,7 +74,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
 
     private BooleanExpression addressesLike(List<String> addresses) {
         return addresses == null ? null
-                : Expressions.allOf(addresses.stream().map(this::addressLike).toArray(BooleanExpression[]::new));
+                : Expressions.anyOf(addresses.stream().map(this::addressLike).toArray(BooleanExpression[]::new));
     }
 
     private BooleanExpression addressLike(String address) {
@@ -83,7 +83,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
 
     private BooleanExpression positiveKeywordsLike(List<String> positiveKeywords) {
         return positiveKeywords == null ? null
-                : Expressions.allOf(positiveKeywords.stream().map(this::positiveKeywordLike).toArray(BooleanExpression[]::new));
+                : Expressions.anyOf(positiveKeywords.stream().map(this::positiveKeywordLike).toArray(BooleanExpression[]::new));
     }
 
     private BooleanExpression positiveKeywordLike(String positiveKeyword) {
