@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,8 +59,7 @@ public class StoreServiceTest {
                 true,
                 true,
                 true,
-                "desc",
-                "asc",
+                "rating",
                 0
         );
 
@@ -194,13 +194,14 @@ public class StoreServiceTest {
     void testFindAll() {
         // given
         List<Store> stores = List.of(store1, store2);
-        Pageable pageable = PageRequest.of(0, 10);
+        Sort sort = Sort.by(Direction.DESC, "rating");
+        Pageable pageable = PageRequest.of(0, 10, sort);
         Page<Store> storePage = new PageImpl<>(stores, pageable, stores.size());
 
         // when
-        when(storeRepository.findAllOrderByRatingOrPositiveRatio("DESC", "DESC", pageable)).thenReturn(storePage);
+        when(storeRepository.findAll(pageable)).thenReturn(storePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.findAll(0, "DESC", "DESC");
+        Page<StoreListResponseDto> responseDtos = storeService.findAll(0, "rating");
 
         // then
         assertNotNull(responseDtos);
@@ -217,10 +218,10 @@ public class StoreServiceTest {
     @DisplayName("가게 검색 및 필터링 테스트")
     void testSearchAndFilterStores() {
         // given
-        String searchKeywords = "커피";
-        String category = "카페";
-        String address = "서울";
-        String positiveKeywords = "맛있는 커피";
+        List<Long> fulltextResultIds = List.of();
+        List<String> category = List.of("카페");
+        List<String> address = List.of("서울");
+        List<String> positiveKeywords = List.of("맛있는 커피");
         Double minPositiveRatio = 80.0;
         Long reviewsCount = 100L;
         Double rating = 4.0;
@@ -228,10 +229,9 @@ public class StoreServiceTest {
         Boolean parking = true;
         Boolean waiting = true;
         Boolean petFriendly = true;
-        String orderByRating = "desc";
-        String orderByPositiveRatio = "asc";
 
-        Pageable pageable = PageRequest.of(0, 10);
+        Sort sort = Sort.by(Direction.DESC, requestDto.sortTarget());
+        Pageable pageable = PageRequest.of(0, 10, sort);
 
         List<Store> filteredStores = List.of(
                 store1,
@@ -252,19 +252,17 @@ public class StoreServiceTest {
 
         // when
         when(storeRepository.searchAndFilterStores(
-                searchKeywords,
+                fulltextResultIds,
                 category,
                 address,
                 positiveKeywords,
                 minPositiveRatio,
-                reviewsCount,
                 rating,
+                reviewsCount,
                 soloDining,
                 parking,
                 waiting,
                 petFriendly,
-                orderByRating,
-                orderByPositiveRatio,
                 pageable
         )).thenReturn(storePage);
 
@@ -307,7 +305,7 @@ public class StoreServiceTest {
         //when
         when(storeRepository.findAll(pageable)).thenReturn(topStorePage);
 
-        Page<StoreListResponseDto> responseDtos = storeService.findTop();
+        Page<StoreListResponseDto> responseDtos = storeService.findTop10Stores();
 
         //then
         assertNotNull(responseDtos);

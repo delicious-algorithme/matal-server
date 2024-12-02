@@ -6,8 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import matal.global.exception.BadRequestException;
 import matal.global.exception.ErrorResponse;
+import matal.global.exception.ResponseCode;
 import matal.store.dto.RestPage;
 import matal.store.dto.request.StoreSearchFilterRequestDto;
 import matal.store.dto.response.StoreListResponseDto;
@@ -61,9 +64,12 @@ public class StoreController {
     })
     public ResponseEntity<RestPage<StoreListResponseDto>> getStoreAll(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "orderByRating", required = false) String orderByRating,
-            @RequestParam(name = "orderByPositiveRatio", required = false) String orderByPositiveRatio) {
-        RestPage<StoreListResponseDto> storeListResponse = storeService.findAll(page, orderByRating, orderByPositiveRatio);
+            @RequestParam(name = "sortTarget", required = false, defaultValue = "rating") String sortTarget) {
+
+        List<String> validaString = List.of("rating", "positive_ratio");
+        if(!validaString.contains(sortTarget))
+            throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
+        RestPage<StoreListResponseDto> storeListResponse = storeService.findAll(page, sortTarget);
         return ResponseEntity.ok().body(storeListResponse);
     }
 
@@ -75,7 +81,7 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "실패"),
     })
     private ResponseEntity<RestPage<StoreListResponseDto>> getStoreTop() {
-        RestPage<StoreListResponseDto> storeListResponse = storeService.findTop();
+        RestPage<StoreListResponseDto> storeListResponse = storeService.findTop10Stores();
         return ResponseEntity.ok().body(storeListResponse);
     }
 }
