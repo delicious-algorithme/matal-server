@@ -66,7 +66,7 @@ public class StoreController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "sortTarget", required = false, defaultValue = "rating") String sortTarget) {
 
-        List<String> validaString = List.of("rating", "positive_ratio");
+        List<String> validaString = List.of("rating", "positiveRatio");
         if(!validaString.contains(sortTarget))
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
         RestPage<StoreListResponseDto> storeListResponse = storeService.findAll(page, sortTarget);

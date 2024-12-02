@@ -45,7 +45,7 @@ public record StoreSearchFilterRequestDto(String searchKeywords,
     }
 
     private void validateSort(String sortTarget) {
-        List<String> validatedString = List.of("rating", "positive_ratio");
+        List<String> validatedString = List.of("rating", "positiveRatio");
         if(!validatedString.contains(sortTarget))
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
     }
