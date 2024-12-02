@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import matal.global.exception.NotFoundException;
 import matal.global.exception.ResponseCode;
 import matal.store.dto.RestPage;
+import matal.store.dto.SortTarget;
 import matal.store.dto.request.StoreSearchFilterRequestDto;
 import matal.store.dto.response.StoreListResponseDto;
 import matal.store.dto.response.StoreResponseDto;
@@ -31,13 +32,13 @@ public class StoreService {
 
     public Page<StoreListResponseDto> searchAndFilterStores(StoreSearchFilterRequestDto filterRequestDto) {
 
-        Sort sort = Sort.by(Direction.DESC, filterRequestDto.sortTarget());
-        Pageable pageable = PageRequest.of(filterRequestDto.page(), PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(filterRequestDto.page(), PAGE_SIZE);
 
         List<Long> fullTextResultIds = null;
 
         if (filterRequestDto.searchKeywords() != null && !filterRequestDto.searchKeywords().isBlank()) {
-            fullTextResultIds = storeRepository.searchByFullText(filterRequestDto.searchKeywords());
+            fullTextResultIds = storeRepository
+                    .searchByFullText(filterRequestDto.searchKeywords());
         }
 
         return storeRepository.searchAndFilterStores(
@@ -52,6 +53,7 @@ public class StoreService {
                 filterRequestDto.isParking(),
                 filterRequestDto.isWaiting(),
                 filterRequestDto.isPetFriendly(),
+                filterRequestDto.sortTarget(),
                 pageable
         ).map(StoreListResponseDto::from);
     }
@@ -80,8 +82,8 @@ public class StoreService {
     @Cacheable(value = "top10Stores", key = "'topStores_10'")
     public RestPage<StoreListResponseDto> findTop10Stores() {
 
-        Sort sortAll = Sort.by("rating").descending()
-                .and(Sort.by("positiveRatio").descending());
+        Sort sortAll = Sort.by(SortTarget.RATING.getName()).descending()
+                .and(Sort.by(SortTarget.POSITIVE_RATIO.getName()).descending());
         Pageable pageable = PageRequest.of(TOP10_PAGE, PAGE_SIZE, sortAll);
 
         Page<StoreListResponseDto> responseDtoPage =

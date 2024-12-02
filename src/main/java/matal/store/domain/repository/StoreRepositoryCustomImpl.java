@@ -1,12 +1,14 @@
 package matal.store.domain.repository;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import matal.store.domain.Store;
+import matal.store.dto.SortTarget;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
                                              Boolean parking,
                                              Boolean waiting,
                                              Boolean petFriendly,
+                                             String sortTarget,
                                              Pageable pageable)
     {
         QueryResults<Store> result =
@@ -48,6 +51,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
                                 parkingEq(parking),
                                 waitingEq(waiting),
                                 petFriendlyEq(petFriendly))
+                        .orderBy(sortTargetDesc(sortTarget))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .fetchResults();
@@ -117,5 +121,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
 
     private BooleanExpression petFriendlyEq(Boolean petFriendly) {
         return petFriendly == null ? null : store.isPetFriendly.eq(petFriendly);
+    }
+
+    private OrderSpecifier<Double> sortTargetDesc(String sortTarget) {
+        if(sortTarget.equals(SortTarget.POSITIVE_RATIO.getName()))
+            return store.positiveRatio.desc();
+        return store.rating.desc();
     }
 }

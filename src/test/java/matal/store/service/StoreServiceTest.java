@@ -230,8 +230,7 @@ public class StoreServiceTest {
         Boolean waiting = true;
         Boolean petFriendly = true;
 
-        Sort sort = Sort.by(Direction.DESC, requestDto.sortTarget());
-        Pageable pageable = PageRequest.of(0, 10, sort);
+        Pageable pageable = PageRequest.of(0, 10);
 
         List<Store> filteredStores = List.of(
                 store1,
@@ -263,6 +262,7 @@ public class StoreServiceTest {
                 parking,
                 waiting,
                 petFriendly,
+                requestDto.sortTarget(),
                 pageable
         )).thenReturn(storePage);
 

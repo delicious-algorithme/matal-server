@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import matal.global.exception.BadRequestException;
 import matal.global.exception.ResponseCode;
+import matal.store.dto.SortTarget;
 
 public record StoreSearchFilterRequestDto(String searchKeywords,
                                           List<String> category,
@@ -45,7 +46,7 @@ public record StoreSearchFilterRequestDto(String searchKeywords,
     }
 
     private void validateSort(String sortTarget) {
-        List<String> validatedString = List.of("rating", "positiveRatio");
+        List<String> validatedString = List.of(SortTarget.RATING.getName(), SortTarget.POSITIVE_RATIO.getName());
         if(!validatedString.contains(sortTarget))
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
     }

@@ -23,6 +23,5 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
             "FROM Bookmark b WHERE b.member.id = :memberId")
     List<BookmarkStoreIdsResponseDto> findBookmarkStoreIdsByMemberId(@Param("memberId") Long memberId);
 
-
     Boolean existsBookmarkByStoreAndMember(Store store, Member member);
 }

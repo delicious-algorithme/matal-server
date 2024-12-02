@@ -18,5 +18,6 @@ public interface StoreRepositoryCustom {
                                       Boolean parking,
                                       Boolean waiting,
                                       Boolean petFriendly,
+                                      String sortTarget,
                                       Pageable pageable);
 }
