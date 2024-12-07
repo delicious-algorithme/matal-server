@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 public record SignUpRequestDto(
         @Email @NotBlank String email,
         @NotBlank String password,
-        String nickname
+        String nickname,
+        Boolean serviceAgreement,
+        Boolean privacyAgreement,
+        Boolean ageConfirmation
 ) {
 }

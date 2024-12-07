@@ -32,6 +32,14 @@ public class MemberService {
         if(memberRepository.findByEmail(signUpRequestDto.email()).isPresent())
             throw new AlreadyExistException(ResponseCode.MEMBER_ALREADY_EXIST_EXCEPTION);
 
+        if(memberRepository.findByNickname(signUpRequestDto.nickname()).isPresent())
+            throw new AlreadyExistException(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION);
+
+        if(!signUpRequestDto.serviceAgreement()
+                || !signUpRequestDto.privacyAgreement()
+                || !signUpRequestDto.ageConfirmation())
+            throw new AlreadyExistException(ResponseCode.MEMBER_AGREEMENT_NOT_ACCEPTED);
+
         saveMember(signUpRequestDto);
     }
 
@@ -61,6 +69,9 @@ public class MemberService {
                 .password(passwordEncoder.encode(signUpRequestDto.password()))
                 .nickname(signUpRequestDto.nickname())
                 .role(Role.MEMBER)
+                .privacyAgreement(signUpRequestDto.privacyAgreement())
+                .serviceAgreement(signUpRequestDto.serviceAgreement())
+                .ageConfirmation(signUpRequestDto.ageConfirmation())
                 .build();
 
         memberRepository.save(newMember);

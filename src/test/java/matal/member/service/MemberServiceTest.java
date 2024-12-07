@@ -2,6 +2,7 @@ package matal.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -63,11 +64,15 @@ public class MemberServiceTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 "test@test.com",
                 "test",
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
         when(memberRepository.findByEmail(signUpRequestDto.email())).thenReturn(Optional.empty());
+        when(memberRepository.findByNickname(signUpRequestDto.nickname())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(signUpRequestDto.password())).thenReturn("encryptedTestPassword");
 
         //then
@@ -83,12 +88,57 @@ public class MemberServiceTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 "request@test.com",
                 "test",
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
         when(memberRepository.findByEmail(anyString()))
                 .thenThrow(new AlreadyExistException(ResponseCode.MEMBER_ALREADY_EXIST_EXCEPTION));
+
+        //then
+        assertThrows(AlreadyExistException.class, () -> memberService.signUp(signUpRequestDto));
+    }
+
+    @Test
+    @DisplayName("회원가입 시 이미 존재하는 닉네임으로 인한 실패 테스트")
+    void testSignUpFailure2() {
+        //given
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
+                "request2@test.com",
+                "test",
+                "test",
+                true,
+                true,
+                true
+        );
+
+        //when
+        when(memberRepository.findByNickname(signUpRequestDto.nickname()))
+                .thenThrow(new AlreadyExistException(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION));
+
+        //then
+        AlreadyExistException exception = assertThrows(
+                AlreadyExistException.class,
+                () -> memberService.signUp(signUpRequestDto)
+        );
+        assertEquals(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION, exception.getResponseCode());
+    }
+
+    @Test
+    @DisplayName("회원가입 시 약관 동의 검토로 인한 실패 테스트")
+    void testSignUpFailure3() {
+        //given
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
+                "request3@test.com",
+                "request",
+                "request",
+                false,
+                false,
+                false
+        );
 
         //then
         assertThrows(AlreadyExistException.class, () -> memberService.signUp(signUpRequestDto));

@@ -19,6 +19,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
+    public final BooleanPath ageConfirmation = createBoolean("ageConfirmation");
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -27,7 +29,11 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath password = createString("password");
 
+    public final BooleanPath privacyAgreement = createBoolean("privacyAgreement");
+
     public final EnumPath<Role> role = createEnum("role", Role.class);
+
+    public final BooleanPath serviceAgreement = createBoolean("serviceAgreement");
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));

@@ -49,7 +49,10 @@ public class MemberControllerTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 "test@test.com",
                 "test",
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
@@ -71,7 +74,10 @@ public class MemberControllerTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 null,
                 "test",
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
@@ -93,7 +99,10 @@ public class MemberControllerTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 "test@test.com",
                 null,
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
