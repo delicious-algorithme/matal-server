@@ -32,6 +32,9 @@ public class MemberService {
         if(memberRepository.findByEmail(signUpRequestDto.email()).isPresent())
             throw new AlreadyExistException(ResponseCode.MEMBER_ALREADY_EXIST_EXCEPTION);
 
+        if(memberRepository.findByNickname(signUpRequestDto.nickname()).isPresent())
+            throw new AlreadyExistException(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION);
+
         saveMember(signUpRequestDto);
     }
 
