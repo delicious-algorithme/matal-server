@@ -69,6 +69,9 @@ public class MemberService {
                 .password(passwordEncoder.encode(signUpRequestDto.password()))
                 .nickname(signUpRequestDto.nickname())
                 .role(Role.MEMBER)
+                .privacyAgreement(signUpRequestDto.privacyAgreement())
+                .serviceAgreement(signUpRequestDto.serviceAgreement())
+                .ageConfirmation(signUpRequestDto.ageConfirmation())
                 .build();
 
         memberRepository.save(newMember);
