@@ -64,11 +64,15 @@ public class MemberServiceTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 "test@test.com",
                 "test",
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
         when(memberRepository.findByEmail(signUpRequestDto.email())).thenReturn(Optional.empty());
+        when(memberRepository.findByNickname(signUpRequestDto.nickname())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(signUpRequestDto.password())).thenReturn("encryptedTestPassword");
 
         //then
@@ -84,7 +88,10 @@ public class MemberServiceTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 "request@test.com",
                 "test",
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
@@ -102,7 +109,10 @@ public class MemberServiceTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
                 "request2@test.com",
                 "test",
-                "test"
+                "test",
+                true,
+                true,
+                true
         );
 
         //when
@@ -115,6 +125,23 @@ public class MemberServiceTest {
                 () -> memberService.signUp(signUpRequestDto)
         );
         assertEquals(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION, exception.getResponseCode());
+    }
+
+    @Test
+    @DisplayName("회원가입 시 약관 동의 검토로 인한 실패 테스트")
+    void testSignUpFailure3() {
+        //given
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
+                "request3@test.com",
+                "request",
+                "request",
+                false,
+                false,
+                false
+        );
+
+        //then
+        assertThrows(AlreadyExistException.class, () -> memberService.signUp(signUpRequestDto));
     }
 
     @Test
