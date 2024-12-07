@@ -2,6 +2,7 @@ package matal.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -92,6 +93,28 @@ public class MemberServiceTest {
 
         //then
         assertThrows(AlreadyExistException.class, () -> memberService.signUp(signUpRequestDto));
+    }
+
+    @Test
+    @DisplayName("회원가입 시 이미 존재하는 닉네임으로 인한 실패 테스트")
+    void testSignUpFailure2() {
+        //given
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(
+                "request2@test.com",
+                "test",
+                "test"
+        );
+
+        //when
+        when(memberRepository.findByNickname(signUpRequestDto.nickname()))
+                .thenThrow(new AlreadyExistException(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION));
+
+        //then
+        AlreadyExistException exception = assertThrows(
+                AlreadyExistException.class,
+                () -> memberService.signUp(signUpRequestDto)
+        );
+        assertEquals(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION, exception.getResponseCode());
     }
 
     @Test
