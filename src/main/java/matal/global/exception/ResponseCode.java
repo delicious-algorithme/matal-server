@@ -24,6 +24,7 @@ public enum ResponseCode {
     MEMBER_AUTH_EXCEPTION(HttpStatus.UNAUTHORIZED, "회원정보가 일치하지 않습니다."),
     MEMBER_ALREADY_EXIST_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 이메일 정보 입니다."),
     MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 닉네임 입니다."),
+    MEMBER_AGREEMENT_NOT_ACCEPTED(HttpStatus.CONFLICT, "전체 약관 동의가 필요합니다."),
 
     /*
     * store

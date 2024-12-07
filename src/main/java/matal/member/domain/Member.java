@@ -30,15 +30,30 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
+    private Boolean serviceAgreement;
+
+    @Column(nullable = false)
+    private Boolean privacyAgreement;
+
+    @Column(nullable = false)
+    private Boolean ageConfirmation;
+
     @Builder
     public Member(String email,
                   String password,
                   String nickname,
-                  Role role
+                  Role role,
+                  Boolean serviceAgreement,
+                  Boolean privacyAgreement,
+                  Boolean ageConfirmation
     ) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.role = role;
+        this.serviceAgreement = serviceAgreement;
+        this.privacyAgreement = privacyAgreement;
+        this.ageConfirmation = ageConfirmation;
     }
 }

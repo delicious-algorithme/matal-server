@@ -35,6 +35,11 @@ public class MemberService {
         if(memberRepository.findByNickname(signUpRequestDto.nickname()).isPresent())
             throw new AlreadyExistException(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION);
 
+        if(!signUpRequestDto.serviceAgreement()
+                || !signUpRequestDto.privacyAgreement()
+                || !signUpRequestDto.ageConfirmation())
+            throw new AlreadyExistException(ResponseCode.MEMBER_AGREEMENT_NOT_ACCEPTED);
+
         saveMember(signUpRequestDto);
     }
 
