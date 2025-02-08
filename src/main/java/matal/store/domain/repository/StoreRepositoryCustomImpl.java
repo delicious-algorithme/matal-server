@@ -16,25 +16,26 @@ import org.springframework.data.domain.Pageable;
 import static matal.store.domain.QStore.store;
 
 @RequiredArgsConstructor
-public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
+public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Store> searchAndFilterStores(List<Long> fullTextResultIds,
-                                             List<String> categories,
-                                             List<String> addresses,
-                                             List<String> positiveKeyword,
-                                             Double rating,
-                                             Double positiveRatio,
-                                             Long reviewsCount,
-                                             Boolean soloDining,
-                                             Boolean parking,
-                                             Boolean waiting,
-                                             Boolean petFriendly,
-                                             String sortTarget,
-                                             Pageable pageable)
-    {
+    public Page<Store> searchAndFilterStores(
+            List<Long> fullTextResultIds,
+            List<String> categories,
+            List<String> addresses,
+            List<String> positiveKeyword,
+            Double rating,
+            Double positiveRatio,
+            Long reviewsCount,
+            Boolean soloDining,
+            Boolean parking,
+            Boolean waiting,
+            Boolean petFriendly,
+            String sortTarget,
+            Pageable pageable
+    ) {
         QueryResults<Store> result =
                 jpaQueryFactory
                         .select(store)
@@ -50,12 +51,12 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
                                 soloDiningEq(soloDining),
                                 parkingEq(parking),
                                 waitingEq(waiting),
-                                petFriendlyEq(petFriendly))
+                                petFriendlyEq(petFriendly)
+                        )
                         .orderBy(sortTargetDesc(sortTarget))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .fetchResults();
-
 
         List<Store> stores = result.getResults();
         long totalSize = result.getTotal();
@@ -87,13 +88,13 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
 
     private BooleanExpression positiveKeywordsLike(List<String> positiveKeywords) {
         return positiveKeywords == null ? null
-                : Expressions.anyOf(positiveKeywords.stream().map(this::positiveKeywordLike).toArray(BooleanExpression[]::new));
+                : Expressions.anyOf(
+                        positiveKeywords.stream().map(this::positiveKeywordLike).toArray(BooleanExpression[]::new));
     }
 
     private BooleanExpression positiveKeywordLike(String positiveKeyword) {
         return positiveKeyword == null ? null : store.positiveKeywords.contains(positiveKeyword);
     }
-
 
     private BooleanExpression positiveRatioGoe(Double positiveRatio) {
         return positiveRatio == null ? null : store.positiveRatio.goe(positiveRatio);
@@ -124,8 +125,9 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom{
     }
 
     private OrderSpecifier<Double> sortTargetDesc(String sortTarget) {
-        if(sortTarget.equals(SortTarget.POSITIVE_RATIO.getName()))
+        if (sortTarget.equals(SortTarget.POSITIVE_RATIO.getName())) {
             return store.positiveRatio.desc();
+        }
         return store.rating.desc();
     }
 }

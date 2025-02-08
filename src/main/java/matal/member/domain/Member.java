@@ -40,13 +40,14 @@ public class Member {
     private Boolean ageConfirmation;
 
     @Builder
-    public Member(String email,
-                  String password,
-                  String nickname,
-                  Role role,
-                  Boolean serviceAgreement,
-                  Boolean privacyAgreement,
-                  Boolean ageConfirmation
+    public Member(
+            String email,
+            String password,
+            String nickname,
+            Role role,
+            Boolean serviceAgreement,
+            Boolean privacyAgreement,
+            Boolean ageConfirmation
     ) {
         this.email = email;
         this.password = password;

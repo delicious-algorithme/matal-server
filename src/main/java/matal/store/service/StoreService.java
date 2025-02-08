@@ -68,8 +68,8 @@ public class StoreService {
 
     @Cacheable(value = "stores", key = "'stores_' + #sortTarget + '_' + #page")
     public RestPage<StoreListResponseDto> findAll(int page,
-                                                  String sortTarget) {
-
+                                                  String sortTarget
+    ) {
         Sort sort = Sort.by(Direction.DESC, sortTarget);
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, sort);
         Page<StoreListResponseDto> responseDtoPage =

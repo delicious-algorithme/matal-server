@@ -11,4 +11,5 @@ public record SignUpRequestDto(
         Boolean privacyAgreement,
         Boolean ageConfirmation
 ) {
+
 }

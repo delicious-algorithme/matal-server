@@ -1,18 +1,15 @@
 package matal.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import matal.member.domain.repository.MemberRepository;
 import matal.member.dto.request.LoginRequestDto;
 import matal.member.dto.request.SignUpRequestDto;
 import matal.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -33,12 +30,6 @@ public class MemberControllerTest {
 
     @MockBean
     private MemberService memberService;
-
-    @Mock
-    private MemberRepository memberRepository;
-
-    @MockBean
-    private BCryptPasswordEncoder passwordEncoder;
 
     private MockHttpSession session;
 

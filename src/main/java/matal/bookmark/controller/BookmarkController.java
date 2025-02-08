@@ -43,11 +43,12 @@ public class BookmarkController {
             @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "가게 조회 실패",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
     public ResponseEntity<Void> createBookmark(
             @LoginMember @Parameter(hidden = true) AuthMember authMember,
-            @RequestBody Long storeId)
-    {
+            @RequestBody Long storeId
+    ) {
         bookmarkService.saveBookmark(authMember, storeId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -60,11 +61,12 @@ public class BookmarkController {
             @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "회원 조회 실패",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
     public ResponseEntity<Page<BookmarkResponseDto>> getBookmarks(
             @LoginMember @Parameter(hidden = true) AuthMember authMember,
-            @RequestParam(name = "page", defaultValue = "0") int page)
-    {
+            @RequestParam(name = "page", defaultValue = "0") int page
+    ) {
         Page<BookmarkResponseDto> bookmarkResponse = bookmarkService.getBookmarks(authMember, page);
         return ResponseEntity.ok(bookmarkResponse);
     }
@@ -77,10 +79,11 @@ public class BookmarkController {
             @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "회원 조회 실패",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
     public ResponseEntity<List<BookmarkStoreIdsResponseDto>> getBookmarkStoreIds(
-            @LoginMember @Parameter(hidden = true) AuthMember authMember)
-    {
+            @LoginMember @Parameter(hidden = true) AuthMember authMember
+    ) {
         List<BookmarkStoreIdsResponseDto> bookmarkResponse = bookmarkService.getBookmarkStoreIds(authMember);
         return ResponseEntity.ok(bookmarkResponse);
     }
@@ -93,11 +96,12 @@ public class BookmarkController {
             @ApiResponse(responseCode = "401", description = "회원 세션 정보 없음",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "북마크 정보 조회 실패",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
     public ResponseEntity<Void> deleteBookmark(
             @LoginMember @Parameter(hidden = true) AuthMember authMember,
-            @PathVariable Long id)
-    {
+            @PathVariable Long id
+    ) {
         bookmarkService.deleteBookmark(authMember, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

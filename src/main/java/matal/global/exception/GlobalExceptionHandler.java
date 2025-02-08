@@ -44,7 +44,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AlreadyExistException.class)
-    public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException exception, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException exception,
+                                                                     WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 exception.getResponseCode().getMessage(),
@@ -55,7 +56,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException exception, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 exception.getStatusCode().toString(),

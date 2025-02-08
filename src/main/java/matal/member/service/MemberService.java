@@ -29,16 +29,19 @@ public class MemberService {
     @Transactional
     public void signUp(SignUpRequestDto signUpRequestDto) {
 
-        if(memberRepository.findByEmail(signUpRequestDto.email()).isPresent())
+        if (memberRepository.findByEmail(signUpRequestDto.email()).isPresent()) {
             throw new AlreadyExistException(ResponseCode.MEMBER_ALREADY_EXIST_EXCEPTION);
+        }
 
-        if(memberRepository.findByNickname(signUpRequestDto.nickname()).isPresent())
+        if (memberRepository.findByNickname(signUpRequestDto.nickname()).isPresent()) {
             throw new AlreadyExistException(ResponseCode.MEMBER_NICKNAME_ALREADY_EXIST_EXCEPTION);
+        }
 
-        if(!signUpRequestDto.serviceAgreement()
+        if (!signUpRequestDto.serviceAgreement()
                 || !signUpRequestDto.privacyAgreement()
-                || !signUpRequestDto.ageConfirmation())
+                || !signUpRequestDto.ageConfirmation()) {
             throw new AlreadyExistException(ResponseCode.MEMBER_AGREEMENT_NOT_ACCEPTED);
+        }
 
         saveMember(signUpRequestDto);
     }
@@ -49,8 +52,9 @@ public class MemberService {
         Member member = memberRepository.findByEmail(loginRequestDto.email())
                 .orElseThrow(() -> new NotFoundException(ResponseCode.MEMBER_NOT_FOUND_EMAIL));
 
-        if(!passwordEncoder.matches(loginRequestDto.password(), member.getPassword()))
+        if (!passwordEncoder.matches(loginRequestDto.password(), member.getPassword())) {
             throw new AuthException(ResponseCode.MEMBER_AUTH_EXCEPTION);
+        }
 
         session.setAttribute(SESSION_KEY, AuthMember.from(member));
     }
@@ -58,8 +62,9 @@ public class MemberService {
     @Transactional
     public void logout(HttpSession session) {
 
-        if(session != null)
+        if (session != null) {
             session.invalidate();
+        }
     }
 
     public void saveMember(SignUpRequestDto signUpRequestDto) {

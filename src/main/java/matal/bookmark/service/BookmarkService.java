@@ -39,8 +39,9 @@ public class BookmarkService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new NotFoundException(ResponseCode.STORE_NOT_FOUND_ID));
 
-        if(bookmarkRepository.existsBookmarkByStoreAndMember(store, member))
+        if (bookmarkRepository.existsBookmarkByStoreAndMember(store, member)) {
             throw new AlreadyExistException(ResponseCode.BOOKMARK_ALREADY_EXIST);
+        }
 
         bookmarkRepository.save(createBookmark(member, store));
     }
@@ -49,7 +50,8 @@ public class BookmarkService {
     public Page<BookmarkResponseDto> getBookmarks(AuthMember authMember, int page) {
         validateMember(authMember.memberId());
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-        return bookmarkRepository.findBookmarksByMemberId(authMember.memberId(), pageable).map(BookmarkResponseDto::from);
+        return bookmarkRepository.findBookmarksByMemberId(authMember.memberId(), pageable)
+                .map(BookmarkResponseDto::from);
     }
 
     @Transactional(readOnly = true)
@@ -74,7 +76,8 @@ public class BookmarkService {
     }
 
     private void validateMember(Long memberId) {
-        if(memberRepository.findById(memberId).isEmpty())
+        if (memberRepository.findById(memberId).isEmpty()) {
             throw new AuthException(ResponseCode.MEMBER_NOT_FOUND_ID);
+        }
     }
 }

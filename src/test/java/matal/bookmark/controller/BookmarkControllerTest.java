@@ -64,7 +64,7 @@ public class BookmarkControllerTest {
                 "test@test.com",
                 "test",
                 Role.MEMBER
-                );
+        );
 
         mockSession = new MockHttpSession();
 
@@ -163,8 +163,8 @@ public class BookmarkControllerTest {
     void testGetBookmarksSuccess() throws Exception {
         // given
         Pageable pageable = PageRequest.of(0, 10);
-        Page<BookmarkResponseDto> bookmarks = new PageImpl<>(bookmarkResponseDtos, pageable, bookmarkResponseDtos.size());
-
+        Page<BookmarkResponseDto> bookmarks = new PageImpl<>(bookmarkResponseDtos, pageable,
+                bookmarkResponseDtos.size());
 
         // when
         when(bookmarkService.getBookmarks(mockMember, 0)).thenReturn(bookmarks);
@@ -175,8 +175,10 @@ public class BookmarkControllerTest {
                         .session(mockSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].bookmarkId").value(bookmarkResponseDtos.get(0).bookmarkId()))
-                .andExpect(jsonPath("$.content[0].storeResponseDto.name").value(bookmarkResponseDtos.get(0).storeResponseDto().name()))
-                .andExpect(jsonPath("$.content[1].storeResponseDto.name").value(bookmarkResponseDtos.get(1).storeResponseDto().name()))
+                .andExpect(jsonPath("$.content[0].storeResponseDto.name").value(
+                        bookmarkResponseDtos.get(0).storeResponseDto().name()))
+                .andExpect(jsonPath("$.content[1].storeResponseDto.name").value(
+                        bookmarkResponseDtos.get(1).storeResponseDto().name()))
                 .andDo(print());
     }
 
@@ -225,7 +227,6 @@ public class BookmarkControllerTest {
                         1L, 2L
                 )
         );
-
 
         // when
         when(bookmarkService.getBookmarkStoreIds(mockMember)).thenReturn(bookmarks);
