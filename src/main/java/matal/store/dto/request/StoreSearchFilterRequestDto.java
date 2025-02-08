@@ -6,19 +6,21 @@ import matal.global.exception.BadRequestException;
 import matal.global.exception.ResponseCode;
 import matal.store.dto.SortTarget;
 
-public record StoreSearchFilterRequestDto(String searchKeywords,
-                                          List<String> category,
-                                          List<String> addresses,
-                                          List<String> positiveKeyword,
-                                          Double positiveRatio,
-                                          Long reviewsCount,
-                                          Double rating,
-                                          Boolean isSoloDining,
-                                          Boolean isParking,
-                                          Boolean isWaiting,
-                                          Boolean isPetFriendly,
-                                          @JsonProperty(defaultValue = "rating") String sortTarget,
-                                          int page) {
+public record StoreSearchFilterRequestDto(
+        String searchKeywords,
+        List<String> category,
+        List<String> addresses,
+        List<String> positiveKeyword,
+        Double positiveRatio,
+        Long reviewsCount,
+        Double rating,
+        Boolean isSoloDining,
+        Boolean isParking,
+        Boolean isWaiting,
+        Boolean isPetFriendly,
+        @JsonProperty(defaultValue = "rating") String sortTarget,
+        int page
+) {
 
     public void validateFields() {
         if (searchKeywords == null &&
@@ -32,7 +34,8 @@ public record StoreSearchFilterRequestDto(String searchKeywords,
                 isParking == null &&
                 isWaiting == null &&
                 isPetFriendly == null &&
-                sortTarget == null) {
+                sortTarget == null
+        ) {
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
         }
         validateSort(sortTarget);
@@ -47,7 +50,8 @@ public record StoreSearchFilterRequestDto(String searchKeywords,
 
     private void validateSort(String sortTarget) {
         List<String> validatedString = List.of(SortTarget.RATING.getName(), SortTarget.POSITIVE_RATIO.getName());
-        if(!validatedString.contains(sortTarget))
+        if (!validatedString.contains(sortTarget)) {
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
+        }
     }
 }

@@ -36,7 +36,8 @@ public class MemberController {
             @ApiResponse(responseCode = "201", description = "회원가입 성공",
                     content = {@Content(schema = @Schema(implementation = Void.class))}),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 회원 정보",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         memberService.signUp(signUpRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -50,8 +51,12 @@ public class MemberController {
             @ApiResponse(responseCode = "401", description = "비밀번호 불일치",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 정보",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
-    public ResponseEntity<Void> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    public ResponseEntity<Void> login(
+            @Valid @RequestBody LoginRequestDto loginRequestDto,
+            HttpServletRequest request
+    ) {
         HttpSession session = request.getSession(true);
         memberService.login(loginRequestDto, session);
         return ResponseEntity.ok().build();
@@ -60,7 +65,8 @@ public class MemberController {
     @PostMapping("/logout")
     @Operation(summary = "로그아웃 기능", description = "사용자가 로그하웃 할 때 사용하는 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그아웃 성공")})
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+    })
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         memberService.logout(session);

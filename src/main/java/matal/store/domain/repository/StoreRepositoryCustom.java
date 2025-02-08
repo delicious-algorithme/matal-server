@@ -7,17 +7,19 @@ import org.springframework.data.domain.Pageable;
 
 public interface StoreRepositoryCustom {
 
-    Page<Store> searchAndFilterStores(List<Long> fullTextResultIds,
-                                      List<String> category,
-                                      List<String> addresses,
-                                      List<String> positiveKeyword,
-                                      Double rating,
-                                      Double positiveRatio,
-                                      Long reviewsCount,
-                                      Boolean soloDining,
-                                      Boolean parking,
-                                      Boolean waiting,
-                                      Boolean petFriendly,
-                                      String sortTarget,
-                                      Pageable pageable);
+    Page<Store> searchAndFilterStores(
+            List<Long> fullTextResultIds,
+            List<String> category,
+            List<String> addresses,
+            List<String> positiveKeyword,
+            Double rating,
+            Double positiveRatio,
+            Long reviewsCount,
+            Boolean soloDining,
+            Boolean parking,
+            Boolean waiting,
+            Boolean petFriendly,
+            String sortTarget,
+            Pageable pageable
+    );
 }

@@ -36,8 +36,8 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "실패",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})})
     public ResponseEntity<Page<StoreListResponseDto>> searchAndFilterStores(
-            @RequestBody StoreSearchFilterRequestDto requestDto)
-    {
+            @RequestBody StoreSearchFilterRequestDto requestDto
+    ) {
         requestDto.validateFields();
         Page<StoreListResponseDto> response = storeService.searchAndFilterStores(requestDto);
         return ResponseEntity.ok().body(response);
@@ -64,11 +64,12 @@ public class StoreController {
     })
     public ResponseEntity<RestPage<StoreListResponseDto>> getStoreAll(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "sortTarget", required = false, defaultValue = "rating") String sortTarget) {
-
+            @RequestParam(name = "sortTarget", required = false, defaultValue = "rating") String sortTarget
+    ) {
         List<String> validaString = List.of("rating", "positiveRatio");
-        if(!validaString.contains(sortTarget))
+        if (!validaString.contains(sortTarget)) {
             throw new BadRequestException(ResponseCode.STORE_BAD_REQUEST);
+        }
         RestPage<StoreListResponseDto> storeListResponse = storeService.findAll(page, sortTarget);
         return ResponseEntity.ok().body(storeListResponse);
     }

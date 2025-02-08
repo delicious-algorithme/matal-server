@@ -17,7 +17,7 @@ public class RedisConfig {
     private int REDIS_PORT;
 
     @Bean
-    public RedisConnectionFactory RedisConfig () {
+    public RedisConnectionFactory RedisConfig() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(REDIS_HOST);
         configuration.setPort(REDIS_PORT);

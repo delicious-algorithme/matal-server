@@ -172,16 +172,18 @@ public class BookmarkServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Bookmark> bookmarkPage = new PageImpl<>(bookmarks, pageable, bookmarks.size());
 
-
         // when
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(bookmarkRepository.findBookmarksByMemberId(any(), any())).thenReturn(bookmarkPage);
 
         // then
         Page<BookmarkResponseDto> response = bookmarkService.getBookmarks(mockMember, 0);
-        assertThat(response.get().toList().get(0).storeResponseDto().address()).isEqualTo(bookmarks.get(0).getStore().getAddress());
-        assertThat(response.get().toList().get(1).storeResponseDto().address()).isEqualTo(bookmarks.get(1).getStore().getAddress());
-        assertThat(response.get().toList().get(0).storeResponseDto().name()).isEqualTo(bookmarks.get(0).getStore().getName());
+        assertThat(response.get().toList().get(0).storeResponseDto().address()).isEqualTo(
+                bookmarks.get(0).getStore().getAddress());
+        assertThat(response.get().toList().get(1).storeResponseDto().address()).isEqualTo(
+                bookmarks.get(1).getStore().getAddress());
+        assertThat(response.get().toList().get(0).storeResponseDto().name()).isEqualTo(
+                bookmarks.get(0).getStore().getName());
     }
 
     @Test
@@ -211,7 +213,6 @@ public class BookmarkServiceTest {
                         2L
                 )
         );
-
 
         // when
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));

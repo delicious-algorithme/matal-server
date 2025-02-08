@@ -47,7 +47,7 @@ public class StoreServiceTest {
 
     @BeforeEach
     void setUp() {
-         requestDto = new StoreSearchFilterRequestDto(
+        requestDto = new StoreSearchFilterRequestDto(
                 "커피",
                 List.of("카페"),
                 List.of("서울"),
@@ -62,7 +62,6 @@ public class StoreServiceTest {
                 "rating",
                 0
         );
-
 
         store1 = createStoreWithCustomValues(
                 1L,
